@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Publications on Welcome to my page!</title>
+    <link>https://alibaheri.github.io/publication/</link>
+    <description>Recent content in Publications on Welcome to my page!</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2017 Ali Baheri</copyright>
+    <lastBuildDate>Sun, 01 Jan 2017 00:00:00 +0000</lastBuildDate>
+    <atom:link href="/publication/" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Combined Plant and Controller Design Using Bayesian Optimization: A Case Study in Airborne Wind Energy Systems</title>
+      <link>https://alibaheri.github.io/publication/dscc_codesign/</link>
+      <pubDate>Sun, 01 Oct 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://alibaheri.github.io/publication/dscc_codesign/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Iterative In-Situ 3D Layout Optimization of a Reconfigurable Ocean Current Turbine Array Using Bayesian Optimization</title>
+      <link>https://alibaheri.github.io/publication/dscc_oct/</link>
+      <pubDate>Sun, 01 Oct 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://alibaheri.github.io/publication/dscc_oct/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Real-Time Control Using Bayesian Optimization: A Case Study in Airborne Wind Energy Systems</title>
+      <link>https://alibaheri.github.io/publication/cep2017/</link>
+      <pubDate>Tue, 01 Aug 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://alibaheri.github.io/publication/cep2017/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Altitude Optimization of  Airborne Wind Energy Systems: A Bayesian Optimization Approach</title>
+      <link>https://alibaheri.github.io/publication/acc2017/</link>
+      <pubDate>Wed, 24 May 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://alibaheri.github.io/publication/acc2017/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Spatiotemporal Optimization Through Gaussian Process Based Model Predictive Control: A Case Study in Airborne Wind Energy Systems</title>
+      <link>https://alibaheri.github.io/publication/tcst/</link>
+      <pubDate>Tue, 01 Nov 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://alibaheri.github.io/publication/tcst/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Concurrent Design of Unity-Magnitude Input Shapers and Proportional- Derivative Feedback Controllers</title>
+      <link>https://alibaheri.github.io/publication/acc2015/</link>
+      <pubDate>Fri, 03 Jul 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://alibaheri.github.io/publication/acc2015/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Concurrent Command and Mechanical System Design to Limit Transient and Residual Vibration</title>
+      <link>https://alibaheri.github.io/publication/movic2014/</link>
+      <pubDate>Fri, 01 Aug 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://alibaheri.github.io/publication/movic2014/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Robust Concurrent Design of Input and Proportional- Derivative Feedback Controllers</title>
+      <link>https://alibaheri.github.io/publication/isfa/</link>
+      <pubDate>Tue, 01 Jul 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://alibaheri.github.io/publication/isfa/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Study on Tube Hydro Forming Process Using Finite Element Analysis and Compare with Experimental Data</title>
+      <link>https://alibaheri.github.io/publication/fem2013/</link>
+      <pubDate>Tue, 01 Oct 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://alibaheri.github.io/publication/fem2013/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Optimal Washout Filter Design Enhanced with Human Vestibular Based upon Model for Motion Simulator Using Optimal Algorithms</title>
+      <link>https://alibaheri.github.io/publication/old2012/</link>
+      <pubDate>Mon, 01 Oct 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://alibaheri.github.io/publication/old2012/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>
