@@ -56,7 +56,7 @@
     </item>
     
     <item>
-      <title>Altitude Optimization of  Airborne Wind Energy Systems: A Bayesian Optimization Approach</title>
+      <title>Altitude Optimization of Airborne Wind Energy Systems: A Bayesian Optimization Approach</title>
       <link>https://alibaheri.github.io/publication/acc2017/</link>
       <pubDate>Wed, 24 May 2017 00:00:00 +0000</pubDate>
       
@@ -83,22 +83,42 @@
     </item>
     
     <item>
-      <title>Deep Learning</title>
-      <link>https://alibaheri.github.io/project/deep-learning/</link>
+      <title>Deep Learning Nanodegree Foundation (Udacity)</title>
+      <link>https://alibaheri.github.io/project/deep-learning_nanodegree/</link>
       <pubDate>Wed, 27 Apr 2016 00:00:00 +0000</pubDate>
       
-      <guid>https://alibaheri.github.io/project/deep-learning/</guid>
+      <guid>https://alibaheri.github.io/project/deep-learning_nanodegree/</guid>
       <description>&lt;p&gt;The goal for this project was to classify images from hotels into one of 8 classes. I implemented a Convolutional Neural Network using &amp;ldquo;keras&amp;rdquo; library (Deep Learning library for Theano and TensorFlow) to solve the classification problem including more than 80000 training examples with somewhat noisy ground truth labels and more than 20000 unlabeled testing images.&lt;/p&gt;
 </description>
     </item>
     
     <item>
-      <title>Machine Learning &amp; Signal Processing</title>
-      <link>https://alibaheri.github.io/project/csi-project/</link>
+      <title>Deep Learning by Google Brain (Udacity)</title>
+      <link>https://alibaheri.github.io/project/deep-learning_google/</link>
       <pubDate>Wed, 27 Apr 2016 00:00:00 +0000</pubDate>
       
-      <guid>https://alibaheri.github.io/project/csi-project/</guid>
-      <description>&lt;p&gt;More information comming soon &amp;hellip;&lt;/p&gt;
+      <guid>https://alibaheri.github.io/project/deep-learning_google/</guid>
+      <description>&lt;p&gt;Implemented the deep learning techniques using Google Tensorflow that cover deep neural networks with a fully connected network using SGD and ReLUs; Regularization with a multi-layer neural network using ReLUs, L2-regularization, and dropout, to prevent overfitting; Convolutional Neural Networks (CNNs) with learning rate decay and dropout; and Recurrent Neural Networks (RNNs) for text and sequences with Long Short-Term Memory (LSTM) networks.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Machine Learning by Stanford University</title>
+      <link>https://alibaheri.github.io/project/machine_learning/</link>
+      <pubDate>Wed, 27 Apr 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://alibaheri.github.io/project/machine_learning/</guid>
+      <description>&lt;p&gt;#The goal for this project was to classify images from hotels into one of 8 classes. I implemented a Convolutional Neural Network using &amp;ldquo;keras&amp;rdquo; library (Deep Learning library for Theano and TensorFlow) to solve the classification problem including more than 80000 training examples with somewhat noisy ground truth labels and more than 20000 unlabeled testing images.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Deep Learning (Class project)</title>
+      <link>https://alibaheri.github.io/project/deep-learning/</link>
+      <pubDate>Mon, 11 Apr 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://alibaheri.github.io/project/deep-learning/</guid>
+      <description>&lt;p&gt;The goal for this project was to classify images from hotels into one of 8 classes. I implemented a Convolutional Neural Network using &amp;ldquo;keras&amp;rdquo; library (Deep Learning library for Theano and TensorFlow) to solve the classification problem including more than 80000 training examples with somewhat noisy ground truth labels and more than 20000 unlabeled testing images.&lt;/p&gt;
 </description>
     </item>
     
@@ -126,24 +146,6 @@
       <pubDate>Tue, 01 Jul 2014 00:00:00 +0000</pubDate>
       
       <guid>https://alibaheri.github.io/publication/isfa/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Study on Tube Hydro Forming Process Using Finite Element Analysis and Compare with Experimental Data</title>
-      <link>https://alibaheri.github.io/publication/fem2013/</link>
-      <pubDate>Tue, 01 Oct 2013 00:00:00 +0000</pubDate>
-      
-      <guid>https://alibaheri.github.io/publication/fem2013/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Optimal Washout Filter Design Enhanced with Human Vestibular Based upon Model for Motion Simulator Using Optimal Algorithms</title>
-      <link>https://alibaheri.github.io/publication/old2012/</link>
-      <pubDate>Mon, 01 Oct 2012 00:00:00 +0000</pubDate>
-      
-      <guid>https://alibaheri.github.io/publication/old2012/</guid>
       <description></description>
     </item>
     
