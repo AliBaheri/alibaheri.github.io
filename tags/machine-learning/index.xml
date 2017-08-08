@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Machine Learning on Ali Baheri</title>
+    <link>https://alibaheri.github.io/tags/machine-learning/</link>
+    <description>Recent content in Machine Learning on Ali Baheri</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2017 Ali Baheri</copyright>
+    <lastBuildDate>Wed, 27 Apr 2016 00:00:00 +0000</lastBuildDate>
+    <atom:link href="/tags/machine-learning/" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Machine Learning by Stanford University</title>
+      <link>https://alibaheri.github.io/project/machine_learning/</link>
+      <pubDate>Wed, 27 Apr 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://alibaheri.github.io/project/machine_learning/</guid>
+      <description>&lt;p&gt;#The goal for this project was to classify images from hotels into one of 8 classes. I implemented a Convolutional Neural Network using &amp;ldquo;keras&amp;rdquo; library (Deep Learning library for Theano and TensorFlow) to solve the classification problem including more than 80000 training examples with somewhat noisy ground truth labels and more than 20000 unlabeled testing images.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

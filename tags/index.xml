@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Tags on Welcome to my page!</title>
+    <title>Tags on Ali Baheri</title>
     <link>https://alibaheri.github.io/tags/</link>
-    <description>Recent content in Tags on Welcome to my page!</description>
+    <description>Recent content in Tags on Ali Baheri</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2017 Ali Baheri</copyright>
@@ -26,6 +26,15 @@
       <pubDate>Wed, 27 Apr 2016 00:00:00 +0000</pubDate>
       
       <guid>https://alibaheri.github.io/tags/deep-learning/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Machine Learning</title>
+      <link>https://alibaheri.github.io/tags/machine-learning/</link>
+      <pubDate>Wed, 27 Apr 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://alibaheri.github.io/tags/machine-learning/</guid>
       <description></description>
     </item>
     

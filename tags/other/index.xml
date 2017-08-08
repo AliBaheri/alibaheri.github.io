@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Other on Welcome to my page!</title>
+    <title>Other on Ali Baheri</title>
     <link>https://alibaheri.github.io/tags/other/</link>
-    <description>Recent content in Other on Welcome to my page!</description>
+    <description>Recent content in Other on Ali Baheri</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2017 Ali Baheri</copyright>
@@ -17,16 +17,6 @@
       
       <guid>https://alibaheri.github.io/project/self_driving_car/</guid>
       <description>&lt;p&gt;Detect highway lane lines from a video stream. Use OpenCV image analysis techniques to identify lines, including Hough transforms and Canny edge detection.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Machine Learning by Stanford University</title>
-      <link>https://alibaheri.github.io/project/machine_learning/</link>
-      <pubDate>Wed, 27 Apr 2016 00:00:00 +0000</pubDate>
-      
-      <guid>https://alibaheri.github.io/project/machine_learning/</guid>
-      <description>&lt;p&gt;#The goal for this project was to classify images from hotels into one of 8 classes. I implemented a Convolutional Neural Network using &amp;ldquo;keras&amp;rdquo; library (Deep Learning library for Theano and TensorFlow) to solve the classification problem including more than 80000 training examples with somewhat noisy ground truth labels and more than 20000 unlabeled testing images.&lt;/p&gt;
 </description>
     </item>
     
