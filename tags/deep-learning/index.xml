@@ -36,7 +36,9 @@
       <pubDate>Mon, 11 Apr 2016 00:00:00 +0000</pubDate>
       
       <guid>https://alibaheri.github.io/project/deep-learning/</guid>
-      <description>&lt;p&gt;The goal for this project was to classify images from hotels into one of 8 classes. I implemented a Convolutional Neural Network using &amp;ldquo;keras&amp;rdquo; library (Deep Learning library for Theano and TensorFlow) to solve the classification problem including more than 80000 training examples with somewhat noisy ground truth labels and more than 20000 unlabeled testing images.&lt;/p&gt;
+      <description>&lt;p&gt;The goal for this project was to classify images from hotels into one of 8 classes.
+I implemented a Convolutional Neural Network using &amp;ldquo;keras&amp;rdquo; library to solve the classification problem
+including more than 80000 training examples with somewhat noisy ground truth labels and more than 20000 unlabeled testing images.&lt;/p&gt;
 </description>
     </item>
     
