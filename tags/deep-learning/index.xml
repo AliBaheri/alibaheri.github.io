@@ -7,8 +7,18 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2017 Ali Baheri</copyright>
-    <lastBuildDate>Wed, 27 Apr 2016 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 07 Aug 2017 00:00:00 +0000</lastBuildDate>
     <atom:link href="/tags/deep-learning/" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Deep Learning Specialization by Andrew Ng</title>
+      <link>https://alibaheri.github.io/project/deep-learning_andrewng/</link>
+      <pubDate>Mon, 07 Aug 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://alibaheri.github.io/project/deep-learning_andrewng/</guid>
+      <description>&lt;p&gt;Detect highway lane lines from a video stream. Use OpenCV image analysis techniques to identify lines, including Hough transforms and Canny edge detection.&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Deep Learning Nanodegree Foundation (Udacity)</title>
