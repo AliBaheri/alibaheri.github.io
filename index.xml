@@ -11,6 +11,16 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Self Driving Car Nanodegree - Project 4: Advanced Lane Finding</title>
+      <link>https://alibaheri.github.io/project/self_driving_car_p4/</link>
+      <pubDate>Mon, 01 Jan 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://alibaheri.github.io/project/self_driving_car_p4/</guid>
+      <description>&lt;p&gt;Utilized OpenCV to create a robust image processing pipeline for identifying the highway lane in an image and video stream&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Iterative In-Situ Layout Optimization of a Reconfigurable Ocean Current Turbine Array Using Bayesian Optimization</title>
       <link>https://alibaheri.github.io/talk/dssc_oct/</link>
       <pubDate>Thu, 12 Oct 2017 00:00:00 +0000</pubDate>
@@ -58,11 +68,21 @@
     
     <item>
       <title>Self Driving Car Nanodegree - Project 1: Detect Lane Lines</title>
-      <link>https://alibaheri.github.io/project/self_driving_car/</link>
+      <link>https://alibaheri.github.io/project/self_driving_car_p1/</link>
       <pubDate>Mon, 07 Aug 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://alibaheri.github.io/project/self_driving_car/</guid>
+      <guid>https://alibaheri.github.io/project/self_driving_car_p1/</guid>
       <description>&lt;p&gt;Utilized OpenCV and image analysis algorithms including Hough Transforms and Canny edge detection for identifying the highway lane in an image and video stream.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Self Driving Car Nanodegree - Project 2: Traffic Sign Classifier</title>
+      <link>https://alibaheri.github.io/project/self_driving_car_p2/</link>
+      <pubDate>Mon, 07 Aug 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://alibaheri.github.io/project/self_driving_car_p2/</guid>
+      <description>&lt;p&gt;Utilized TensorFlow deep learning framework and OpenCV to train a classifier for the traffic sign dataset.&lt;/p&gt;
 </description>
     </item>
     
@@ -130,27 +150,6 @@
       <guid>https://alibaheri.github.io/project/machine_learning/</guid>
       <description>&lt;p&gt;#The goal for this project was to classify images from hotels into one of 8 classes. I implemented a Convolutional Neural Network using &amp;ldquo;keras&amp;rdquo; library (Deep Learning library for Theano and TensorFlow) to solve the classification problem including more than 80000 training examples with somewhat noisy ground truth labels and more than 20000 unlabeled testing images.&lt;/p&gt;
 </description>
-    </item>
-    
-    <item>
-      <title>Deep Learning (Class project)</title>
-      <link>https://alibaheri.github.io/project/deep-learning/</link>
-      <pubDate>Mon, 11 Apr 2016 00:00:00 +0000</pubDate>
-      
-      <guid>https://alibaheri.github.io/project/deep-learning/</guid>
-      <description>&lt;p&gt;The goal for this project was to classify images from hotels into one of 8 classes.
-I implemented a Convolutional Neural Network using &amp;ldquo;keras&amp;rdquo; library to solve the classification problem
-including more than 80000 training examples with somewhat noisy ground truth labels and more than 20000 unlabeled testing images.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Concurrent Design of Unity-Magnitude Input Shapers and Proportional- Derivative Feedback Controllers</title>
-      <link>https://alibaheri.github.io/publication/acc2015/</link>
-      <pubDate>Fri, 03 Jul 2015 00:00:00 +0000</pubDate>
-      
-      <guid>https://alibaheri.github.io/publication/acc2015/</guid>
-      <description></description>
     </item>
     
   </channel>

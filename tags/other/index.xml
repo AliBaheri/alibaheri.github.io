@@ -7,16 +7,36 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2017 Ali Baheri</copyright>
-    <lastBuildDate>Mon, 07 Aug 2017 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 01 Jan 2018 00:00:00 +0000</lastBuildDate>
     <atom:link href="/tags/other/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Self Driving Car Nanodegree - Project 4: Advanced Lane Finding</title>
+      <link>https://alibaheri.github.io/project/self_driving_car_p4/</link>
+      <pubDate>Mon, 01 Jan 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://alibaheri.github.io/project/self_driving_car_p4/</guid>
+      <description>&lt;p&gt;Utilized OpenCV to create a robust image processing pipeline for identifying the highway lane in an image and video stream&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Self Driving Car Nanodegree - Project 1: Detect Lane Lines</title>
-      <link>https://alibaheri.github.io/project/self_driving_car/</link>
+      <link>https://alibaheri.github.io/project/self_driving_car_p1/</link>
       <pubDate>Mon, 07 Aug 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://alibaheri.github.io/project/self_driving_car/</guid>
+      <guid>https://alibaheri.github.io/project/self_driving_car_p1/</guid>
       <description>&lt;p&gt;Utilized OpenCV and image analysis algorithms including Hough Transforms and Canny edge detection for identifying the highway lane in an image and video stream.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Self Driving Car Nanodegree - Project 2: Traffic Sign Classifier</title>
+      <link>https://alibaheri.github.io/project/self_driving_car_p2/</link>
+      <pubDate>Mon, 07 Aug 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://alibaheri.github.io/project/self_driving_car_p2/</guid>
+      <description>&lt;p&gt;Utilized TensorFlow deep learning framework and OpenCV to train a classifier for the traffic sign dataset.&lt;/p&gt;
 </description>
     </item>
     
