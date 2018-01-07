@@ -16,7 +16,7 @@
       <pubDate>Mon, 07 Aug 2017 00:00:00 +0000</pubDate>
       
       <guid>https://alibaheri.github.io/project/self_driving_car/</guid>
-      <description>&lt;p&gt;Detect highway lane lines from a video stream. Use OpenCV image analysis techniques to identify lines, including Hough transforms and Canny edge detection.&lt;/p&gt;
+      <description>&lt;p&gt;Utilized OpenCV and image analysis algorithms including Hough Transforms and Canny edge detection for identifying the highway lane in an image and video stream.&lt;/p&gt;
 </description>
     </item>
     
