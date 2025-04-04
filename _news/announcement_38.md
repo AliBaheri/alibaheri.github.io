@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2024-08-16 07:59:00-0400
+date: 2025-03-25 07:59:00-0400
 inline: true
 ---
-**[paper]** Our paper titled A Survey on Reinforcement Learning in Aviation Applications has been accepted by the Engineering Applications of Artificial Intelligence journal! (Joint work with our colleagues at George Washington University)
+**[paper]** Our paper titled [Distributionally Robust Lyapunov-Barrier Networks for Safe and Stable Control Under Uncertainty] has been accepted by the Results in Control and Optimization (RICO)! 
