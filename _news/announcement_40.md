@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2025-02-28 07:59:00-0400
+date: 2025-07-11 07:59:00-0400
 inline: true
 ---
-**[paper]** Our paper titled "WAVE: Wasserstein Adaptive Value Estimation for Actor-Critic Reinforcement Learning" has been accepted by the 2025 Learning for Dynamics & Control Conference (L4DC)!
+**[paper]** Our paper titled "Hierarchical Neuro-Symbolic Decision Transformer" has been accepted by 19th Conference on Neurosymbolic Learning and Reasoning (NeSy 2025)!
