@@ -3,4 +3,4 @@ layout: post
 date: 2026-07-15 09:00:00-0400
 inline: true
 ---
-**[paper]** Our paper titled “Wasserstein Stability of Contracting Flows: Effective Rates, Euler Self-Correction, and Noise Tightening” has been accepted for the 2026 65th IEEE Conference on Decision and Control (CDC)!
+**[paper]** Our paper titled “Wasserstein Stability of Contracting Flows: Effective Rates, Euler Self-Correction, and Noise Tightening” has been accepted for the 2026 Conference on Decision and Control (CDC)!
