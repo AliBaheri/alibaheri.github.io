@@ -2,21 +2,60 @@
 layout: page
 permalink: /publications/
 title: publications
-description: Selected publications since 2023, in reverse chronological order. For the complete list, see my <a href="https://scholar.google.com/citations?user=MhIEockAAAAJ" target="_blank">Google Scholar</a> profile or <a href="/assets/pdf/cv_academic.pdf" target="_blank">CV</a>.
+description: Publications since 2023, in reverse chronological order. For the complete list, see my <a href="https://scholar.google.com/citations?user=MhIEockAAAAJ" target="_blank">Google Scholar</a> profile or <a href="/assets/pdf/cv_academic.pdf" target="_blank">CV</a>.
 nav: true
 ---
 
-<!-- Plain HTML on purpose: this page needs no Jekyll plugins, so it builds
-     on GitHub Pages with no extra setup. The BibTeX source of record lives
-     in _bibliography/papers.bib.
-     To add a paper: copy one list item block below, edit the text, and keep
-     it inside the ordered list for the correct year. -->
+<!-- Plain HTML on purpose: no Jekyll plugins required, so this builds on
+     GitHub Pages with no extra setup. The BibTeX source of record lives in
+     _bibliography/papers.bib.
+     To add a paper: copy one list item below, edit the text, and keep it
+     inside the ordered list for the correct year. Set data-topics to any
+     of: ot rl uq gen (space separated, or leave empty). -->
+
+<style>
+.pub-filter { margin-bottom: 1.5rem; }
+.pub-filter input {
+  width: 100%; padding: .5rem .75rem; margin-bottom: .75rem;
+  border: 1px solid var(--global-text-color-light); border-radius: 4px;
+  background: var(--global-bg-color); color: var(--global-text-color);
+  font-size: .95rem;
+}
+.pub-filter input:focus { outline: none; border-color: var(--global-theme-color); }
+.pub-chips { display: flex; flex-wrap: wrap; gap: .4rem; }
+.pub-chips button {
+  font-size: .8rem; padding: .25rem .8rem; cursor: pointer;
+  border: 1px solid var(--global-text-color-light); border-radius: 4px;
+  background: transparent; color: var(--global-text-color);
+}
+.pub-chips button:hover { border-color: var(--global-theme-color); color: var(--global-theme-color); }
+.pub-chips button.active {
+  background: var(--global-theme-color); border-color: var(--global-theme-color); color: #fff;
+}
+.pub-count { font-size: .8rem; color: var(--global-text-color-light); margin-top: 1.5rem; }
+.publications ol.bibliography li .abbr .award {
+  display: inline-block; padding: 0 .6rem; margin-left: .25rem; font-size: .7rem;
+  background-color: transparent !important; border-radius: 3px;
+}
+</style>
+
+<div class="pub-filter">
+  <input type="text" id="pub-search" placeholder="Search titles, venues, coauthors" aria-label="Search publications">
+  <div class="pub-chips" id="pub-chips">
+    <button class="active" data-topic="all">All</button>
+    <button data-topic="ot">Optimal transport</button>
+    <button data-topic="rl">RL</button>
+    <button data-topic="uq">UQ</button>
+    <button data-topic="gen">Generative AI</button>
+  </div>
+</div>
 
 <div class="publications">
 
+<div class="year-group" data-year="2026">
 <h2 class="year">2026</h2>
 <ol class="bibliography">
-<li>
+<li class="pub" data-topics="uq">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">Sci. Rep.</abbr></div>
  <div id="amirishahbazi2026conformal" class="col-sm-8">
@@ -27,7 +66,7 @@ nav: true
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="ot rl">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">L-CSS</abbr></div>
  <div id="shahrooei2026blending" class="col-sm-8">
@@ -40,7 +79,7 @@ nav: true
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">IEEE Access</abbr></div>
  <div id="shahrooei2026efficient" class="col-sm-8">
@@ -53,7 +92,7 @@ nav: true
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="">
 <div class="row">
  <div class="col-sm-2 abbr"></div>
  <div id="nau2026fairness" class="col-sm-8">
@@ -64,7 +103,7 @@ nav: true
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="rl">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">arXiv</abbr></div>
  <div id="millard2026federated" class="col-sm-8">
@@ -77,7 +116,7 @@ nav: true
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">IISE</abbr></div>
  <div id="amirishahbazi2026hospital" class="col-sm-8">
@@ -88,7 +127,7 @@ nav: true
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="uq">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">OJ-CSYS</abbr></div>
  <div id="baheri2026disagree" class="col-sm-8">
@@ -99,7 +138,7 @@ nav: true
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="uq">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">AAAI</abbr></div>
  <div id="amirishahbazi2026adaptive" class="col-sm-8">
@@ -112,7 +151,7 @@ nav: true
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="ot rl">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">L4DC</abbr></div>
  <div id="millard2026transport" class="col-sm-8">
@@ -125,7 +164,7 @@ nav: true
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="rl">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">ACC</abbr></div>
  <div id="karpoorasundarapandian2026density" class="col-sm-8">
@@ -136,20 +175,20 @@ nav: true
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="rl gen">
 <div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">RLC</abbr></div>
+ <div class="col-sm-2 abbr"><abbr class="badge">RLC</abbr> <abbr class="award" title="Oral Presentation">Oral</abbr></div>
  <div id="naghdi2026flow" class="col-sm-8">
   <div class="title">Flow-Corrected Thompson Sampling for Non-Stationary Contextual Bandits</div>
   <div class="author">Naghdi, A., and <em>Baheri, Ali</em></div>
-  <div class="periodical"><em>In Continual Reinforcement Learning Workshop, RLC (Oral Presentation)</em> 2026</div>
+  <div class="periodical"><em>In Continual Reinforcement Learning Workshop, RLC</em> 2026</div>
   <div class="links">
  <a href="https://arxiv.org/abs/2606.23933" class="btn btn-sm z-depth-0" role="button" target="_blank">arXiv</a>
  </div>
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="ot">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">ACC</abbr></div>
  <div id="baheri2026sinkhorn" class="col-sm-8">
@@ -162,20 +201,20 @@ nav: true
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="uq">
 <div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">ICML</abbr></div>
+ <div class="col-sm-2 abbr"><abbr class="badge">ICML</abbr> <abbr class="award" title="Spotlight Talk">Spotlight</abbr></div>
  <div id="amirishahbazi2026geometry" class="col-sm-8">
   <div class="title">Geometry-Aware Uncertainty Quantification via Conformal Prediction on Manifolds</div>
   <div class="author">Amiri Shahbazi, Marzieh, and <em>Baheri, Ali</em></div>
-  <div class="periodical"><em>In Epistemic Intelligence in Machine Learning (EIML) Workshop, ICML (Spotlight Talk)</em> 2026</div>
+  <div class="periodical"><em>In Epistemic Intelligence in Machine Learning (EIML) Workshop, ICML</em> 2026</div>
   <div class="links">
  <a href="https://arxiv.org/abs/2602.16015" class="btn btn-sm z-depth-0" role="button" target="_blank">arXiv</a>
  </div>
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="gen">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">ICLR</abbr></div>
  <div id="baheri2026gram" class="col-sm-8">
@@ -186,20 +225,20 @@ nav: true
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="gen">
 <div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">NeuS</abbr></div>
+ <div class="col-sm-2 abbr"><abbr class="badge">NeuS</abbr> <abbr class="award" title="Spotlight Talk">Spotlight</abbr></div>
  <div id="baheri2026logic" class="col-sm-8">
   <div class="title">Logic-Guided Vector Fields for Constrained Generative Modeling</div>
   <div class="author"><em>Baheri, Ali</em></div>
-  <div class="periodical"><em>In 3rd International Conference on Neuro-Symbolic Systems (NeuS) (Spotlight Talk)</em> 2026</div>
+  <div class="periodical"><em>In 3rd International Conference on Neuro-Symbolic Systems (NeuS)</em> 2026</div>
   <div class="links">
  <a href="https://arxiv.org/abs/2602.02009" class="btn btn-sm z-depth-0" role="button" target="_blank">arXiv</a>
  </div>
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="gen">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">ECC</abbr></div>
  <div id="baheri2026metriplectic" class="col-sm-8">
@@ -210,7 +249,7 @@ nav: true
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="ot">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">CDC</abbr></div>
  <div id="baheri2026wasserstein" class="col-sm-8">
@@ -223,7 +262,7 @@ nav: true
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">ICLR</abbr></div>
  <div id="baheri2026pde" class="col-sm-8">
@@ -234,18 +273,18 @@ nav: true
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="ot rl">
 <div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">AAAI</abbr></div>
+ <div class="col-sm-2 abbr"><abbr class="badge">AAAI</abbr> <abbr class="award" title="Oral Presentation">Oral</abbr></div>
  <div id="salgarkar2026distance" class="col-sm-8">
   <div class="title">When Distance Matters: Wasserstein Trust Regions for Multi-Agent Coordination</div>
   <div class="author">Salgarkar, Chirayu, and <em>Baheri, Ali</em></div>
-  <div class="periodical"><em>In Multi-Agent Path Finding Workshop, AAAI (Oral Presentation)</em> 2026</div>
+  <div class="periodical"><em>In Multi-Agent Path Finding Workshop, AAAI</em> 2026</div>
   <div class="links"></div>
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="gen">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">CCS</abbr></div>
  <div id="baheri2026debate" class="col-sm-8">
@@ -257,9 +296,11 @@ nav: true
 </div>
 </li>
 </ol>
+</div>
+<div class="year-group" data-year="2025">
 <h2 class="year">2025</h2>
 <ol class="bibliography">
-<li>
+<li class="pub" data-topics="uq">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">RAM</abbr></div>
  <div id="baheri2025conformal" class="col-sm-8">
@@ -272,7 +313,7 @@ nav: true
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="uq">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">RICO</abbr></div>
  <div id="baheri2025lyapunov" class="col-sm-8">
@@ -285,7 +326,7 @@ nav: true
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">Logics</abbr></div>
  <div id="baheri2025temporal" class="col-sm-8">
@@ -298,7 +339,7 @@ nav: true
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="rl">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">MDPI</abbr></div>
  <div id="baheri2025multilevel" class="col-sm-8">
@@ -311,7 +352,7 @@ nav: true
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">NeurIPS</abbr></div>
  <div id="baheri2025backdoor" class="col-sm-8">
@@ -324,7 +365,7 @@ nav: true
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="rl gen">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">NeSy</abbr></div>
  <div id="baheri2025neurosymbolic" class="col-sm-8">
@@ -338,7 +379,7 @@ nav: true
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="rl">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">RSS</abbr></div>
  <div id="baheri2025implicit" class="col-sm-8">
@@ -351,7 +392,7 @@ nav: true
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="gen">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">NeurIPS</abbr></div>
  <div id="baheri2025metriplectic" class="col-sm-8">
@@ -364,7 +405,7 @@ nav: true
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="ot rl">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">L4DC</abbr></div>
  <div id="baheri2025wave" class="col-sm-8">
@@ -375,7 +416,7 @@ nav: true
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="ot rl">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">ICML</abbr></div>
  <div id="baheri2025barycenter" class="col-sm-8">
@@ -389,9 +430,11 @@ nav: true
 </div>
 </li>
 </ol>
+</div>
+<div class="year-group" data-year="2024">
 <h2 class="year">2024</h2>
 <ol class="bibliography">
-<li>
+<li class="pub" data-topics="rl">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">EAAI</abbr></div>
  <div id="razzaghi2024survey" class="col-sm-8">
@@ -405,7 +448,7 @@ nav: true
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">IEEE Access</abbr></div>
  <div id="yancosek2024beacon" class="col-sm-8">
@@ -419,7 +462,7 @@ nav: true
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="rl">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">OJ-CSYS</abbr></div>
  <div id="yifru2024concurrent" class="col-sm-8">
@@ -433,7 +476,7 @@ nav: true
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">PLOS ONE</abbr></div>
  <div id="hayes2024forward" class="col-sm-8">
@@ -446,7 +489,7 @@ nav: true
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="ot rl">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">arXiv</abbr></div>
  <div id="baheri2024synergy" class="col-sm-8">
@@ -459,7 +502,7 @@ nav: true
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="ot rl">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">RSS</abbr></div>
  <div id="shahrooei2024transport" class="col-sm-8">
@@ -471,9 +514,11 @@ nav: true
 </div>
 </li>
 </ol>
+</div>
+<div class="year-group" data-year="2023">
 <h2 class="year">2023</h2>
 <ol class="bibliography">
-<li>
+<li class="pub" data-topics="">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">AI Mag.</abbr></div>
  <div id="baheri2023fidelity" class="col-sm-8">
@@ -484,7 +529,7 @@ nav: true
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">arXiv</abbr></div>
  <div id="baheri2023fidelitysettings" class="col-sm-8">
@@ -497,7 +542,7 @@ nav: true
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">ECC</abbr></div>
  <div id="shahrooei2023falsification" class="col-sm-8">
@@ -508,7 +553,7 @@ nav: true
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="rl">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">ICAPS</abbr></div>
  <div id="yifru2023joint" class="col-sm-8">
@@ -519,7 +564,7 @@ nav: true
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="gen rl">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">NeurIPS</abbr></div>
  <div id="baheri2023llms" class="col-sm-8">
@@ -530,7 +575,7 @@ nav: true
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="rl">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">ICAPS</abbr></div>
  <div id="baheri2023policy" class="col-sm-8">
@@ -541,7 +586,7 @@ nav: true
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="ot rl">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">IROS</abbr></div>
  <div id="baheri2023risk" class="col-sm-8">
@@ -552,7 +597,7 @@ nav: true
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">AAAI</abbr></div>
  <div id="baheri2023validation" class="col-sm-8">
@@ -563,7 +608,7 @@ nav: true
  </div>
 </div>
 </li>
-<li>
+<li class="pub" data-topics="ot rl">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">NeurIPS</abbr></div>
  <div id="baheri2023reward" class="col-sm-8">
@@ -575,5 +620,51 @@ nav: true
 </div>
 </li>
 </ol>
+</div>
 
 </div>
+
+<div class="pub-count" id="pub-count"></div>
+
+<script>
+(function () {
+  var search = document.getElementById('pub-search');
+  var chips = document.querySelectorAll('#pub-chips button');
+  var pubs = document.querySelectorAll('.publications li.pub');
+  var groups = document.querySelectorAll('.publications .year-group');
+  var counter = document.getElementById('pub-count');
+  var topic = 'all';
+
+  function apply() {
+    var term = search.value.trim().toLowerCase();
+    var shown = 0;
+    pubs.forEach(function (p) {
+      var topics = (p.getAttribute('data-topics') || '').split(' ');
+      var okTopic = topic === 'all' || topics.indexOf(topic) > -1;
+      var okTerm = term === '' || p.textContent.toLowerCase().indexOf(term) > -1;
+      var visible = okTopic && okTerm;
+      p.style.display = visible ? '' : 'none';
+      if (visible) shown++;
+    });
+    groups.forEach(function (g) {
+      var any = false;
+      g.querySelectorAll('li.pub').forEach(function (p) {
+        if (p.style.display !== 'none') { any = true; }
+      });
+      g.style.display = any ? '' : 'none';
+    });
+    counter.textContent = 'Showing ' + shown + ' of ' + pubs.length + ' publications';
+  }
+
+  chips.forEach(function (c) {
+    c.addEventListener('click', function () {
+      topic = c.getAttribute('data-topic');
+      chips.forEach(function (x) { x.classList.remove('active'); });
+      c.classList.add('active');
+      apply();
+    });
+  });
+  search.addEventListener('input', apply);
+  apply();
+})();
+</script>
