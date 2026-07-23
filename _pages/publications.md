@@ -90,9 +90,9 @@ nav: true
   <div class="pub-chips" id="pub-chips">
     <button class="active" data-topic="all">All</button>
     <button class="chip-award" data-topic="award"><i class="fas fa-star" aria-hidden="true"></i>Highlights</button>
-    <button data-topic="ot">Optimal transport</button>
-    <button data-topic="rl">RL</button>
-    <button data-topic="uq">UQ</button>
+    <button data-topic="ot">Optimal Transport</button>
+    <button data-topic="rl">Reinforcement Learning</button>
+    <button data-topic="uq">Uncertainty Quantification</button>
     <button data-topic="gen">Generative AI</button>
   </div>
 </div>
