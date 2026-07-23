@@ -28,6 +28,14 @@ nav: true
 
 <span class="terms">Fall 2024</span><span class="terms">Fall 2025</span><span class="terms">Fall 2026</span>
 
+A graduate course bridging classical control theory and modern reinforcement learning. Topics include Markov decision processes, Q-learning, policy gradient methods, actor–critic algorithms, deep reinforcement learning, and applications in robotics and autonomous systems.
+
+Course features:
+
+- External speaker series with researchers from USC, UConn, RPI, and the University of Florida
+- AI-generated visualizations used to illustrate core concepts
+- Project-based learning built around real-world problems
+
 </div>
 
 ## Undergraduate
@@ -38,9 +46,15 @@ nav: true
 
 <div class="meta">Core course in the mechanical engineering curriculum</div>
 
-<span class="terms">Fall 2023</span><span class="terms">Spring 2024</span>
+<span class="terms">Fall 2023</span><span class="terms">Spring 2024</span><span class="terms">Spring 2025</span>
+
+Fundamentals of system dynamics, transfer functions, state-space representation, time- and frequency-domain analysis, and control system design. The Spring 2024 section was team-taught with Dr. Marca Lam.
 
 </div>
+
+## Course development and educational innovation
+
+**ConceptCrystal: AI-powered concept visualization** (2025) — supported by a Provost's Learning Innovations Grant. Development of AI-enhanced visualization techniques for engineering education, applied across multiple courses.
 
 ## Previously at West Virginia University
 

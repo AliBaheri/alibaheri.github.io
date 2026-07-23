@@ -90,9 +90,9 @@ nav: true
   <div class="pub-chips" id="pub-chips">
     <button class="active" data-topic="all">All</button>
     <button class="chip-award" data-topic="award"><i class="fas fa-star" aria-hidden="true"></i>Highlights</button>
-    <button data-topic="ot">Optimal Transport</button>
-    <button data-topic="rl">Reinforcement Learning</button>
-    <button data-topic="uq">Uncertainty Quantification</button>
+    <button data-topic="ot">Optimal transport</button>
+    <button data-topic="rl">RL</button>
+    <button data-topic="uq">UQ</button>
     <button data-topic="gen">Generative AI</button>
   </div>
 </div>
@@ -102,6 +102,17 @@ nav: true
 <div class="year-group" data-year="2026">
 <h2 class="year">2026</h2>
 <ol class="bibliography">
+<li class="pub" data-topics="uq">
+<div class="row">
+ <div class="col-sm-2 abbr"><abbr class="badge">OJ-CSYS</abbr></div>
+ <div id="baheri2026disagree" class="col-sm-8">
+  <div class="title">How Much Do Your Models Disagree? Adaptive MPC Safety from Ensemble Uncertainty</div>
+  <div class="author"><em>Baheri, Ali</em></div>
+  <div class="periodical"><em>IEEE Open Journal of Control Systems</em> 2026</div>
+  <div class="links"></div>
+ </div>
+</div>
+</li>
 <li class="pub" data-topics="uq">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">Sci. Rep.</abbr></div>
@@ -176,17 +187,6 @@ nav: true
 </li>
 <li class="pub" data-topics="uq">
 <div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">OJ-CSYS</abbr></div>
- <div id="baheri2026disagree" class="col-sm-8">
-  <div class="title">How Much Do Your Models Disagree? Adaptive MPC Safety from Ensemble Uncertainty</div>
-  <div class="author"><em>Baheri, Ali</em></div>
-  <div class="periodical"><em>IEEE Open Journal of Control Systems</em> 2026</div>
-  <div class="links"></div>
- </div>
-</div>
-</li>
-<li class="pub" data-topics="uq">
-<div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">AAAI</abbr></div>
  <div id="amirishahbazi2026adaptive" class="col-sm-8">
   <div class="title">Adaptive Conformal Prediction via Bayesian Uncertainty Weighting for Hierarchical Healthcare Data</div>
@@ -227,7 +227,7 @@ nav: true
  <div class="col-sm-2 abbr"><abbr class="badge">RLC</abbr></div>
  <div id="naghdi2026flow" class="col-sm-8">
   <div class="title">Flow-Corrected Thompson Sampling for Non-Stationary Contextual Bandits<span class="pub-award pub-award-oral" title="Oral Presentation"><i class="fas fa-microphone-alt" aria-hidden="true"></i>Oral</span></div>
-  <div class="author">Naghdi, A., and <em>Baheri, Ali</em></div>
+  <div class="author"><em>Baheri, Ali</em></div>
   <div class="periodical"><em>In Continual Reinforcement Learning Workshop, RLC</em> 2026</div>
   <div class="links">
  <a href="https://arxiv.org/abs/2606.23933" class="btn btn-sm z-depth-0" role="button" target="_blank">arXiv</a>
