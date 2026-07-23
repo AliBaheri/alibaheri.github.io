@@ -52,10 +52,6 @@ Fundamentals of system dynamics, transfer functions, state-space representation,
 
 </div>
 
-## Course development and educational innovation
-
-**ConceptCrystal: AI-powered concept visualization** (2025) — supported by a Provost's Learning Innovations Grant. Development of AI-enhanced visualization techniques for engineering education, applied across multiple courses.
-
 ## Previously at West Virginia University
 
 - **MAE 460: Automatic Control** — Summer 2021, Summer 2022
