@@ -9,11 +9,14 @@ nav: true
 <!-- Plain HTML on purpose: no Jekyll plugins required, so this builds on
      GitHub Pages with no extra setup. The BibTeX source of record lives in
      _bibliography/papers.bib.
-     To add a paper: copy one list item below, edit the text, and keep it
-     inside the ordered list for the correct year. Set data-topics to any
-     of: ot rl uq gen (space separated, or leave empty). -->
+     To add a paper: copy one list item below and edit the text.
+     data-topics accepts: ot rl uq gen (space separated, or empty).
+     To flag a spotlight or oral, add class "highlight" plus
+     data-award="spotlight" or "oral" on the list item, and drop the matching
+     span.pub-award into the title div. -->
 
 <style>
+/* ---------- filter bar ---------- */
 .pub-filter { margin-bottom: 1.5rem; }
 .pub-filter input {
   width: 100%; padding: .5rem .75rem; margin-bottom: .75rem;
@@ -27,15 +30,58 @@ nav: true
   font-size: .8rem; padding: .25rem .8rem; cursor: pointer;
   border: 1px solid var(--global-text-color-light); border-radius: 4px;
   background: transparent; color: var(--global-text-color);
+  transition: all .18s ease;
 }
 .pub-chips button:hover { border-color: var(--global-theme-color); color: var(--global-theme-color); }
 .pub-chips button.active {
   background: var(--global-theme-color); border-color: var(--global-theme-color); color: #fff;
 }
+.pub-chips button.chip-award i { font-size: .72rem; margin-right: .3rem; }
 .pub-count { font-size: .8rem; color: var(--global-text-color-light); margin-top: 1.5rem; }
-.publications ol.bibliography li .abbr .award {
-  display: inline-block; padding: 0 .6rem; margin-left: .25rem; font-size: .7rem;
-  background-color: transparent !important; border-radius: 3px;
+
+/* ---------- highlighted papers ---------- */
+.publications ol.bibliography li.highlight {
+  position: relative;
+  padding: .5rem .5rem .5rem 1.1rem;
+  margin: .35rem 0 .9rem;
+  border-radius: 0 6px 6px 0;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--global-theme-color) 8%, transparent),
+    transparent 60%);
+  transition: background .25s ease, transform .25s ease;
+}
+.publications ol.bibliography li.highlight::before {
+  content: ""; position: absolute; left: 0; top: .3rem; bottom: .3rem;
+  width: 3px; border-radius: 3px; background: var(--global-theme-color);
+}
+.publications ol.bibliography li.highlight:hover {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--global-theme-color) 15%, transparent),
+    transparent 70%);
+  transform: translateX(2px);
+}
+
+/* ---------- award pill ---------- */
+.pub-award {
+  display: inline-flex; align-items: center; gap: .32rem;
+  vertical-align: middle; margin-left: .55rem;
+  padding: .1rem .6rem;
+  font-size: .66rem; font-weight: 600; letter-spacing: .05em;
+  text-transform: uppercase; white-space: nowrap;
+  color: #fff; border-radius: 999px;
+  background: var(--global-theme-color);
+  background: linear-gradient(135deg,
+    var(--global-theme-color),
+    color-mix(in srgb, var(--global-theme-color) 62%, #000));
+  box-shadow: 0 1px 3px color-mix(in srgb, var(--global-theme-color) 40%, transparent);
+}
+.pub-award i { font-size: .68rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  .publications ol.bibliography li.highlight,
+  .publications ol.bibliography li.highlight:hover { transition: none; transform: none; }
 }
 </style>
 
@@ -43,6 +89,7 @@ nav: true
   <input type="text" id="pub-search" placeholder="Search titles, venues, coauthors" aria-label="Search publications">
   <div class="pub-chips" id="pub-chips">
     <button class="active" data-topic="all">All</button>
+    <button class="chip-award" data-topic="award"><i class="fas fa-star" aria-hidden="true"></i>Highlights</button>
     <button data-topic="ot">Optimal transport</button>
     <button data-topic="rl">RL</button>
     <button data-topic="uq">UQ</button>
@@ -175,11 +222,11 @@ nav: true
  </div>
 </div>
 </li>
-<li class="pub" data-topics="rl gen">
+<li class="pub highlight" data-topics="rl gen" data-award="oral">
 <div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">RLC</abbr> <abbr class="award" title="Oral Presentation">Oral</abbr></div>
+ <div class="col-sm-2 abbr"><abbr class="badge">RLC</abbr></div>
  <div id="naghdi2026flow" class="col-sm-8">
-  <div class="title">Flow-Corrected Thompson Sampling for Non-Stationary Contextual Bandits</div>
+  <div class="title">Flow-Corrected Thompson Sampling for Non-Stationary Contextual Bandits<span class="pub-award pub-award-oral" title="Oral Presentation"><i class="fas fa-microphone-alt" aria-hidden="true"></i>Oral</span></div>
   <div class="author">Naghdi, A., and <em>Baheri, Ali</em></div>
   <div class="periodical"><em>In Continual Reinforcement Learning Workshop, RLC</em> 2026</div>
   <div class="links">
@@ -201,11 +248,11 @@ nav: true
  </div>
 </div>
 </li>
-<li class="pub" data-topics="uq">
+<li class="pub highlight" data-topics="uq" data-award="spotlight">
 <div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">ICML</abbr> <abbr class="award" title="Spotlight Talk">Spotlight</abbr></div>
+ <div class="col-sm-2 abbr"><abbr class="badge">ICML</abbr></div>
  <div id="amirishahbazi2026geometry" class="col-sm-8">
-  <div class="title">Geometry-Aware Uncertainty Quantification via Conformal Prediction on Manifolds</div>
+  <div class="title">Geometry-Aware Uncertainty Quantification via Conformal Prediction on Manifolds<span class="pub-award pub-award-spotlight" title="Spotlight Talk"><i class="fas fa-star" aria-hidden="true"></i>Spotlight</span></div>
   <div class="author">Amiri Shahbazi, Marzieh, and <em>Baheri, Ali</em></div>
   <div class="periodical"><em>In Epistemic Intelligence in Machine Learning (EIML) Workshop, ICML</em> 2026</div>
   <div class="links">
@@ -225,11 +272,11 @@ nav: true
  </div>
 </div>
 </li>
-<li class="pub" data-topics="gen">
+<li class="pub highlight" data-topics="gen" data-award="spotlight">
 <div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">NeuS</abbr> <abbr class="award" title="Spotlight Talk">Spotlight</abbr></div>
+ <div class="col-sm-2 abbr"><abbr class="badge">NeuS</abbr></div>
  <div id="baheri2026logic" class="col-sm-8">
-  <div class="title">Logic-Guided Vector Fields for Constrained Generative Modeling</div>
+  <div class="title">Logic-Guided Vector Fields for Constrained Generative Modeling<span class="pub-award pub-award-spotlight" title="Spotlight Talk"><i class="fas fa-star" aria-hidden="true"></i>Spotlight</span></div>
   <div class="author"><em>Baheri, Ali</em></div>
   <div class="periodical"><em>In 3rd International Conference on Neuro-Symbolic Systems (NeuS)</em> 2026</div>
   <div class="links">
@@ -273,11 +320,11 @@ nav: true
  </div>
 </div>
 </li>
-<li class="pub" data-topics="ot rl">
+<li class="pub highlight" data-topics="ot rl" data-award="oral">
 <div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">AAAI</abbr> <abbr class="award" title="Oral Presentation">Oral</abbr></div>
+ <div class="col-sm-2 abbr"><abbr class="badge">AAAI</abbr></div>
  <div id="salgarkar2026distance" class="col-sm-8">
-  <div class="title">When Distance Matters: Wasserstein Trust Regions for Multi-Agent Coordination</div>
+  <div class="title">When Distance Matters: Wasserstein Trust Regions for Multi-Agent Coordination<span class="pub-award pub-award-oral" title="Oral Presentation"><i class="fas fa-microphone-alt" aria-hidden="true"></i>Oral</span></div>
   <div class="author">Salgarkar, Chirayu, and <em>Baheri, Ali</em></div>
   <div class="periodical"><em>In Multi-Agent Path Finding Workshop, AAAI</em> 2026</div>
   <div class="links"></div>
@@ -639,8 +686,14 @@ nav: true
     var term = search.value.trim().toLowerCase();
     var shown = 0;
     pubs.forEach(function (p) {
-      var topics = (p.getAttribute('data-topics') || '').split(' ');
-      var okTopic = topic === 'all' || topics.indexOf(topic) > -1;
+      var okTopic;
+      if (topic === 'all') {
+        okTopic = true;
+      } else if (topic === 'award') {
+        okTopic = p.classList.contains('highlight');
+      } else {
+        okTopic = (p.getAttribute('data-topics') || '').split(' ').indexOf(topic) > -1;
+      }
       var okTerm = term === '' || p.textContent.toLowerCase().indexOf(term) > -1;
       var visible = okTopic && okTerm;
       p.style.display = visible ? '' : 'none';
