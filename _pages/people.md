@@ -4,7 +4,7 @@ permalink: /people/
 title: people
 description: I have the good fortune to work with a talented group of students in the Safe AI Lab at RIT.
 nav: true
-nav_order: 3
+nav_order: 6
 ---
 
 <!-- Plain HTML on purpose: no Jekyll plugins required, so this builds on
