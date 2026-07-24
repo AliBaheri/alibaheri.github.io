@@ -4,6 +4,7 @@ permalink: /teaching/
 title: teaching
 description: Courses in the Department of Mechanical Engineering at Rochester Institute of Technology.
 nav: true
+nav_order: 3
 ---
 
 <style>
@@ -30,7 +31,6 @@ nav: true
 
 A graduate course bridging classical control theory and modern reinforcement learning. Topics include Markov decision processes, Q-learning, policy gradient methods, actor–critic algorithms, deep reinforcement learning, and applications in robotics and autonomous systems.
 
-
 </div>
 
 ## Undergraduate
@@ -43,8 +43,7 @@ A graduate course bridging classical control theory and modern reinforcement lea
 
 <span class="terms">Fall 2023</span><span class="terms">Spring 2024</span><span class="terms">Spring 2025</span>
 
-Fundamentals of system dynamics, transfer functions, state-space representation, and time- and frequency-domain analysis 
-
+Fundamentals of system dynamics, transfer functions, state-space representation, and time- and frequency-domain analysis.
 </div>
 
 ## Course development and educational innovation
