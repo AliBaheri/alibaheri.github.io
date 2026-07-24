@@ -2,53 +2,78 @@
 layout: page
 permalink: /publications/
 title: publications
-description: Publications since 2023, in reverse chronological order. For the complete list, see my <a href="https://scholar.google.com/citations?user=MhIEockAAAAJ" target="_blank">Google Scholar</a> profile or <a href="/assets/pdf/cv_academic.pdf" target="_blank">CV</a>.
+description: Publications since 2023, organised around the four themes described on my <a href="/research/">research page</a>. Filter by theme below, or see my <a href="https://scholar.google.com/citations?user=MhIEockAAAAJ" target="_blank">Google Scholar</a> profile and <a href="/assets/pdf/cv_academic.pdf" target="_blank">CV</a>.
 nav: true
+nav_order: 1
 ---
 
 <!-- Plain HTML on purpose: no Jekyll plugins required, so this builds on
      GitHub Pages with no extra setup. The BibTeX source of record lives in
      _bibliography/papers.bib.
      To add a paper: copy one list item below and edit the text.
-     data-topics accepts: ot rl uq gen (space separated, or empty).
+     data-topics takes ONE of: geo rl uq val  (the four research pillars).
      To flag a spotlight or oral, add class "highlight" plus
-     data-award="spotlight" or "oral" on the list item, and drop the matching
-     span.pub-award into the title div. -->
+     data-award="spotlight" or "oral", and drop the matching
+     span.pub-award into the title div.
+     Card counts are written by hand - update them when adding papers. -->
 
 <style>
-/* ---------- filter bar ---------- */
-.pub-filter { margin-bottom: 1.5rem; }
+/* ---------- theme filter cards ---------- */
+.pcards {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(158px, 1fr));
+  gap: .7rem; margin-bottom: 1rem;
+}
+button.pcard {
+  text-align: left; padding: .85rem .8rem; border-radius: 9px; cursor: pointer;
+  color: var(--global-text-color);
+  border: 1px solid color-mix(in srgb, var(--global-text-color) 14%, transparent);
+  background: color-mix(in srgb, var(--global-theme-color) 3%, transparent);
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+button.pcard:hover {
+  transform: translateY(-2px); border-color: var(--global-theme-color);
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--global-theme-color) 20%, transparent);
+}
+button.pcard.active {
+  border-color: var(--global-theme-color);
+  background: color-mix(in srgb, var(--global-theme-color) 12%, transparent);
+  box-shadow: inset 0 0 0 1px var(--global-theme-color);
+}
+button.pcard .ci { font-size: 1.15rem; color: var(--global-theme-color); line-height: 1; }
+button.pcard .cn {
+  font-size: .6rem; letter-spacing: .14em; font-weight: 700; margin-top: .5rem;
+  color: color-mix(in srgb, var(--global-theme-color) 75%, var(--global-text-color));
+}
+button.pcard .ct { font-size: .84rem; font-weight: 600; line-height: 1.28; margin-top: .1rem; }
+button.pcard .cc { font-size: .68rem; color: var(--global-text-color-light); margin-top: .35rem; }
+
+/* ---------- search + small chips ---------- */
+.pub-filter { margin-bottom: 1.6rem; }
 .pub-filter input {
-  width: 100%; padding: .5rem .75rem; margin-bottom: .75rem;
+  width: 100%; padding: .5rem .75rem; margin-bottom: .85rem;
   border: 1px solid var(--global-text-color-light); border-radius: 4px;
-  background: var(--global-bg-color); color: var(--global-text-color);
-  font-size: .95rem;
+  background: var(--global-bg-color); color: var(--global-text-color); font-size: .95rem;
 }
 .pub-filter input:focus { outline: none; border-color: var(--global-theme-color); }
-.pub-chips { display: flex; flex-wrap: wrap; gap: .4rem; }
+.pub-chips { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .8rem; }
 .pub-chips button {
-  font-size: .8rem; padding: .25rem .8rem; cursor: pointer;
+  font-size: .78rem; padding: .22rem .8rem; cursor: pointer;
   border: 1px solid var(--global-text-color-light); border-radius: 4px;
-  background: transparent; color: var(--global-text-color);
-  transition: all .18s ease;
+  background: transparent; color: var(--global-text-color); transition: all .18s ease;
 }
 .pub-chips button:hover { border-color: var(--global-theme-color); color: var(--global-theme-color); }
 .pub-chips button.active {
   background: var(--global-theme-color); border-color: var(--global-theme-color); color: #fff;
 }
-.pub-chips button.chip-award i { font-size: .72rem; margin-right: .3rem; }
+.pub-chips button i { font-size: .72rem; margin-right: .3rem; }
 .pub-count { font-size: .8rem; color: var(--global-text-color-light); margin-top: 1.5rem; }
 
 /* ---------- highlighted papers ---------- */
 .publications ol.bibliography li.highlight {
-  position: relative;
-  padding: .5rem .5rem .5rem 1.1rem;
-  margin: .35rem 0 .9rem;
+  position: relative; padding: .5rem .5rem .5rem 1.1rem; margin: .35rem 0 .9rem;
   border-radius: 0 6px 6px 0;
-  background: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--global-theme-color) 8%, transparent),
-    transparent 60%);
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--global-theme-color) 8%, transparent), transparent 60%);
   transition: background .25s ease, transform .25s ease;
 }
 .publications ol.bibliography li.highlight::before {
@@ -56,44 +81,63 @@ nav: true
   width: 3px; border-radius: 3px; background: var(--global-theme-color);
 }
 .publications ol.bibliography li.highlight:hover {
-  background: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--global-theme-color) 15%, transparent),
-    transparent 70%);
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--global-theme-color) 15%, transparent), transparent 70%);
   transform: translateX(2px);
 }
 
 /* ---------- award pill ---------- */
 .pub-award {
-  display: inline-flex; align-items: center; gap: .32rem;
-  vertical-align: middle; margin-left: .55rem;
-  padding: .1rem .6rem;
+  display: inline-flex; align-items: center; gap: .32rem; vertical-align: middle;
+  margin-left: .55rem; padding: .1rem .6rem;
   font-size: .66rem; font-weight: 600; letter-spacing: .05em;
-  text-transform: uppercase; white-space: nowrap;
-  color: #fff; border-radius: 999px;
+  text-transform: uppercase; white-space: nowrap; color: #fff; border-radius: 999px;
   background: var(--global-theme-color);
-  background: linear-gradient(135deg,
-    var(--global-theme-color),
+  background: linear-gradient(135deg, var(--global-theme-color),
     color-mix(in srgb, var(--global-theme-color) 62%, #000));
   box-shadow: 0 1px 3px color-mix(in srgb, var(--global-theme-color) 40%, transparent);
 }
 .pub-award i { font-size: .68rem; }
 
 @media (prefers-reduced-motion: reduce) {
+  button.pcard, button.pcard:hover,
   .publications ol.bibliography li.highlight,
   .publications ol.bibliography li.highlight:hover { transition: none; transform: none; }
 }
 </style>
 
+<div class="pcards" id="pub-cards">
+<button class="pcard" data-topic="geo">
+<div class="ci"><i class="fas fa-shapes" aria-hidden="true"></i></div>
+<div class="cn">01</div>
+<div class="ct">Geometric Foundations</div>
+<div class="cc">18 papers</div>
+</button>
+<button class="pcard" data-topic="rl">
+<div class="ci"><i class="fas fa-robot" aria-hidden="true"></i></div>
+<div class="cn">02</div>
+<div class="ct">Safe Reinforcement Learning</div>
+<div class="cc">12 papers</div>
+</button>
+<button class="pcard" data-topic="uq">
+<div class="ci"><i class="fas fa-bullseye" aria-hidden="true"></i></div>
+<div class="cn">03</div>
+<div class="ct">Uncertainty Quantification</div>
+<div class="cc">8 papers</div>
+</button>
+<button class="pcard" data-topic="val">
+<div class="ci"><i class="fas fa-clipboard-check" aria-hidden="true"></i></div>
+<div class="cn">04</div>
+<div class="ct">Safety Validation</div>
+<div class="cc">7 papers</div>
+</button>
+</div>
+
 <div class="pub-filter">
   <input type="text" id="pub-search" placeholder="Search titles, venues, coauthors" aria-label="Search publications">
   <div class="pub-chips" id="pub-chips">
-    <button class="active" data-topic="all">All</button>
-    <button class="chip-award" data-topic="award"><i class="fas fa-star" aria-hidden="true"></i>Highlights</button>
-    <button data-topic="ot">Optimal transport</button>
-    <button data-topic="rl">RL</button>
-    <button data-topic="uq">UQ</button>
-    <button data-topic="gen">Generative AI</button>
+    <button class="active" data-topic="all">All papers</button>
+    <button data-topic="award"><i class="fas fa-star" aria-hidden="true"></i>Highlights</button>
   </div>
 </div>
 
@@ -124,7 +168,7 @@ nav: true
  </div>
 </div>
 </li>
-<li class="pub" data-topics="ot rl">
+<li class="pub" data-topics="geo">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">L-CSS</abbr></div>
  <div id="shahrooei2026blending" class="col-sm-8">
@@ -137,7 +181,7 @@ nav: true
  </div>
 </div>
 </li>
-<li class="pub" data-topics="">
+<li class="pub" data-topics="val">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">IEEE Access</abbr></div>
  <div id="shahrooei2026efficient" class="col-sm-8">
@@ -150,7 +194,7 @@ nav: true
  </div>
 </div>
 </li>
-<li class="pub" data-topics="">
+<li class="pub" data-topics="uq">
 <div class="row">
  <div class="col-sm-2 abbr"></div>
  <div id="nau2026fairness" class="col-sm-8">
@@ -174,7 +218,7 @@ nav: true
  </div>
 </div>
 </li>
-<li class="pub" data-topics="">
+<li class="pub" data-topics="uq">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">IISE</abbr></div>
  <div id="amirishahbazi2026hospital" class="col-sm-8">
@@ -198,7 +242,7 @@ nav: true
  </div>
 </div>
 </li>
-<li class="pub" data-topics="ot rl">
+<li class="pub" data-topics="geo">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">L4DC</abbr></div>
  <div id="millard2026transport" class="col-sm-8">
@@ -222,7 +266,7 @@ nav: true
  </div>
 </div>
 </li>
-<li class="pub highlight" data-topics="rl gen" data-award="oral">
+<li class="pub highlight" data-topics="rl" data-award="oral">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">RLC</abbr></div>
  <div id="naghdi2026flow" class="col-sm-8">
@@ -235,7 +279,7 @@ nav: true
  </div>
 </div>
 </li>
-<li class="pub" data-topics="ot">
+<li class="pub" data-topics="geo">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">ACC</abbr></div>
  <div id="baheri2026sinkhorn" class="col-sm-8">
@@ -261,7 +305,7 @@ nav: true
  </div>
 </div>
 </li>
-<li class="pub" data-topics="gen">
+<li class="pub" data-topics="geo">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">ICLR</abbr></div>
  <div id="baheri2026gram" class="col-sm-8">
@@ -272,7 +316,7 @@ nav: true
  </div>
 </div>
 </li>
-<li class="pub highlight" data-topics="gen" data-award="spotlight">
+<li class="pub highlight" data-topics="geo" data-award="spotlight">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">NeuS</abbr></div>
  <div id="baheri2026logic" class="col-sm-8">
@@ -285,7 +329,7 @@ nav: true
  </div>
 </div>
 </li>
-<li class="pub" data-topics="gen">
+<li class="pub" data-topics="geo">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">ECC</abbr></div>
  <div id="baheri2026metriplectic" class="col-sm-8">
@@ -296,7 +340,7 @@ nav: true
  </div>
 </div>
 </li>
-<li class="pub" data-topics="ot">
+<li class="pub" data-topics="geo">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">CDC</abbr></div>
  <div id="baheri2026wasserstein" class="col-sm-8">
@@ -309,7 +353,7 @@ nav: true
  </div>
 </div>
 </li>
-<li class="pub" data-topics="">
+<li class="pub" data-topics="geo">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">ICLR</abbr></div>
  <div id="baheri2026pde" class="col-sm-8">
@@ -320,7 +364,7 @@ nav: true
  </div>
 </div>
 </li>
-<li class="pub highlight" data-topics="ot rl" data-award="oral">
+<li class="pub highlight" data-topics="geo" data-award="oral">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">AAAI</abbr></div>
  <div id="salgarkar2026distance" class="col-sm-8">
@@ -331,7 +375,7 @@ nav: true
  </div>
 </div>
 </li>
-<li class="pub" data-topics="gen">
+<li class="pub" data-topics="geo">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">CCS</abbr></div>
  <div id="baheri2026debate" class="col-sm-8">
@@ -360,7 +404,7 @@ nav: true
  </div>
 </div>
 </li>
-<li class="pub" data-topics="uq">
+<li class="pub" data-topics="rl">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">RICO</abbr></div>
  <div id="baheri2025lyapunov" class="col-sm-8">
@@ -373,7 +417,7 @@ nav: true
  </div>
 </div>
 </li>
-<li class="pub" data-topics="">
+<li class="pub" data-topics="val">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">Logics</abbr></div>
  <div id="baheri2025temporal" class="col-sm-8">
@@ -399,7 +443,7 @@ nav: true
  </div>
 </div>
 </li>
-<li class="pub" data-topics="">
+<li class="pub" data-topics="geo">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">NeurIPS</abbr></div>
  <div id="baheri2025backdoor" class="col-sm-8">
@@ -412,7 +456,7 @@ nav: true
  </div>
 </div>
 </li>
-<li class="pub" data-topics="rl gen">
+<li class="pub" data-topics="rl">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">NeSy</abbr></div>
  <div id="baheri2025neurosymbolic" class="col-sm-8">
@@ -439,7 +483,7 @@ nav: true
  </div>
 </div>
 </li>
-<li class="pub" data-topics="gen">
+<li class="pub" data-topics="geo">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">NeurIPS</abbr></div>
  <div id="baheri2025metriplectic" class="col-sm-8">
@@ -452,7 +496,7 @@ nav: true
  </div>
 </div>
 </li>
-<li class="pub" data-topics="ot rl">
+<li class="pub" data-topics="geo">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">L4DC</abbr></div>
  <div id="baheri2025wave" class="col-sm-8">
@@ -463,7 +507,7 @@ nav: true
  </div>
 </div>
 </li>
-<li class="pub" data-topics="ot rl">
+<li class="pub" data-topics="geo">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">ICML</abbr></div>
  <div id="baheri2025barycenter" class="col-sm-8">
@@ -495,7 +539,7 @@ nav: true
  </div>
 </div>
 </li>
-<li class="pub" data-topics="">
+<li class="pub" data-topics="val">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">IEEE Access</abbr></div>
  <div id="yancosek2024beacon" class="col-sm-8">
@@ -523,7 +567,7 @@ nav: true
  </div>
 </div>
 </li>
-<li class="pub" data-topics="">
+<li class="pub" data-topics="uq">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">PLOS ONE</abbr></div>
  <div id="hayes2024forward" class="col-sm-8">
@@ -536,7 +580,7 @@ nav: true
  </div>
 </div>
 </li>
-<li class="pub" data-topics="ot rl">
+<li class="pub" data-topics="geo">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">arXiv</abbr></div>
  <div id="baheri2024synergy" class="col-sm-8">
@@ -549,7 +593,7 @@ nav: true
  </div>
 </div>
 </li>
-<li class="pub" data-topics="ot rl">
+<li class="pub" data-topics="geo">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">RSS</abbr></div>
  <div id="shahrooei2024transport" class="col-sm-8">
@@ -565,7 +609,7 @@ nav: true
 <div class="year-group" data-year="2023">
 <h2 class="year">2023</h2>
 <ol class="bibliography">
-<li class="pub" data-topics="">
+<li class="pub" data-topics="val">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">AI Mag.</abbr></div>
  <div id="baheri2023fidelity" class="col-sm-8">
@@ -576,7 +620,7 @@ nav: true
  </div>
 </div>
 </li>
-<li class="pub" data-topics="">
+<li class="pub" data-topics="val">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">arXiv</abbr></div>
  <div id="baheri2023fidelitysettings" class="col-sm-8">
@@ -589,7 +633,7 @@ nav: true
  </div>
 </div>
 </li>
-<li class="pub" data-topics="">
+<li class="pub" data-topics="val">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">ECC</abbr></div>
  <div id="shahrooei2023falsification" class="col-sm-8">
@@ -611,7 +655,7 @@ nav: true
  </div>
 </div>
 </li>
-<li class="pub" data-topics="gen rl">
+<li class="pub" data-topics="rl">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">NeurIPS</abbr></div>
  <div id="baheri2023llms" class="col-sm-8">
@@ -633,7 +677,7 @@ nav: true
  </div>
 </div>
 </li>
-<li class="pub" data-topics="ot rl">
+<li class="pub" data-topics="geo">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">IROS</abbr></div>
  <div id="baheri2023risk" class="col-sm-8">
@@ -644,7 +688,7 @@ nav: true
  </div>
 </div>
 </li>
-<li class="pub" data-topics="">
+<li class="pub" data-topics="val">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">AAAI</abbr></div>
  <div id="baheri2023validation" class="col-sm-8">
@@ -655,7 +699,7 @@ nav: true
  </div>
 </div>
 </li>
-<li class="pub" data-topics="ot rl">
+<li class="pub" data-topics="geo">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">NeurIPS</abbr></div>
  <div id="baheri2023reward" class="col-sm-8">
@@ -676,7 +720,7 @@ nav: true
 <script>
 (function () {
   var search = document.getElementById('pub-search');
-  var chips = document.querySelectorAll('#pub-chips button');
+  var buttons = document.querySelectorAll('#pub-chips button, #pub-cards button');
   var pubs = document.querySelectorAll('.publications li.pub');
   var groups = document.querySelectorAll('.publications .year-group');
   var counter = document.getElementById('pub-count');
@@ -687,13 +731,9 @@ nav: true
     var shown = 0;
     pubs.forEach(function (p) {
       var okTopic;
-      if (topic === 'all') {
-        okTopic = true;
-      } else if (topic === 'award') {
-        okTopic = p.classList.contains('highlight');
-      } else {
-        okTopic = (p.getAttribute('data-topics') || '').split(' ').indexOf(topic) > -1;
-      }
+      if (topic === 'all') { okTopic = true; }
+      else if (topic === 'award') { okTopic = p.classList.contains('highlight'); }
+      else { okTopic = (p.getAttribute('data-topics') || '') === topic; }
       var okTerm = term === '' || p.textContent.toLowerCase().indexOf(term) > -1;
       var visible = okTopic && okTerm;
       p.style.display = visible ? '' : 'none';
@@ -709,11 +749,13 @@ nav: true
     counter.textContent = 'Showing ' + shown + ' of ' + pubs.length + ' publications';
   }
 
-  chips.forEach(function (c) {
-    c.addEventListener('click', function () {
-      topic = c.getAttribute('data-topic');
-      chips.forEach(function (x) { x.classList.remove('active'); });
-      c.classList.add('active');
+  buttons.forEach(function (b) {
+    b.addEventListener('click', function () {
+      var t = b.getAttribute('data-topic');
+      topic = (topic === t && t !== 'all') ? 'all' : t;
+      buttons.forEach(function (x) { x.classList.remove('active'); });
+      var match = document.querySelector('[data-topic="' + topic + '"]');
+      if (match) { match.classList.add('active'); }
       apply();
     });
   });
