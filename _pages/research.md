@@ -1,765 +1,295 @@
 ---
 layout: page
-permalink: /publications/
-title: publications
-description: Publications since 2023, organised around the four themes described on my <a href="/research/">research page</a>. Filter by theme below, or see my <a href="https://scholar.google.com/citations?user=MhIEockAAAAJ" target="_blank">Google Scholar</a> profile and <a href="/assets/pdf/cv_academic.pdf" target="_blank">CV</a>.
+permalink: /research/
+title: research
+description: Building autonomous systems that can be trusted &mdash; safe reinforcement learning, safety validation, and calibrated uncertainty for aviation, robotics, and clinical decision support.
 nav: true
-nav_order: 1
+nav_order: 2
 ---
 
 <!-- Plain HTML on purpose: no Jekyll plugins required, so this builds on
-     GitHub Pages with no extra setup. The BibTeX source of record lives in
-     _bibliography/papers.bib.
-     To add a paper: copy one list item below and edit the text.
-     data-topics takes ONE of: geo rl uq val  (the four research pillars).
-     To flag a spotlight or oral, add class "highlight" plus
-     data-award="spotlight" or "oral", and drop the matching
-     span.pub-award into the title div.
-     Card counts are written by hand - update them when adding papers. -->
+     GitHub Pages with no extra setup.
+     To add a paper to a theme, copy one list item inside that theme's
+     papers list and edit the venue, title, link, and year.
+     To reorder themes, move the whole block and renumber. -->
 
 <style>
-/* ---------- theme filter cards ---------- */
-.pcards {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(158px, 1fr));
-  gap: .7rem; margin-bottom: 1rem;
+/* ---------- intro ---------- */
+.rintro {
+  font-size: 1.02rem; line-height: 1.68; margin-bottom: 1.8rem;
+  padding-left: 1.1rem; border-left: 3px solid var(--global-theme-color);
 }
-button.pcard {
-  text-align: left; padding: .85rem .8rem; border-radius: 9px; cursor: pointer;
-  color: var(--global-text-color);
+
+/* ---------- overview cards ---------- */
+.tgrid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: .85rem; margin: 0 0 3.4rem;
+}
+a.tcard {
+  display: block; padding: 1.1rem 1rem 1rem; border-radius: 10px;
+  text-decoration: none !important; color: var(--global-text-color) !important;
   border: 1px solid color-mix(in srgb, var(--global-text-color) 14%, transparent);
   background: color-mix(in srgb, var(--global-theme-color) 3%, transparent);
-  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
 }
-button.pcard:hover {
-  transform: translateY(-2px); border-color: var(--global-theme-color);
-  box-shadow: 0 6px 18px color-mix(in srgb, var(--global-theme-color) 20%, transparent);
-}
-button.pcard.active {
+a.tcard:hover {
+  transform: translateY(-3px);
   border-color: var(--global-theme-color);
-  background: color-mix(in srgb, var(--global-theme-color) 12%, transparent);
-  box-shadow: inset 0 0 0 1px var(--global-theme-color);
+  box-shadow: 0 8px 22px color-mix(in srgb, var(--global-theme-color) 22%, transparent);
 }
-button.pcard .ci { font-size: 1.15rem; color: var(--global-theme-color); line-height: 1; }
-button.pcard .cn {
-  font-size: .6rem; letter-spacing: .14em; font-weight: 700; margin-top: .5rem;
+a.tcard .ci { font-size: 1.45rem; color: var(--global-theme-color); line-height: 1; }
+a.tcard .cn {
+  font-size: .66rem; letter-spacing: .14em; font-weight: 700; margin-top: .7rem;
   color: color-mix(in srgb, var(--global-theme-color) 75%, var(--global-text-color));
 }
-button.pcard .ct { font-size: .84rem; font-weight: 600; line-height: 1.28; margin-top: .1rem; }
-button.pcard .cc { font-size: .68rem; color: var(--global-text-color-light); margin-top: .35rem; }
+a.tcard .ct { font-size: .94rem; font-weight: 600; line-height: 1.32; margin-top: .12rem; }
+a.tcard .cc { font-size: .72rem; color: var(--global-text-color-light); margin-top: .5rem; }
 
-/* ---------- search + small chips ---------- */
-.pub-filter { margin-bottom: 1.6rem; }
-.pub-filter input {
-  width: 100%; padding: .5rem .75rem; margin-bottom: .85rem;
-  border: 1px solid var(--global-text-color-light); border-radius: 4px;
-  background: var(--global-bg-color); color: var(--global-text-color); font-size: .95rem;
+/* ---------- theme sections ---------- */
+.theme { position: relative; margin-bottom: 3.6rem; scroll-margin-top: 5rem; }
+.theme .watermark {
+  position: absolute; right: 0; top: -1.2rem;
+  font-size: 5rem; font-weight: 800; line-height: 1;
+  color: color-mix(in srgb, var(--global-theme-color) 10%, transparent);
+  pointer-events: none; user-select: none; z-index: 0;
 }
-.pub-filter input:focus { outline: none; border-color: var(--global-theme-color); }
-.pub-chips { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .8rem; }
-.pub-chips button {
-  font-size: .78rem; padding: .22rem .8rem; cursor: pointer;
-  border: 1px solid var(--global-text-color-light); border-radius: 4px;
-  background: transparent; color: var(--global-text-color); transition: all .18s ease;
+.theme .thead {
+  display: flex; align-items: center; gap: .8rem;
+  margin-bottom: .9rem; position: relative; z-index: 1;
 }
-.pub-chips button:hover { border-color: var(--global-theme-color); color: var(--global-theme-color); }
-.pub-chips button.active {
-  background: var(--global-theme-color); border-color: var(--global-theme-color); color: #fff;
-}
-.pub-chips button i { font-size: .72rem; margin-right: .3rem; }
-.pub-count { font-size: .8rem; color: var(--global-text-color-light); margin-top: 1.5rem; }
-
-/* ---------- highlighted papers ---------- */
-.publications ol.bibliography li.highlight {
-  position: relative; padding: .5rem .5rem .5rem 1.1rem; margin: .35rem 0 .9rem;
-  border-radius: 0 6px 6px 0;
-  background: linear-gradient(90deg,
-    color-mix(in srgb, var(--global-theme-color) 8%, transparent), transparent 60%);
-  transition: background .25s ease, transform .25s ease;
-}
-.publications ol.bibliography li.highlight::before {
-  content: ""; position: absolute; left: 0; top: .3rem; bottom: .3rem;
-  width: 3px; border-radius: 3px; background: var(--global-theme-color);
-}
-.publications ol.bibliography li.highlight:hover {
-  background: linear-gradient(90deg,
-    color-mix(in srgb, var(--global-theme-color) 15%, transparent), transparent 70%);
-  transform: translateX(2px);
-}
-
-/* ---------- award pill ---------- */
-.pub-award {
-  display: inline-flex; align-items: center; gap: .32rem; vertical-align: middle;
-  margin-left: .55rem; padding: .1rem .6rem;
-  font-size: .66rem; font-weight: 600; letter-spacing: .05em;
-  text-transform: uppercase; white-space: nowrap; color: #fff; border-radius: 999px;
+.theme .ticon {
+  flex: 0 0 auto; width: 2.7rem; height: 2.7rem; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; color: #fff;
   background: var(--global-theme-color);
   background: linear-gradient(135deg, var(--global-theme-color),
-    color-mix(in srgb, var(--global-theme-color) 62%, #000));
-  box-shadow: 0 1px 3px color-mix(in srgb, var(--global-theme-color) 40%, transparent);
+    color-mix(in srgb, var(--global-theme-color) 58%, #000));
+  box-shadow: 0 3px 10px color-mix(in srgb, var(--global-theme-color) 34%, transparent);
 }
-.pub-award i { font-size: .68rem; }
+.theme .ttitle { margin: 0; font-size: 1.28rem; line-height: 1.28; }
+.theme .tsub {
+  font-size: .75rem; text-transform: uppercase; letter-spacing: .07em;
+  color: var(--global-theme-color); margin-top: .18rem;
+}
+.theme .tbody { font-size: .95rem; line-height: 1.68; margin-bottom: 1.15rem; position: relative; z-index: 1; }
 
+/* ---------- paper lists ---------- */
+.theme .papers { list-style: none; padding: 0; margin: 0; }
+.theme .papers li {
+  display: flex; align-items: baseline; gap: .7rem;
+  padding: .44rem .5rem .44rem .55rem; border-radius: 4px;
+  border-top: 1px solid color-mix(in srgb, var(--global-text-color) 11%, transparent);
+  font-size: .88rem; transition: background .18s ease;
+}
+.theme .papers li:last-child {
+  border-bottom: 1px solid color-mix(in srgb, var(--global-text-color) 11%, transparent);
+}
+.theme .papers li:hover { background: color-mix(in srgb, var(--global-theme-color) 8%, transparent); }
+.theme .papers .pv {
+  flex: 0 0 4.7rem; font-size: .71rem; font-weight: 700;
+  color: var(--global-theme-color); text-transform: uppercase; letter-spacing: .03em;
+}
+.theme .papers .pt { flex: 1; }
+.theme .papers .py { flex: 0 0 auto; font-size: .78rem; color: var(--global-text-color-light); }
+
+/* ---------- funding ---------- */
+.rfund { margin-top: 3.4rem; }
+.rfund ul { list-style: none; padding: 0; }
+.rfund li {
+  padding: .52rem 0 .52rem .95rem; font-size: .9rem; margin-bottom: .45rem;
+  border-left: 2px solid color-mix(in srgb, var(--global-theme-color) 42%, transparent);
+}
+.rfund .agency { font-weight: 600; color: var(--global-theme-color); }
+.rfund .role { font-size: .78rem; color: var(--global-text-color-light); }
+
+@media (max-width: 576px) {
+  .theme .watermark { font-size: 3.4rem; top: -.7rem; }
+  .theme .papers li { flex-wrap: wrap; gap: .3rem .6rem; }
+  .theme .papers .pv { flex: 0 0 auto; }
+}
 @media (prefers-reduced-motion: reduce) {
-  button.pcard, button.pcard:hover,
-  .publications ol.bibliography li.highlight,
-  .publications ol.bibliography li.highlight:hover { transition: none; transform: none; }
+  a.tcard, a.tcard:hover, .theme .papers li { transition: none; transform: none; }
 }
 </style>
 
-<div class="pcards" id="pub-cards">
-<button class="pcard" data-topic="geo">
+<div class="rintro" markdown="1">
+Autonomous systems increasingly depend on learned components &mdash; perception models,
+control policies, and now foundation models. These components are capable but opaque:
+they fail in ways their designers did not anticipate, and they offer no native account
+of their own reliability. My research asks what it takes to deploy them where failure
+is not an option, in aviation and airspace operations, robots working around people,
+and clinical decision support.
+
+The work follows four connected pillars: the **geometric foundations** that make
+guarantees tractable in the first place; **learning policies that respect safety
+requirements** even when those requirements are never fully specified; **quantifying
+uncertainty** so a system knows when it should not be trusted; and **finding failures
+before deployment**, efficiently enough to be practical. This agenda is supported by
+NSF, the FAA, and NASA.
+</div>
+
+<div class="tgrid">
+<a class="tcard" href="#geometry">
 <div class="ci"><i class="fas fa-shapes" aria-hidden="true"></i></div>
 <div class="cn">01</div>
 <div class="ct">Geometric Foundations</div>
-<div class="cc">18 papers</div>
-</button>
-<button class="pcard" data-topic="rl">
+<div class="cc">9 selected papers</div>
+</a>
+<a class="tcard" href="#safe-rl">
 <div class="ci"><i class="fas fa-robot" aria-hidden="true"></i></div>
 <div class="cn">02</div>
 <div class="ct">Safe Reinforcement Learning</div>
-<div class="cc">12 papers</div>
-</button>
-<button class="pcard" data-topic="uq">
+<div class="cc">8 selected papers</div>
+</a>
+<a class="tcard" href="#uncertainty">
 <div class="ci"><i class="fas fa-bullseye" aria-hidden="true"></i></div>
 <div class="cn">03</div>
 <div class="ct">Uncertainty Quantification</div>
-<div class="cc">8 papers</div>
-</button>
-<button class="pcard" data-topic="val">
+<div class="cc">5 selected papers</div>
+</a>
+<a class="tcard" href="#validation">
 <div class="ci"><i class="fas fa-clipboard-check" aria-hidden="true"></i></div>
 <div class="cn">04</div>
 <div class="ct">Safety Validation</div>
-<div class="cc">7 papers</div>
-</button>
+<div class="cc">7 selected papers</div>
+</a>
 </div>
 
-<div class="pub-filter">
-  <input type="text" id="pub-search" placeholder="Search titles, venues, coauthors" aria-label="Search publications">
-  <div class="pub-chips" id="pub-chips">
-    <button class="active" data-topic="all">All papers</button>
-    <button data-topic="award"><i class="fas fa-star" aria-hidden="true"></i>Highlights</button>
-  </div>
+<div class="theme" id="geometry">
+<div class="watermark" aria-hidden="true">01</div>
+<div class="thead">
+<div class="ticon"><i class="fas fa-shapes" aria-hidden="true"></i></div>
+<div>
+<h2 class="ttitle">Geometric Foundations for Trustworthy Learning</h2>
+<div class="tsub">Optimal transport and structure-preserving generative models</div>
+</div>
+</div>
+<p class="tbody">Nearly every guarantee in the work that follows reduces to a question about
+probability distributions: how far apart are two agents' beliefs, how do you average
+them without destroying structure, how far may a policy move in a single update.
+Optimal transport answers these with a geometry rather than a heuristic. Treating
+policies and value estimates as distributions rather than points yields risk-sensitive
+value estimation, principled consensus among cooperating agents through Wasserstein
+barycenters, and trust-region updates that respect that geometry. A parallel line
+builds structure directly into generative dynamics models &mdash; metriplectic flow
+matching that respects dissipative physics, flow matching on manifolds, and
+temporal-logic guidance for constrained generation. The motivation is reliability
+rather than elegance: a learned dynamics model that violates conservation laws or
+drifts off the feasible set cannot support a safety argument downstream.</p>
+<ul class="papers">
+<li><span class="pv">L-CSS</span><span class="pt"><a href="https://ieeexplore.ieee.org/document/11563844" target="_blank">Blending Optimism and Pessimism via Wasserstein Barycenters for Continuous Control</a></span><span class="py">2026</span></li>
+<li><span class="pv">CDC</span><span class="pt"><a href="https://arxiv.org/abs/2607.14291" target="_blank">Wasserstein Stability of Contracting Flows: Effective Rates, Euler Self-Correction, and Noise Tightening</a></span><span class="py">2026</span></li>
+<li><span class="pv">L4DC</span><span class="pt">WAVE: Wasserstein Adaptive Value Estimation for Actor-Critic Reinforcement Learning</span><span class="py">2025</span></li>
+<li><span class="pv">ICML</span><span class="pt"><a href="https://arxiv.org/abs/2506.12497" target="_blank">Wasserstein-Barycenter Consensus for Cooperative Multi-Agent Reinforcement Learning</a></span><span class="py">2025</span></li>
+<li><span class="pv">ECC</span><span class="pt">Metriplectic Conditional Flow Matching for Structure-Preserving Dynamics Learning</span><span class="py">2026</span></li>
+<li><span class="pv">NeuS</span><span class="pt"><a href="https://arxiv.org/abs/2602.02009" target="_blank">Logic-Guided Vector Fields for Constrained Generative Modeling</a></span><span class="py">2026</span></li>
+<li><span class="pv">ICLR</span><span class="pt">Geometry-Grounded Flow Matching on Compact Manifolds</span><span class="py">2026</span></li>
+<li><span class="pv">ACC</span><span class="pt"><a href="https://arxiv.org/abs/2509.14521" target="_blank">Geometry-Aware Decentralized Sinkhorn for Wasserstein Barycenters</a></span><span class="py">2026</span></li>
+<li><span class="pv">NeurIPS</span><span class="pt">Understanding Reward Ambiguity Through Optimal Transport Theory in Inverse Reinforcement Learning</span><span class="py">2023</span></li>
+</ul>
 </div>
 
-<div class="publications">
+<div class="theme" id="safe-rl">
+<div class="watermark" aria-hidden="true">02</div>
+<div class="thead">
+<div class="ticon"><i class="fas fa-robot" aria-hidden="true"></i></div>
+<div>
+<h2 class="ttitle">Safe and Constraint-Aware Reinforcement Learning</h2>
+<div class="tsub">Policies that carry a safety argument, not just good average performance</div>
+</div>
+</div>
+<p class="tbody">Most work on safe reinforcement learning assumes the constraint is handed
+to you in closed form. In deployment it rarely is: the specification is partial,
+expressed in temporal logic, implied by human corrections, or buried in a dataset of
+demonstrations of unknown quality. My work learns the policy and the constraint
+<em>together</em> &mdash; inferring unknown temporal specifications during training,
+refining behavior from human feedback, and enforcing safety through learned
+Lyapunov&ndash;barrier certificates that come with stability guarantees. A recurring
+device is hierarchy: decomposing long-horizon tasks so that safety can be reasoned
+about at the level of abstraction where it is actually specified.</p>
+<ul class="papers">
+<li><span class="pv">OJ-CSYS</span><span class="pt"><a href="https://ieeexplore.ieee.org/abstract/document/10569078" target="_blank">Concurrent Learning of Control Policy and Unknown Safety Specifications in Reinforcement Learning</a></span><span class="py">2024</span></li>
+<li><span class="pv">RICO</span><span class="pt"><a href="https://www.sciencedirect.com/science/article/pii/S2666720725000426" target="_blank">Distributionally Robust Lyapunov-Barrier Networks for Safe and Stable Control Under Uncertainty</a></span><span class="py">2025</span></li>
+<li><span class="pv">RSS</span><span class="pt"><a href="https://arxiv.org/abs/2506.14058" target="_blank">Implicit Constraint-Aware Off-Policy Correction for Offline Reinforcement Learning</a></span><span class="py">2025</span></li>
+<li><span class="pv">MDPI</span><span class="pt"><a href="https://www.mdpi.com/2227-7390/13/1/149" target="_blank">Multilevel Constrained Bandits: A Hierarchical Upper Confidence Bound Approach with Safety Guarantees</a></span><span class="py">2025</span></li>
+<li><span class="pv">NeSy</span><span class="pt"><a href="https://openreview.net/forum?id=tXOU6EULup" target="_blank">Hierarchical Neuro-Symbolic Decision Transformer</a></span><span class="py">2025</span></li>
+<li><span class="pv">ACC</span><span class="pt">Density-Ratio Weighted Behavioral Cloning: Learning Control Policies from Corrupted Datasets</span><span class="py">2026</span></li>
+<li><span class="pv">ICAPS</span><span class="pt">Policy Refinement with Human Feedback for Safe Reinforcement Learning</span><span class="py">2023</span></li>
+<li><span class="pv">EAAI</span><span class="pt"><a href="https://www.sciencedirect.com/science/article/abs/pii/S0952197624010698" target="_blank">A Survey on Reinforcement Learning in Aviation Applications</a></span><span class="py">2024</span></li>
+</ul>
+</div>
 
-<div class="year-group" data-year="2026">
-<h2 class="year">2026</h2>
-<ol class="bibliography">
-<li class="pub" data-topics="uq">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">OJ-CSYS</abbr></div>
- <div id="baheri2026disagree" class="col-sm-8">
-  <div class="title">How Much Do Your Models Disagree? Adaptive MPC Safety from Ensemble Uncertainty</div>
-  <div class="author"><em>Baheri, Ali</em></div>
-  <div class="periodical"><em>IEEE Open Journal of Control Systems</em> 2026</div>
-  <div class="links"></div>
- </div>
+<div class="theme" id="uncertainty">
+<div class="watermark" aria-hidden="true">03</div>
+<div class="thead">
+<div class="ticon"><i class="fas fa-bullseye" aria-hidden="true"></i></div>
+<div>
+<h2 class="ttitle">Uncertainty Quantification and Calibrated Confidence</h2>
+<div class="tsub">Systems that know when they should not be trusted</div>
 </div>
-</li>
-<li class="pub" data-topics="uq">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">Sci. Rep.</abbr></div>
- <div id="amirishahbazi2026conformal" class="col-sm-8">
-  <div class="title">A Hierarchical Conformal Framework for Uncertainty-Aware Length of Stay Prediction in Multi-Hospital Settings</div>
-  <div class="author">Amiri Shahbazi, Marzieh, <em>Baheri, Ali</em>, and Azadeh-Fard, Nasibeh</div>
-  <div class="periodical"><em>Scientific Reports</em> 2026</div>
-  <div class="links"></div>
- </div>
 </div>
-</li>
-<li class="pub" data-topics="geo">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">L-CSS</abbr></div>
- <div id="shahrooei2026blending" class="col-sm-8">
-  <div class="title">Blending Optimism and Pessimism via Wasserstein Barycenters for Continuous Control</div>
-  <div class="author">Shahrooei, Zahra, and <em>Baheri, Ali</em></div>
-  <div class="periodical"><em>IEEE Control Systems Letters</em> 2026</div>
-  <div class="links">
- <a href="https://ieeexplore.ieee.org/document/11563844" class="btn btn-sm z-depth-0" role="button" target="_blank">HTML</a>
- </div>
- </div>
+<p class="tbody">Trustworthiness requires more than average accuracy: a deployed system needs
+a defensible account of its own uncertainty, and a controller should become more
+conservative exactly when its models are least reliable. Conformal prediction offers
+distribution-free, finite-sample coverage guarantees, but standard formulations assume
+flat, exchangeable data. I extend it to settings with real structure &mdash;
+hierarchical data with group-level effects, and predictions living on manifolds
+&mdash; while preserving coverage. A companion line turns disagreement among ensemble
+members into an online signal for adapting the safety margin of a model-predictive
+controller. Applications run from aviation autonomy to clinical decision support.</p>
+<ul class="papers">
+<li><span class="pv">OJ-CSYS</span><span class="pt">How Much Do Your Models Disagree? Adaptive MPC Safety from Ensemble Uncertainty</span><span class="py">2026</span></li>
+<li><span class="pv">RAM</span><span class="pt"><a href="https://www.sciencedirect.com/science/article/pii/S2590037425000536" target="_blank">Conformal Prediction Across Scales: Finite-Sample Coverage with Hierarchical Efficiency</a></span><span class="py">2025</span></li>
+<li><span class="pv">ICML</span><span class="pt"><a href="https://arxiv.org/abs/2602.16015" target="_blank">Geometry-Aware Uncertainty Quantification via Conformal Prediction on Manifolds</a></span><span class="py">2026</span></li>
+<li><span class="pv">AAAI</span><span class="pt"><a href="https://arxiv.org/abs/2601.01223" target="_blank">Adaptive Conformal Prediction via Bayesian Uncertainty Weighting for Hierarchical Healthcare Data</a></span><span class="py">2026</span></li>
+<li><span class="pv">Sci. Rep.</span><span class="pt">A Hierarchical Conformal Framework for Uncertainty-Aware Length of Stay Prediction in Multi-Hospital Settings</span><span class="py">2026</span></li>
+</ul>
 </div>
-</li>
-<li class="pub" data-topics="val">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">IEEE Access</abbr></div>
- <div id="shahrooei2026efficient" class="col-sm-8">
-  <div class="title">Efficient Counterexample Generation for Control Systems Using Multi-Fidelity Bayesian Optimization</div>
-  <div class="author">Shahrooei, Zahra, <a href="https://scholar.google.com/citations?user=cAy9G6oAAAAJ" target="_blank">Kochenderfer, Mykel J.</a>, and <em>Baheri, Ali</em></div>
-  <div class="periodical"><em>IEEE Access</em> 2026</div>
-  <div class="links">
- <a href="https://ieeexplore.ieee.org/abstract/document/11488849" class="btn btn-sm z-depth-0" role="button" target="_blank">HTML</a>
- </div>
- </div>
+
+<div class="theme" id="validation">
+<div class="watermark" aria-hidden="true">04</div>
+<div class="thead">
+<div class="ticon"><i class="fas fa-clipboard-check" aria-hidden="true"></i></div>
+<div>
+<h2 class="ttitle">Safety Validation of Learning-Enabled Autonomous Systems</h2>
+<div class="tsub">Finding the failures before deployment does</div>
 </div>
-</li>
-<li class="pub" data-topics="uq">
-<div class="row">
- <div class="col-sm-2 abbr"></div>
- <div id="nau2026fairness" class="col-sm-8">
-  <div class="title">Fairness Without Discrimination: Individually Fair Outcomes in the Kidney Exchange Problem</div>
-  <div class="author">Nau, C., McConky, K., Alm, Cecilia O., Bailey, R., <em>Baheri, Ali</em>, Sankaran, P., and Sudit, M.</div>
-  <div class="periodical"><em>Decision Analysis</em> 2026</div>
-  <div class="links"></div>
- </div>
 </div>
-</li>
-<li class="pub" data-topics="rl">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">arXiv</abbr></div>
- <div id="millard2026federated" class="col-sm-8">
-  <div class="title">Federated Distributional Reinforcement Learning with Distributional Critic Regularization</div>
-  <div class="author">Millard, David, Alm, Cecilia O., Ali, Rashid, Shi, Pengcheng, and <em>Baheri, Ali</em></div>
-  <div class="periodical"><em>arXiv preprint</em> 2026</div>
-  <div class="links">
- <a href="https://arxiv.org/abs/2603.17820" class="btn btn-sm z-depth-0" role="button" target="_blank">arXiv</a>
- </div>
- </div>
+<p class="tbody">A learned controller can pass millions of random simulation trials and still
+fail catastrophically on the rare input that matters. Exhaustive verification is out
+of reach, and high-fidelity simulation is far too expensive to search with. I develop
+<em>multi-fidelity falsification</em>: methods that search broadly using cheap,
+approximate simulators and spend expensive high-fidelity evaluations only where a
+failure looks likely, with the fidelity level itself treated as a decision variable.
+Related work asks how much simulator fidelity is actually required to certify a given
+property, and develops stratified temporal logics for requirements that span scales.
+This thread underpins my NSF- and FAA-funded projects and was the subject of my
+AAAI New Faculty Highlights talk.</p>
+<ul class="papers">
+<li><span class="pv">IEEE Access</span><span class="pt"><a href="https://ieeexplore.ieee.org/abstract/document/11488849" target="_blank">Efficient Counterexample Generation for Control Systems Using Multi-Fidelity Bayesian Optimization</a></span><span class="py">2026</span></li>
+<li><span class="pv">Logics</span><span class="pt"><a href="https://www.mdpi.com/2813-0405/3/2/5" target="_blank">Multi-Fidelity Temporal Reasoning: A Stratified Logic for Cross-Scale System Specifications</a></span><span class="py">2025</span></li>
+<li><span class="pv">IEEE Access</span><span class="pt"><a href="https://ieeexplore.ieee.org/document/10620179" target="_blank">BEACON: A Bayesian Evolutionary Approach for Counterexample Generation of Control Systems</a></span><span class="py">2024</span></li>
+<li><span class="pv">AI Mag.</span><span class="pt">Exploring the Role of Simulator Fidelity in the Safety Validation of Learning-Enabled Autonomous Systems</span><span class="py">2023</span></li>
+<li><span class="pv">ECC</span><span class="pt">Falsification of Learning-Based Controllers through Multi-Fidelity Bayesian Optimization</span><span class="py">2023</span></li>
+<li><span class="pv">AAAI</span><span class="pt">Safety Validation of Learning-Based Autonomous Systems: A Multi-Fidelity Approach</span><span class="py">2023</span></li>
+<li><span class="pv">arXiv</span><span class="pt"><a href="https://arxiv.org/abs/2305.06111" target="_blank">Joint Falsification and Fidelity Settings Optimization for Validation of Safety-Critical Systems: A Theoretical Analysis</a></span><span class="py">2023</span></li>
+</ul>
 </div>
-</li>
-<li class="pub" data-topics="uq">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">IISE</abbr></div>
- <div id="amirishahbazi2026hospital" class="col-sm-8">
-  <div class="title">Hospital and Regional Effects on Length of Stay: A Multilevel Modeling Approach</div>
-  <div class="author">Amiri Shahbazi, Marzieh, <em>Baheri, Ali</em>, and Azadeh-Fard, Nasibeh</div>
-  <div class="periodical"><em>IISE Transactions on Healthcare Systems Engineering</em> 2026</div>
-  <div class="links"></div>
- </div>
-</div>
-</li>
-<li class="pub" data-topics="uq">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">AAAI</abbr></div>
- <div id="amirishahbazi2026adaptive" class="col-sm-8">
-  <div class="title">Adaptive Conformal Prediction via Bayesian Uncertainty Weighting for Hierarchical Healthcare Data</div>
-  <div class="author">Amiri Shahbazi, Marzieh, <em>Baheri, Ali</em>, and Azadeh-Fard, Nasibeh</div>
-  <div class="periodical"><em>In SECURE-AI4H Workshop, AAAI</em> 2026</div>
-  <div class="links">
- <a href="https://arxiv.org/abs/2601.01223" class="btn btn-sm z-depth-0" role="button" target="_blank">arXiv</a>
- </div>
- </div>
-</div>
-</li>
-<li class="pub" data-topics="geo">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">L4DC</abbr></div>
- <div id="millard2026transport" class="col-sm-8">
-  <div class="title">Can Optimal Transport Improve Federated Inverse Reinforcement Learning?</div>
-  <div class="author">Millard, David, and <em>Baheri, Ali</em></div>
-  <div class="periodical"><em>In Learning for Dynamics and Control Conference (L4DC)</em> 2026</div>
-  <div class="links">
- <a href="https://arxiv.org/abs/2601.00309" class="btn btn-sm z-depth-0" role="button" target="_blank">arXiv</a>
- </div>
- </div>
-</div>
-</li>
-<li class="pub" data-topics="rl">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">ACC</abbr></div>
- <div id="karpoorasundarapandian2026density" class="col-sm-8">
-  <div class="title">Density-Ratio Weighted Behavioral Cloning: Learning Control Policies from Corrupted Datasets</div>
-  <div class="author">Karpoora Sundara Pandian, S., and <em>Baheri, Ali</em></div>
-  <div class="periodical"><em>In American Control Conference (ACC)</em> 2026</div>
-  <div class="links"></div>
- </div>
-</div>
-</li>
-<li class="pub highlight" data-topics="rl" data-award="oral">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">RLC</abbr></div>
- <div id="naghdi2026flow" class="col-sm-8">
-  <div class="title">Flow-Corrected Thompson Sampling for Non-Stationary Contextual Bandits<span class="pub-award pub-award-oral" title="Oral Presentation"><i class="fas fa-microphone-alt" aria-hidden="true"></i>Oral</span></div>
-  <div class="author"><em>Baheri, Ali</em></div>
-  <div class="periodical"><em>In Continual Reinforcement Learning Workshop, RLC</em> 2026</div>
-  <div class="links">
- <a href="https://arxiv.org/abs/2606.23933" class="btn btn-sm z-depth-0" role="button" target="_blank">arXiv</a>
- </div>
- </div>
-</div>
-</li>
-<li class="pub" data-topics="geo">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">ACC</abbr></div>
- <div id="baheri2026sinkhorn" class="col-sm-8">
-  <div class="title">Geometry-Aware Decentralized Sinkhorn for Wasserstein Barycenters</div>
-  <div class="author"><em>Baheri, Ali</em>, and Vahid, Alireza</div>
-  <div class="periodical"><em>In American Control Conference (ACC)</em> 2026</div>
-  <div class="links">
- <a href="https://arxiv.org/abs/2509.14521" class="btn btn-sm z-depth-0" role="button" target="_blank">arXiv</a>
- </div>
- </div>
-</div>
-</li>
-<li class="pub highlight" data-topics="uq" data-award="spotlight">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">ICML</abbr></div>
- <div id="amirishahbazi2026geometry" class="col-sm-8">
-  <div class="title">Geometry-Aware Uncertainty Quantification via Conformal Prediction on Manifolds<span class="pub-award pub-award-spotlight" title="Spotlight Talk"><i class="fas fa-star" aria-hidden="true"></i>Spotlight</span></div>
-  <div class="author">Amiri Shahbazi, Marzieh, and <em>Baheri, Ali</em></div>
-  <div class="periodical"><em>In Epistemic Intelligence in Machine Learning (EIML) Workshop, ICML</em> 2026</div>
-  <div class="links">
- <a href="https://arxiv.org/abs/2602.16015" class="btn btn-sm z-depth-0" role="button" target="_blank">arXiv</a>
- </div>
- </div>
-</div>
-</li>
-<li class="pub" data-topics="geo">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">ICLR</abbr></div>
- <div id="baheri2026gram" class="col-sm-8">
-  <div class="title">Geometry-Grounded Flow Matching on Compact Manifolds</div>
-  <div class="author"><em>Baheri, Ali</em></div>
-  <div class="periodical"><em>In Geometry-Grounded Representation Learning and Generative Modeling (GRaM) Workshop, ICLR</em> 2026</div>
-  <div class="links"></div>
- </div>
-</div>
-</li>
-<li class="pub highlight" data-topics="geo" data-award="spotlight">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">NeuS</abbr></div>
- <div id="baheri2026logic" class="col-sm-8">
-  <div class="title">Logic-Guided Vector Fields for Constrained Generative Modeling<span class="pub-award pub-award-spotlight" title="Spotlight Talk"><i class="fas fa-star" aria-hidden="true"></i>Spotlight</span></div>
-  <div class="author"><em>Baheri, Ali</em></div>
-  <div class="periodical"><em>In 3rd International Conference on Neuro-Symbolic Systems (NeuS)</em> 2026</div>
-  <div class="links">
- <a href="https://arxiv.org/abs/2602.02009" class="btn btn-sm z-depth-0" role="button" target="_blank">arXiv</a>
- </div>
- </div>
-</div>
-</li>
-<li class="pub" data-topics="geo">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">ECC</abbr></div>
- <div id="baheri2026metriplectic" class="col-sm-8">
-  <div class="title">Metriplectic Conditional Flow Matching for Structure-Preserving Dynamics Learning</div>
-  <div class="author"><em>Baheri, Ali</em>, and Lindemann, Lars</div>
-  <div class="periodical"><em>In European Control Conference (ECC)</em> 2026</div>
-  <div class="links"></div>
- </div>
-</div>
-</li>
-<li class="pub" data-topics="geo">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">CDC</abbr></div>
- <div id="baheri2026wasserstein" class="col-sm-8">
-  <div class="title">Wasserstein Stability of Contracting Flows: Effective Rates, Euler Self-Correction, and Noise Tightening</div>
-  <div class="author"><em>Baheri, Ali</em></div>
-  <div class="periodical"><em>In IEEE Conference on Decision and Control (CDC)</em> 2026</div>
-  <div class="links">
- <a href="https://arxiv.org/abs/2607.14291" class="btn btn-sm z-depth-0" role="button" target="_blank">arXiv</a>
- </div>
- </div>
-</div>
-</li>
-<li class="pub" data-topics="geo">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">ICLR</abbr></div>
- <div id="baheri2026pde" class="col-sm-8">
-  <div class="title">What Does a Neural PDE Solver Really Learn? A Residual-Spectrum Diagnostic</div>
-  <div class="author"><em>Baheri, Ali</em></div>
-  <div class="periodical"><em>In AI and Partial Differential Equations Workshop, ICLR</em> 2026</div>
-  <div class="links"></div>
- </div>
-</div>
-</li>
-<li class="pub highlight" data-topics="geo" data-award="oral">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">AAAI</abbr></div>
- <div id="salgarkar2026distance" class="col-sm-8">
-  <div class="title">When Distance Matters: Wasserstein Trust Regions for Multi-Agent Coordination<span class="pub-award pub-award-oral" title="Oral Presentation"><i class="fas fa-microphone-alt" aria-hidden="true"></i>Oral</span></div>
-  <div class="author">Salgarkar, Chirayu, and <em>Baheri, Ali</em></div>
-  <div class="periodical"><em>In Multi-Agent Path Finding Workshop, AAAI</em> 2026</div>
-  <div class="links"></div>
- </div>
-</div>
-</li>
-<li class="pub" data-topics="geo">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">CCS</abbr></div>
- <div id="baheri2026debate" class="col-sm-8">
-  <div class="title">When Does Multi-Agent Language-Model Debate Converge? A Bifurcation on the Probability Simplex</div>
-  <div class="author"><em>Baheri, Ali</em></div>
-  <div class="periodical"><em>In Conference on Complex Systems (CCS)</em> 2026</div>
-  <div class="links"></div>
- </div>
-</div>
-</li>
-</ol>
-</div>
-<div class="year-group" data-year="2025">
-<h2 class="year">2025</h2>
-<ol class="bibliography">
-<li class="pub" data-topics="uq">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">RAM</abbr></div>
- <div id="baheri2025conformal" class="col-sm-8">
-  <div class="title">Conformal Prediction Across Scales: Finite-Sample Coverage with Hierarchical Efficiency</div>
-  <div class="author"><em>Baheri, Ali</em>, and Amiri Shahbazi, Marzieh</div>
-  <div class="periodical"><em>Results in Applied Mathematics</em> 2025</div>
-  <div class="links">
- <a href="https://www.sciencedirect.com/science/article/pii/S2590037425000536" class="btn btn-sm z-depth-0" role="button" target="_blank">HTML</a>
- </div>
- </div>
-</div>
-</li>
-<li class="pub" data-topics="rl">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">RICO</abbr></div>
- <div id="baheri2025lyapunov" class="col-sm-8">
-  <div class="title">Distributionally Robust Lyapunov-Barrier Networks for Safe and Stable Control Under Uncertainty</div>
-  <div class="author"><em>Baheri, Ali</em></div>
-  <div class="periodical"><em>Results in Control and Optimization</em> 2025</div>
-  <div class="links">
- <a href="https://www.sciencedirect.com/science/article/pii/S2666720725000426" class="btn btn-sm z-depth-0" role="button" target="_blank">HTML</a>
- </div>
- </div>
-</div>
-</li>
-<li class="pub" data-topics="val">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">Logics</abbr></div>
- <div id="baheri2025temporal" class="col-sm-8">
-  <div class="title">Multi-Fidelity Temporal Reasoning: A Stratified Logic for Cross-Scale System Specifications</div>
-  <div class="author"><em>Baheri, Ali</em>, and Wei, Peng</div>
-  <div class="periodical"><em>Logics</em> 2025</div>
-  <div class="links">
- <a href="https://www.mdpi.com/2813-0405/3/2/5" class="btn btn-sm z-depth-0" role="button" target="_blank">HTML</a>
- </div>
- </div>
-</div>
-</li>
-<li class="pub" data-topics="rl">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">MDPI</abbr></div>
- <div id="baheri2025multilevel" class="col-sm-8">
-  <div class="title">Multilevel Constrained Bandits: A Hierarchical Upper Confidence Bound Approach with Safety Guarantees</div>
-  <div class="author"><em>Baheri, Ali</em></div>
-  <div class="periodical"><em>Mathematics</em> 2025</div>
-  <div class="links">
- <a href="https://www.mdpi.com/2227-7390/13/1/149" class="btn btn-sm z-depth-0" role="button" target="_blank">HTML</a>
- </div>
- </div>
-</div>
-</li>
-<li class="pub" data-topics="geo">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">NeurIPS</abbr></div>
- <div id="baheri2025backdoor" class="col-sm-8">
-  <div class="title">Geometry-Aware Backdoor Attacks: Leveraging Curvature in Hyperbolic Embeddings</div>
-  <div class="author"><em>Baheri, Ali</em></div>
-  <div class="periodical"><em>In Non-Euclidean Foundation Models and Geometric Learning Workshop, NeurIPS</em> 2025</div>
-  <div class="links">
- <a href="https://arxiv.org/abs/2510.06397" class="btn btn-sm z-depth-0" role="button" target="_blank">arXiv</a>
- </div>
- </div>
-</div>
-</li>
-<li class="pub" data-topics="rl">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">NeSy</abbr></div>
- <div id="baheri2025neurosymbolic" class="col-sm-8">
-  <div class="title">Hierarchical Neuro-Symbolic Decision Transformer</div>
-  <div class="author"><em>Baheri, Ali</em>, and Alm, Cecilia O.</div>
-  <div class="periodical"><em>In 19th International Conference on Neurosymbolic Learning and Reasoning (NeSy)</em> 2025</div>
-  <div class="links">
- <a href="https://arxiv.org/abs/2503.07148" class="btn btn-sm z-depth-0" role="button" target="_blank">arXiv</a>
- <a href="https://openreview.net/forum?id=tXOU6EULup" class="btn btn-sm z-depth-0" role="button" target="_blank">HTML</a>
- </div>
- </div>
-</div>
-</li>
-<li class="pub" data-topics="rl">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">RSS</abbr></div>
- <div id="baheri2025implicit" class="col-sm-8">
-  <div class="title">Implicit Constraint-Aware Off-Policy Correction for Offline Reinforcement Learning</div>
-  <div class="author"><em>Baheri, Ali</em></div>
-  <div class="periodical"><em>In Out-of-Distribution Generalization in Robotics Workshop, RSS</em> 2025</div>
-  <div class="links">
- <a href="https://arxiv.org/abs/2506.14058" class="btn btn-sm z-depth-0" role="button" target="_blank">arXiv</a>
- </div>
- </div>
-</div>
-</li>
-<li class="pub" data-topics="geo">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">NeurIPS</abbr></div>
- <div id="baheri2025metriplectic" class="col-sm-8">
-  <div class="title">Metriplectic Conditional Flow Matching for Dissipative Dynamics</div>
-  <div class="author"><em>Baheri, Ali</em>, and Lindemann, Lars</div>
-  <div class="periodical"><em>In Dynamics at the Frontiers of Optimization, Sampling, and Games (DynaFront) Workshop, NeurIPS</em> 2025</div>
-  <div class="links">
- <a href="https://arxiv.org/abs/2509.19526" class="btn btn-sm z-depth-0" role="button" target="_blank">arXiv</a>
- </div>
- </div>
-</div>
-</li>
-<li class="pub" data-topics="geo">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">L4DC</abbr></div>
- <div id="baheri2025wave" class="col-sm-8">
-  <div class="title">WAVE: Wasserstein Adaptive Value Estimation for Actor-Critic Reinforcement Learning</div>
-  <div class="author"><em>Baheri, Ali</em>, Shahrooei, Zahra, and Salgarkar, Chirayu</div>
-  <div class="periodical"><em>In Learning for Dynamics and Control Conference (L4DC)</em> 2025</div>
-  <div class="links"></div>
- </div>
-</div>
-</li>
-<li class="pub" data-topics="geo">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">ICML</abbr></div>
- <div id="baheri2025barycenter" class="col-sm-8">
-  <div class="title">Wasserstein-Barycenter Consensus for Cooperative Multi-Agent Reinforcement Learning</div>
-  <div class="author"><em>Baheri, Ali</em></div>
-  <div class="periodical"><em>In Multi-Agent Systems in the Era of Foundation Models Workshop, ICML</em> 2025</div>
-  <div class="links">
- <a href="https://arxiv.org/abs/2506.12497" class="btn btn-sm z-depth-0" role="button" target="_blank">arXiv</a>
- </div>
- </div>
-</div>
-</li>
-</ol>
-</div>
-<div class="year-group" data-year="2024">
-<h2 class="year">2024</h2>
-<ol class="bibliography">
-<li class="pub" data-topics="rl">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">EAAI</abbr></div>
- <div id="razzaghi2024survey" class="col-sm-8">
-  <div class="title">A Survey on Reinforcement Learning in Aviation Applications</div>
-  <div class="author">Razzaghi, Pouria, Tabrizian, Amin, Guo, Wei, Chen, Shulu, Taye, Abenezer, Thompson, Ellis, Bregeon, Alexis, <em>Baheri, Ali</em>, and Wei, Peng</div>
-  <div class="periodical"><em>Engineering Applications of Artificial Intelligence</em> 2024</div>
-  <div class="links">
- <a href="https://arxiv.org/abs/2211.02147" class="btn btn-sm z-depth-0" role="button" target="_blank">arXiv</a>
- <a href="https://www.sciencedirect.com/science/article/abs/pii/S0952197624010698" class="btn btn-sm z-depth-0" role="button" target="_blank">HTML</a>
- </div>
- </div>
-</div>
-</li>
-<li class="pub" data-topics="val">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">IEEE Access</abbr></div>
- <div id="yancosek2024beacon" class="col-sm-8">
-  <div class="title">BEACON: A Bayesian Evolutionary Approach for Counterexample Generation of Control Systems</div>
-  <div class="author">Yancosek, J., and <em>Baheri, Ali</em></div>
-  <div class="periodical"><em>IEEE Access</em> 2024</div>
-  <div class="links">
- <a href="https://arxiv.org/abs/2403.05925" class="btn btn-sm z-depth-0" role="button" target="_blank">arXiv</a>
- <a href="https://ieeexplore.ieee.org/document/10620179" class="btn btn-sm z-depth-0" role="button" target="_blank">HTML</a>
- </div>
- </div>
-</div>
-</li>
-<li class="pub" data-topics="rl">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">OJ-CSYS</abbr></div>
- <div id="yifru2024concurrent" class="col-sm-8">
-  <div class="title">Concurrent Learning of Control Policy and Unknown Safety Specifications in Reinforcement Learning</div>
-  <div class="author">Yifru, L., and <em>Baheri, Ali</em></div>
-  <div class="periodical"><em>IEEE Open Journal of Control Systems</em> 2024</div>
-  <div class="links">
- <a href="https://arxiv.org/abs/2402.15893" class="btn btn-sm z-depth-0" role="button" target="_blank">arXiv</a>
- <a href="https://ieeexplore.ieee.org/abstract/document/10569078" class="btn btn-sm z-depth-0" role="button" target="_blank">HTML</a>
- </div>
- </div>
-</div>
-</li>
-<li class="pub" data-topics="uq">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">PLOS ONE</abbr></div>
- <div id="hayes2024forward" class="col-sm-8">
-  <div class="title">Forward Variable Selection Enables Fast and Accurate Dynamic System Identification with Karhunen-Loève Decomposed Gaussian Processes</div>
-  <div class="author">Hayes, K., Fouts, M., <em>Baheri, Ali</em>, and Mebane, D.</div>
-  <div class="periodical"><em>PLOS ONE</em> 2024</div>
-  <div class="links">
- <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0309661" class="btn btn-sm z-depth-0" role="button" target="_blank">HTML</a>
- </div>
- </div>
-</div>
-</li>
-<li class="pub" data-topics="geo">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">arXiv</abbr></div>
- <div id="baheri2024synergy" class="col-sm-8">
-  <div class="title">The Synergy Between Optimal Transport Theory and Multi-Agent Reinforcement Learning</div>
-  <div class="author"><em>Baheri, Ali</em>, and <a href="https://scholar.google.com/citations?user=cAy9G6oAAAAJ" target="_blank">Kochenderfer, Mykel J.</a></div>
-  <div class="periodical"><em>arXiv preprint</em> 2024</div>
-  <div class="links">
- <a href="https://arxiv.org/abs/2401.10949" class="btn btn-sm z-depth-0" role="button" target="_blank">arXiv</a>
- </div>
- </div>
-</div>
-</li>
-<li class="pub" data-topics="geo">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">RSS</abbr></div>
- <div id="shahrooei2024transport" class="col-sm-8">
-  <div class="title">Optimal Transport-Assisted Risk-Sensitive Q-Learning</div>
-  <div class="author">Shahrooei, Zahra, and <em>Baheri, Ali</em></div>
-  <div class="periodical"><em>In Towards Safe Autonomy: Emerging Requirements, Definitions, and Methods Workshop, RSS</em> 2024</div>
-  <div class="links"></div>
- </div>
-</div>
-</li>
-</ol>
-</div>
-<div class="year-group" data-year="2023">
-<h2 class="year">2023</h2>
-<ol class="bibliography">
-<li class="pub" data-topics="val">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">AI Mag.</abbr></div>
- <div id="baheri2023fidelity" class="col-sm-8">
-  <div class="title">Exploring the Role of Simulator Fidelity in the Safety Validation of Learning-Enabled Autonomous Systems</div>
-  <div class="author"><em>Baheri, Ali</em></div>
-  <div class="periodical"><em>AI Magazine</em> 2023</div>
-  <div class="links"></div>
- </div>
-</div>
-</li>
-<li class="pub" data-topics="val">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">arXiv</abbr></div>
- <div id="baheri2023fidelitysettings" class="col-sm-8">
-  <div class="title">Joint Falsification and Fidelity Settings Optimization for Validation of Safety-Critical Systems: A Theoretical Analysis</div>
-  <div class="author"><em>Baheri, Ali</em>, and <a href="https://scholar.google.com/citations?user=cAy9G6oAAAAJ" target="_blank">Kochenderfer, Mykel J.</a></div>
-  <div class="periodical"><em>arXiv preprint</em> 2023</div>
-  <div class="links">
- <a href="https://arxiv.org/abs/2305.06111" class="btn btn-sm z-depth-0" role="button" target="_blank">arXiv</a>
- </div>
- </div>
-</div>
-</li>
-<li class="pub" data-topics="val">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">ECC</abbr></div>
- <div id="shahrooei2023falsification" class="col-sm-8">
-  <div class="title">Falsification of Learning-Based Controllers through Multi-Fidelity Bayesian Optimization</div>
-  <div class="author">Shahrooei, Zahra, <a href="https://scholar.google.com/citations?user=cAy9G6oAAAAJ" target="_blank">Kochenderfer, Mykel J.</a>, and <em>Baheri, Ali</em></div>
-  <div class="periodical"><em>In European Control Conference (ECC)</em> 2023</div>
-  <div class="links"></div>
- </div>
-</div>
-</li>
-<li class="pub" data-topics="rl">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">ICAPS</abbr></div>
- <div id="yifru2023joint" class="col-sm-8">
-  <div class="title">Joint Learning of Policy with Unknown Temporal Constraints for Safe Reinforcement Learning</div>
-  <div class="author">Yifru, L., and <em>Baheri, Ali</em></div>
-  <div class="periodical"><em>In PRL Workshop Series: Bridging the Gap Between AI Planning and Reinforcement Learning, ICAPS</em> 2023</div>
-  <div class="links"></div>
- </div>
-</div>
-</li>
-<li class="pub" data-topics="rl">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">NeurIPS</abbr></div>
- <div id="baheri2023llms" class="col-sm-8">
-  <div class="title">LLMs-Augmented Contextual Bandit</div>
-  <div class="author"><em>Baheri, Ali</em>, and Alm, Cecilia O.</div>
-  <div class="periodical"><em>In Foundation Models for Decision Making Workshop, NeurIPS</em> 2023</div>
-  <div class="links"></div>
- </div>
-</div>
-</li>
-<li class="pub" data-topics="rl">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">ICAPS</abbr></div>
- <div id="baheri2023policy" class="col-sm-8">
-  <div class="title">Policy Refinement with Human Feedback for Safe Reinforcement Learning</div>
-  <div class="author"><em>Baheri, Ali</em></div>
-  <div class="periodical"><em>In PRL Workshop Series: Bridging the Gap Between AI Planning and Reinforcement Learning, ICAPS</em> 2023</div>
-  <div class="links"></div>
- </div>
-</div>
-</li>
-<li class="pub" data-topics="geo">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">IROS</abbr></div>
- <div id="baheri2023risk" class="col-sm-8">
-  <div class="title">Risk-Aware Reinforcement Learning Through Optimal Transport Theory</div>
-  <div class="author"><em>Baheri, Ali</em></div>
-  <div class="periodical"><em>In 3rd RL-CONFORM Workshop, IROS</em> 2023</div>
-  <div class="links"></div>
- </div>
-</div>
-</li>
-<li class="pub" data-topics="val">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">AAAI</abbr></div>
- <div id="baheri2023validation" class="col-sm-8">
-  <div class="title">Safety Validation of Learning-Based Autonomous Systems: A Multi-Fidelity Approach</div>
-  <div class="author"><em>Baheri, Ali</em></div>
-  <div class="periodical"><em>In Proceedings of the AAAI Conference on Artificial Intelligence (New Faculty Highlights)</em> 2023</div>
-  <div class="links"></div>
- </div>
-</div>
-</li>
-<li class="pub" data-topics="geo">
-<div class="row">
- <div class="col-sm-2 abbr"><abbr class="badge">NeurIPS</abbr></div>
- <div id="baheri2023reward" class="col-sm-8">
-  <div class="title">Understanding Reward Ambiguity Through Optimal Transport Theory in Inverse Reinforcement Learning</div>
-  <div class="author"><em>Baheri, Ali</em></div>
-  <div class="periodical"><em>In Optimal Transport and Machine Learning Workshop, NeurIPS</em> 2023</div>
-  <div class="links"></div>
- </div>
-</div>
-</li>
-</ol>
-</div>
+
+<div class="rfund" markdown="1">
+
+## Funding
+
+<ul>
+<li><span class="agency">National Science Foundation</span> — RII: Safety Validation of Autonomous Systems from Multiple Sources of Information, 2022&ndash;2024<br><span class="role">Single PI</span></li>
+<li><span class="agency">Federal Aviation Administration</span> — Safety Verification Framework for Learning-based Aviation Systems (SVF-LAS), 2021&ndash;2023<br><span class="role">Lead PI</span></li>
+<li><span class="agency">NASA</span> — Fault Diagnosis for Safety-Critical Autonomous Systems using Reinforcement Learning, 2021&ndash;2022<br><span class="role">Lead PI</span></li>
+<li><span class="agency">National Science Foundation</span> — NRT-AI: AWARE-AI, AWAREness for Sensing Humans Responsibly with AI, 2021&ndash;2026<br><span class="role">Senior Personnel, co-lead of the software track</span></li>
+</ul>
 
 </div>
 
-<div class="pub-count" id="pub-count"></div>
-
-<script>
-(function () {
-  var search = document.getElementById('pub-search');
-  var buttons = document.querySelectorAll('#pub-chips button, #pub-cards button');
-  var pubs = document.querySelectorAll('.publications li.pub');
-  var groups = document.querySelectorAll('.publications .year-group');
-  var counter = document.getElementById('pub-count');
-  var topic = 'all';
-
-  function apply() {
-    var term = search.value.trim().toLowerCase();
-    var shown = 0;
-    pubs.forEach(function (p) {
-      var okTopic;
-      if (topic === 'all') { okTopic = true; }
-      else if (topic === 'award') { okTopic = p.classList.contains('highlight'); }
-      else { okTopic = (p.getAttribute('data-topics') || '') === topic; }
-      var okTerm = term === '' || p.textContent.toLowerCase().indexOf(term) > -1;
-      var visible = okTopic && okTerm;
-      p.style.display = visible ? '' : 'none';
-      if (visible) shown++;
-    });
-    groups.forEach(function (g) {
-      var any = false;
-      g.querySelectorAll('li.pub').forEach(function (p) {
-        if (p.style.display !== 'none') { any = true; }
-      });
-      g.style.display = any ? '' : 'none';
-    });
-    counter.textContent = 'Showing ' + shown + ' of ' + pubs.length + ' publications';
-  }
-
-  buttons.forEach(function (b) {
-    b.addEventListener('click', function () {
-      var t = b.getAttribute('data-topic');
-      topic = (topic === t && t !== 'all') ? 'all' : t;
-      buttons.forEach(function (x) { x.classList.remove('active'); });
-      var match = document.querySelector('[data-topic="' + topic + '"]');
-      if (match) { match.classList.add('active'); }
-      apply();
-    });
-  });
-  search.addEventListener('input', apply);
-  apply();
-})();
-</script>
+<p style="margin-top: 2.5rem; font-size: .9rem;">
+A complete list of papers, filterable by theme, is on the
+<a href="/publications/">publications page</a>.
+</p>
