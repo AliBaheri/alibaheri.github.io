@@ -90,8 +90,7 @@ that scale to high dimensions by parameterising the potential or the transport m
 a neural network, and that generalise beyond the training samples. **NeuralOT.jl**
 fills that gap.
 
-The package implements three established families of methods behind a single, consistent
-interface:
+The package implements three established families of methods behind a single interface:
 
 <ul class="sw-methods">
 <li><code>solve_dual</code><span class="m-desc">Entropic OT in high dimensions directly from samples, when you need the cost or the dual potentials.<br><span class="m-ref">Seguy et al., ICLR 2018</span></span></li>
@@ -114,8 +113,6 @@ repository. The package is MIT licensed and open to contributions.
 ### More from the Safe AI Lab
 
 NeuralOT.jl is one of several open-source releases from our group. Others accompany
-individual papers — implementations of multi-fidelity Bayesian optimization for
-falsification, risk-averse temporal-difference learning, and concurrent learning of
-control policies under unknown constraints, among others. All of it lives on the
+individual papers. All of it lives on the
 [Safe AI Lab GitHub organization](https://github.com/SAILRIT){:target="_blank"}.
 </div>
