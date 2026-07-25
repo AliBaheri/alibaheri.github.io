@@ -164,18 +164,44 @@ NSF, the FAA, and NASA.
 <div class="tsub">Optimal transport and structure-preserving generative models</div>
 </div>
 </div>
-<p class="tbody">Nearly every guarantee in the work that follows reduces to a question about
-probability distributions: how far apart are two agents' beliefs, how do you average
-them without destroying structure, how far may a policy move in a single update.
-Optimal transport answers these with a geometry rather than a heuristic. Treating
-policies and value estimates as distributions rather than points yields risk-sensitive
-value estimation, principled consensus among cooperating agents through Wasserstein
-barycenters, and trust-region updates that respect that geometry. A parallel line
-builds structure directly into generative dynamics models &mdash; metriplectic flow
-matching that respects dissipative physics, flow matching on manifolds, and
-temporal-logic guidance for constrained generation. The motivation is reliability
-rather than elegance: a learned dynamics model that violates conservation laws or
-drifts off the feasible set cannot support a safety argument downstream.</p>
+<p class="tbody">Every method in this program eventually has to answer one question:
+how far apart are two probability distributions? How much has a policy moved in a
+single update, how much do ensemble members disagree, how far has a learned model
+drifted from the system it approximates. The standard answers &mdash; KL divergence,
+total variation &mdash; are blind to the geometry of the space those distributions
+live on. Two beliefs concentrated on adjacent states are as far apart under KL as two
+concentrated at opposite ends of the state space, and when supports fail to overlap the
+divergence is simply infinite. For a safety argument this is fatal, because
+<em>close</em> is the word every guarantee turns on. Optimal transport supplies what is
+missing: the Wasserstein distance measures how much probability mass must move and how
+far it must travel, so distributional error is expressed in the units of the state space
+itself and degrades gracefully instead of saturating.</p>
+
+<p class="tbody">Once distance is geometric, everything built on top of it inherits that
+structure. Averaging becomes the Wasserstein barycenter, which interpolates rather than
+superimposes &mdash; two agents that disagree about where an obstacle lies reach a
+consensus placing it between them, not a bimodal blur asserting both. Policy updates
+become trust regions measured in transport cost, bounding how far behavior can shift in
+one step. Value estimation becomes distributional, letting a controller be
+risk-sensitive about the tail rather than the mean. And convergence itself becomes
+provable: contraction in Wasserstein distance yields explicit rates, identifies when
+discretization error self-corrects, and quantifies how injected noise tightens or
+loosens the resulting bound.</p>
+
+<p class="tbody">The second half of this pillar applies the same principle to learned
+dynamics. Generative models are increasingly deployed as simulators: fit a vector field
+to data, integrate it, predict where the system goes. An unconstrained model will
+cheerfully produce trajectories that dissipate energy it should conserve, wander off the
+manifold the state actually occupies, or violate the very specification the controller
+was verified against &mdash; and these errors compound over a rollout until any safety
+argument resting on the model is worthless. Building structure into the vector field
+changes the character of the guarantee. Metriplectic parameterizations respect the
+thermodynamic structure of dissipative systems; flow matching on manifolds keeps
+trajectories on the manifold by construction; logic-guided fields enforce temporal-logic
+constraints during generation rather than checking them afterward. The property holds
+because of how the model is built, not because it happened to fit the training
+distribution &mdash; which is the difference between a model you can certify and one you
+can only test.</p>
 <ul class="papers">
 <li><span class="pv">L-CSS</span><span class="pt"><a href="https://ieeexplore.ieee.org/document/11563844" target="_blank">Blending Optimism and Pessimism via Wasserstein Barycenters for Continuous Control</a></span><span class="py">2026</span></li>
 <li><span class="pv">CDC</span><span class="pt"><a href="https://arxiv.org/abs/2607.14291" target="_blank">Wasserstein Stability of Contracting Flows: Effective Rates, Euler Self-Correction, and Noise Tightening</a></span><span class="py">2026</span></li>
