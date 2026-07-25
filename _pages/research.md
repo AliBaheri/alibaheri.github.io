@@ -2,7 +2,7 @@
 layout: page
 permalink: /research/
 title: research
-description: Building autonomous systems that can be trusted &mdash; safe reinforcement learning, safety validation, and calibrated uncertainty for robotics and clinical decision support.
+description: Building autonomous systems that can be trusted &mdash; safe reinforcement learning, safety validation, and calibrated uncertainty for aviation, robotics, and clinical decision support.
 nav: true
 nav_order: 2
 ---
@@ -169,14 +169,15 @@ distributions are. KL divergence is blind to the geometry of the underlying spac
 treating beliefs on adjacent states as no closer than beliefs at opposite ends of it
 &mdash; fatal for a safety argument, since <em>close</em> is the word every guarantee
 turns on. Optimal transport measures how much probability mass must move and how far, so
-error is expressed in the units of the state space, and what is built on top inherits
-that structure: barycenters that interpolate between disagreeing agents, trust regions
-in transport cost, contraction results with explicit rates. Learned dynamics follow the
-same principle. A model that dissipates energy it should conserve compounds that error
-until any safety argument resting on it is worthless, so I build the structure into the
-vector field itself &mdash; metriplectic parameterizations, flow matching on manifolds,
-logic-guided fields. The property then holds by construction, which is the difference
-between a model you can certify and one you can only test.</p>
+error is expressed in the units of the state space: barycenters interpolate between
+disagreeing agents, trust regions are bounded in transport cost, flows contract at
+explicit rates. That last point is where the same geometry stops measuring and starts
+generating. In its dynamic formulation a Wasserstein distance <em>is</em> a velocity
+field carrying one distribution onto another &mdash; the object a flow matching model
+learns. Constraining that field to be metriplectic, to remain on a manifold, or to
+satisfy a temporal-logic specification is therefore not a second agenda but the same
+one: shaping transport paths so a learned simulator is stable in the very metric its
+guarantees are written in.</p>
 <ul class="papers">
 <li><span class="pv">L-CSS</span><span class="pt"><a href="https://ieeexplore.ieee.org/document/11563844" target="_blank">Blending Optimism and Pessimism via Wasserstein Barycenters for Continuous Control</a></span><span class="py">2026</span></li>
 <li><span class="pv">CDC</span><span class="pt"><a href="https://arxiv.org/abs/2607.14291" target="_blank">Wasserstein Stability of Contracting Flows: Effective Rates, Euler Self-Correction, and Noise Tightening</a></span><span class="py">2026</span></li>
