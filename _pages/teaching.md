@@ -53,4 +53,4 @@ Fundamentals of system dynamics, transfer functions, state-space representation,
 ## Previously at West Virginia University
 
 - **MAE 460: Automatic Control** — Summer 2021, Summer 2022
-- **Reinforcement Learning and Control** — Spring 2021 (newly developed graduate course)
+- **Reinforcement Learning and Control** — Spring 2021 
