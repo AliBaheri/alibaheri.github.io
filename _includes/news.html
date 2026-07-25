@@ -1,23 +1,121 @@
+<!-- Timeline-style news feed.
+     Kind pills are detected from the **[paper]** / **[award]** / **[talk]** /
+     **[workshop]** prefix already used in the _news/*.md files, so adding a
+     news item needs no change here - just keep using those prefixes.
+     Items beyond the first `shown` are collapsed behind a button. -->
+
+<style>
+.news h2 { margin-bottom: 1.2rem; }
+.ntimeline { position: relative; }
+.ntimeline::before {
+  content: ""; position: absolute; left: .86rem; top: .7rem; bottom: .7rem; width: 2px;
+  background: linear-gradient(to bottom,
+    color-mix(in srgb, var(--global-theme-color) 42%, transparent),
+    color-mix(in srgb, var(--global-theme-color) 8%, transparent));
+}
+.nitem {
+  display: flex; gap: .95rem; position: relative;
+  padding: 0 .4rem .95rem 0; border-radius: 6px;
+  transition: background .18s ease;
+}
+.nitem.nhidden { display: none; }
+.nitem:hover { background: color-mix(in srgb, var(--global-theme-color) 5%, transparent); }
+.ndot {
+  flex: 0 0 auto; width: 1.75rem; height: 1.75rem; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .68rem; color: #fff; position: relative; z-index: 1;
+  background: var(--nk); box-shadow: 0 0 0 3px var(--global-bg-color);
+}
+.nbody { flex: 1; min-width: 0; padding-top: .1rem; }
+.nmeta { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; margin-bottom: .12rem; }
+.nkind {
+  font-size: .62rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase;
+  padding: .08rem .5rem; border-radius: 999px; color: var(--nk);
+  background: color-mix(in srgb, var(--nk) 15%, transparent);
+}
+.ndate { font-size: .72rem; color: var(--global-text-color-light); }
+.ntext { font-size: .93rem; line-height: 1.55; }
+.ntext p { margin: 0; }
+
+.nitem { --nk: var(--global-theme-color); }
+.nk-award    { --nk: #d99407; }
+.nk-talk     { --nk: #10a37f; }
+.nk-workshop { --nk: #8b5cf6; }
+
+.nmore {
+  margin-top: .5rem; padding: .35rem 1rem; font-size: .8rem; font-weight: 600;
+  cursor: pointer; border-radius: 999px; background: transparent;
+  color: var(--global-theme-color);
+  border: 1px solid color-mix(in srgb, var(--global-theme-color) 45%, transparent);
+  transition: background .18s ease;
+}
+.nmore:hover { background: color-mix(in srgb, var(--global-theme-color) 10%, transparent); }
+
+@media (prefers-reduced-motion: reduce) { .nitem, .nmore { transition: none; } }
+</style>
+
 <div class="news">
   <h2>news</h2>
-  {% if site.news  %}
-    <div class="table-responsive">
-      <table class="table table-sm table-borderless">
+  {% if site.news %}
+    {% assign shown = 6 %}
+    <div class="ntimeline" id="news-timeline">
       {% assign news = site.news | reverse %}
       {% for item in news limit: site.news_limit %}
-        <tr>
-          <th scope="row">{{ item.date | date: "%b %-d, %Y" }}</th>
-          <td>
-            {% if item.inline %}
-              {{ item.content | remove: '<p>' | remove: '</p>' | emojify }}
-            {% else %}
-              <a class="news-title" href="{{ item.url | relative_url }}">{{ item.title }}</a>
-            {% endif %}
-          </td>
-        </tr>
+        {% assign c = item.content %}
+        {% assign kind = 'update' %}
+        {% assign icon = 'fas fa-flag' %}
+        {% if c contains '[paper]' %}
+          {% assign kind = 'paper' %}{% assign icon = 'fas fa-file-alt' %}
+        {% elsif c contains '[award]' %}
+          {% assign kind = 'award' %}{% assign icon = 'fas fa-trophy' %}
+        {% elsif c contains '[talk]' %}
+          {% assign kind = 'talk' %}{% assign icon = 'fas fa-microphone-alt' %}
+        {% elsif c contains '[workshop]' %}
+          {% assign kind = 'workshop' %}{% assign icon = 'fas fa-users' %}
+        {% endif %}
+        {% assign body = c | remove: '<strong>[paper]</strong>' | remove: '<strong>[award]</strong>' | remove: '<strong>[talk]</strong>' | remove: '<strong>[workshop]</strong>' | remove: '<p>' | remove: '</p>' %}
+        <div class="nitem nk-{{ kind }}{% if forloop.index > shown %} nhidden{% endif %}">
+          <div class="ndot"><i class="{{ icon }}" aria-hidden="true"></i></div>
+          <div class="nbody">
+            <div class="nmeta">
+              <span class="nkind">{{ kind }}</span>
+              <span class="ndate">{{ item.date | date: "%b %-d, %Y" }}</span>
+            </div>
+            <div class="ntext">
+              {% if item.inline %}
+                {{ body | emojify }}
+              {% else %}
+                <a class="news-title" href="{{ item.url | relative_url }}">{{ item.title }}</a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
       {% endfor %}
-      </table>
     </div>
+    {% assign total = site.news | size %}
+    {% if total > shown %}
+      <button class="nmore" id="news-more" data-shown="{{ shown }}" data-total="{{ total }}">
+        Show all {{ total }} updates
+      </button>
+      <script>
+        (function () {
+          var btn = document.getElementById('news-more');
+          if (!btn) { return; }
+          var open = false;
+          btn.addEventListener('click', function () {
+            open = !open;
+            document.querySelectorAll('#news-timeline .nitem').forEach(function (el, i) {
+              if (i >= parseInt(btn.getAttribute('data-shown'), 10)) {
+                el.classList.toggle('nhidden', !open);
+              }
+            });
+            btn.textContent = open
+              ? 'Show fewer'
+              : 'Show all ' + btn.getAttribute('data-total') + ' updates';
+          });
+        })();
+      </script>
+    {% endif %}
   {% else %}
     <p>No news so far...</p>
   {% endif %}
