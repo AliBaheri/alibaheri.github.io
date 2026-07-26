@@ -99,7 +99,7 @@ nav_order: 6
 <div>
 <div class="nm">Shriram Karpoora Sundara Pandian</div>
 <div class="rl">M.S. Student</div>
-<div class="yr">2024</div>
+<div class="yr">2025</div>
 </div>
 </div>
 
