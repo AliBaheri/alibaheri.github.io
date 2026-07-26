@@ -2,7 +2,7 @@
 layout: page
 permalink: /research/
 title: research
-description: Building autonomous systems that can be trusted &mdash; safe reinforcement learning, safety validation, and calibrated uncertainty for aviation, robotics, and clinical decision support.
+description: Building autonomous systems that can be trusted &mdash; safe reinforcement learning, safety validation, and calibrated uncertainty for autonomous systems and clinical decision support.
 nav: true
 nav_order: 2
 ---
