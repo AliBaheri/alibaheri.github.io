@@ -118,6 +118,7 @@ nav_order: 6
 <div>
 <div class="nm">Kaustubh Gaikwad</div>
 <div class="rl">M.S. Student</div>
+<div class="yr">2023 &ndash; 2024</div>
 <div class="co">Co-advised with Prof. Cecilia Alm</div>
 </div>
 </div>
