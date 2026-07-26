@@ -45,8 +45,6 @@ nav_order: 6
 }
 .pcard2 .yr { font-size: .78rem; color: var(--global-text-color-light); margin-top: .05rem; }
 .pcard2 .co { font-size: .74rem; color: var(--global-text-color-light); margin-top: .3rem; font-style: italic; }
-.pcard2 .pp { font-size: .76rem; margin-top: .4rem; }
-.pcard2 .pp a { text-decoration: none; }
 .ppl-note { font-size: .9rem; color: var(--global-text-color-light); }
 </style>
 
@@ -60,7 +58,6 @@ nav_order: 6
 <div class="nm">Chirayu Salgarkar</div>
 <div class="rl">Ph.D. Student</div>
 <div class="yr">2024 &ndash; present</div>
-<div class="pp"><a href="/publications/#salgarkar2026distance">When Distance Matters &rarr;</a></div>
 </div>
 </div>
 
@@ -85,7 +82,6 @@ nav_order: 6
 <div class="nm">Lunet Yifru</div>
 <div class="rl">M.S. Student</div>
 <div class="yr">2021 &ndash; 2024</div>
-<div class="pp"><a href="/publications/#yifru2024concurrent">Concurrent Learning of Control &amp; Constraints &rarr;</a></div>
 </div>
 </div>
 
@@ -95,7 +91,6 @@ nav_order: 6
 <div class="nm">Joshua Yancosek</div>
 <div class="rl">M.S. Student</div>
 <div class="yr">2023 &ndash; 2024</div>
-<div class="pp"><a href="/publications/#yancosek2024beacon">BEACON &rarr;</a></div>
 </div>
 </div>
 
@@ -105,7 +100,6 @@ nav_order: 6
 <div class="nm">Shriram Karpoora Sundara Pandian</div>
 <div class="rl">M.S. Student</div>
 <div class="yr">2024</div>
-<div class="pp"><a href="/publications/#karpoorasundarapandian2026density">Density-Ratio Weighted Behavioral Cloning &rarr;</a></div>
 </div>
 </div>
 
