@@ -1,7 +1,7 @@
 ---
 layout: post
 title: why the geometry of reasoning might matter
-date: 2026-08-13 09:00:00-0400
+date: 2026-06-15 09:00:00-0400
 description: reasoning failures may show up not only as incorrect words, but as unusual movements in a model's internal representation
 tags: reasoning llm optimal-transport interpretability
 categories: research-notes
