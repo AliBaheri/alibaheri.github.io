@@ -1,8 +1,8 @@
 ---
 layout: post
 title: why the geometry of reasoning might matter
-date: 2026-08-13 09:00:00-0400
-description: reasoning failures may show up not only as incorrect words, but as unusual movements in a model's internal representation
+date: 2026-06-15 09:00:00-0400
+description: a wrong reasoning step can read perfectly well; it may still move differently
 tags: reasoning llm optimal-transport interpretability
 categories: research-notes
 _styles: >
@@ -13,8 +13,7 @@ _styles: >
     padding-bottom: .45rem;
     border-bottom: 2px solid color-mix(in srgb, var(--global-theme-color) 30%, transparent);
   }
-  .lede { font-size: 1.22rem; line-height: 1.6; font-weight: 400; }
-  .lede strong { font-weight: 600; }
+  .lede { font-size: 1.2rem; line-height: 1.62; }
   .keyline {
     margin: 2.4rem 0; padding: 1.5rem 1.6rem; border-radius: 10px; text-align: center;
     background: linear-gradient(135deg,
@@ -23,11 +22,11 @@ _styles: >
     font-size: 1.5rem; font-weight: 700; line-height: 1.3;
     color: var(--global-theme-color); letter-spacing: -.01em;
   }
-  .fig { margin: 2.6rem 0 1.4rem; text-align: center; }
+  .fig { margin: 2.6rem 0 1.6rem; text-align: center; }
   .fig svg { max-width: 100%; height: auto; color: var(--global-text-color); }
   .fig figcaption {
-    font-size: .84rem; line-height: 1.5; color: var(--global-text-color-light);
-    margin-top: .7rem; max-width: 34rem; margin-left: auto; margin-right: auto;
+    font-size: .84rem; line-height: 1.55; color: var(--global-text-color-light);
+    margin-top: .8rem; max-width: 36rem; margin-left: auto; margin-right: auto; text-align: left;
   }
   .shift { margin: 2rem 0; }
   .shift .q {
@@ -60,110 +59,149 @@ _styles: >
     border: 1px dashed color-mix(in srgb, var(--global-text-color) 25%, transparent);
   }
   @media (max-width: 576px) {
-    .keyline { font-size: 1.2rem; padding: 1.2rem 1rem; }
-    .lede { font-size: 1.1rem; }
+    .keyline { font-size: 1.18rem; padding: 1.2rem 1rem; }
+    .lede { font-size: 1.08rem; }
   }
 ---
 
 <p class="lede" markdown="1">
-When we talk about AI reasoning, we usually focus on the words a model produces: the
-steps it writes down, the answer it gives, or whether those steps are correct.
-**But there is another way to look at reasoning.**
+A model is working through a problem. At step four it carries a quantity across
+incorrectly &mdash; nothing dramatic, no confusion, just a small wrong turn. Steps five
+through nine build on it, fluently and confidently. The final answer is wrong.
 </p>
 
+Now read the transcript. Step four looks like every other step: same measured tone, same
+plausible shape. The error is not hiding. It is simply invisible in the medium we happen
+to be watching.
+
+## Why reading the text is not enough
+
+There is a structural reason for this, and it is worth stating carefully.
+
+A model producing a reasoning chain is satisfying two constraints at once. One is
+**fluency**: does this look like a well-formed continuation? The other is **coherence**:
+does this actually follow from what came before? Most of the time the two travel
+together, which is why reading a chain of reasoning works as well as it does.
+
+But they are different constraints, and they can come apart. A step can be entirely
+fluent and not follow at all.
+
+Text is where fluency lives. It is what was optimized, and it is what you are reading. So
+when fluency and coherence separate, a detector that reads the text is not merely
+unlucky &mdash; it is measuring the wrong quantity.
+
+Which raises the obvious question: is there somewhere else to look?
+
+## Reasoning as a path
+
 Inside a language model, every step is represented by a large collection of numbers
-called a hidden state. As the model moves from one reasoning step to the next, those
-hidden states also move. You can imagine them tracing out a path through a very
-high-dimensional space.
+called a hidden state. As the model moves from one step to the next, those states move
+too. A chain of reasoning traces a path through a very high-dimensional space.
 
-That gives us a surprisingly simple idea:
+<div class="keyline">Reasoning has a geometry.</div>
 
-<div class="keyline">Reasoning may have a geometry.</div>
+That path is what we studied in GeoReason.
 
-In a recent paper, GeoReason, we explore this perspective. Instead of looking only at
-what a model says, we study how its internal representations move while it reasons. Our
-experiments suggest that the moment a model first makes a reasoning mistake can
-sometimes correspond to a noticeable change in that trajectory.
-
-## Why might geometry be useful here?
-
-Imagine someone walking along a trail. You do not need to understand every thought in
-their head to notice that they have suddenly made a sharp turn, wandered far away from
-the usual path, or started moving in an unusual direction.
-
-Something similar may happen during model reasoning.
-
-A correct chain of reasoning could occupy a relatively stable region of representation
-space. When the model makes a bad assumption or takes an incorrect logical step, its
-internal state may move away from the kinds of transitions we normally see during
-correct reasoning.
+The premise is a claim about *motion*, not location. Correct reasoning ranges widely
+&mdash; it has to, since it covers different territory as it goes. What stays regular is
+the step-to-step transition: the kind of move that follows from a given prefix belongs to
+a comparatively narrow family. A first error is a move outside that family. It shows up
+as a localized departure &mdash; an excursion &mdash; and once the trajectory has left,
+later steps tend to travel further out.
 
 <figure class="fig">
-<svg viewBox="0 0 720 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A reasoning trajectory: early steps stay inside a shaded band of coherent transitions, then one step breaks away and later steps travel further from the band.">
-<path d="M40.0,120.0 L46.4,121.8 L52.8,123.5 L59.2,125.2 L65.6,126.9 L72.0,128.6 L78.4,130.2 L84.8,131.8 L91.2,133.3 L97.6,134.8 L104.0,136.2 L110.4,137.6 L116.8,138.8 L123.2,140.0 L129.6,141.0 L136.0,142.0 L142.4,142.9 L148.8,143.7 L155.2,144.4 L161.6,144.9 L168.0,145.4 L174.4,145.7 L180.8,145.9 L187.2,146.0 L193.6,146.0 L200.0,145.8 L206.4,145.6 L212.8,145.2 L219.2,144.7 L225.6,144.1 L232.0,143.4 L238.4,142.6 L244.8,141.7 L251.2,140.7 L257.6,139.6 L264.0,138.4 L270.4,137.1 L276.8,135.7 L283.2,134.3 L289.6,132.8 L296.0,131.2 L302.4,129.6 L308.8,128.0 L315.2,126.3 L321.6,124.6 L328.0,122.9 L334.4,121.1 L340.8,119.4 L347.2,117.6 L353.6,115.9 L360.0,114.2 L366.4,112.5 L372.8,110.8 L379.2,109.2 L385.6,107.6 L392.0,106.1 L398.4,104.7 L404.8,103.3 L411.2,102.0 L417.6,100.8 L424.0,99.6 L430.4,98.6 L436.8,97.6 L443.2,96.8 L449.6,96.1 L456.0,95.4 L462.4,94.9 L468.8,94.5 L475.2,94.2 L481.6,94.1 L488.0,94.0 L494.4,94.1 L500.8,94.2 L507.2,94.5 L513.6,95.0 L520.0,95.5 L526.4,96.1 L532.8,96.9 L539.2,97.7 L545.6,98.7 L552.0,99.7 L558.4,100.9 L564.8,102.1 L571.2,103.4 L577.6,104.8 L584.0,106.3 L590.4,107.8 L596.8,109.3 L603.2,111.0 L609.6,112.6 L616.0,114.3 L622.4,116.0 L628.8,117.8 L635.2,119.5 L641.6,121.3 L648.0,123.0 L654.4,124.8 L660.8,126.5 L667.2,128.2 L673.6,129.8 L680.0,131.4 L680.0,191.4 L673.6,189.8 L667.2,188.2 L660.8,186.5 L654.4,184.8 L648.0,183.0 L641.6,181.3 L635.2,179.5 L628.8,177.8 L622.4,176.0 L616.0,174.3 L609.6,172.6 L603.2,171.0 L596.8,169.3 L590.4,167.8 L584.0,166.3 L577.6,164.8 L571.2,163.4 L564.8,162.1 L558.4,160.9 L552.0,159.7 L545.6,158.7 L539.2,157.7 L532.8,156.9 L526.4,156.1 L520.0,155.5 L513.6,155.0 L507.2,154.5 L500.8,154.2 L494.4,154.1 L488.0,154.0 L481.6,154.1 L475.2,154.2 L468.8,154.5 L462.4,154.9 L456.0,155.4 L449.6,156.1 L443.2,156.8 L436.8,157.6 L430.4,158.6 L424.0,159.6 L417.6,160.8 L411.2,162.0 L404.8,163.3 L398.4,164.7 L392.0,166.1 L385.6,167.6 L379.2,169.2 L372.8,170.8 L366.4,172.5 L360.0,174.2 L353.6,175.9 L347.2,177.6 L340.8,179.4 L334.4,181.1 L328.0,182.9 L321.6,184.6 L315.2,186.3 L308.8,188.0 L302.4,189.6 L296.0,191.2 L289.6,192.8 L283.2,194.3 L276.8,195.7 L270.4,197.1 L264.0,198.4 L257.6,199.6 L251.2,200.7 L244.8,201.7 L238.4,202.6 L232.0,203.4 L225.6,204.1 L219.2,204.7 L212.8,205.2 L206.4,205.6 L200.0,205.8 L193.6,206.0 L187.2,206.0 L180.8,205.9 L174.4,205.7 L168.0,205.4 L161.6,204.9 L155.2,204.4 L148.8,203.7 L142.4,202.9 L136.0,202.0 L129.6,201.0 L123.2,200.0 L116.8,198.8 L110.4,197.6 L104.0,196.2 L97.6,194.8 L91.2,193.3 L84.8,191.8 L78.4,190.2 L72.0,188.6 L65.6,186.9 L59.2,185.2 L52.8,183.5 L46.4,181.8 L40.0,180.0 Z" fill="var(--global-theme-color)" fill-opacity=".10"/>
-<path d="M40.0,120.0 L46.4,121.8 L52.8,123.5 L59.2,125.2 L65.6,126.9 L72.0,128.6 L78.4,130.2 L84.8,131.8 L91.2,133.3 L97.6,134.8 L104.0,136.2 L110.4,137.6 L116.8,138.8 L123.2,140.0 L129.6,141.0 L136.0,142.0 L142.4,142.9 L148.8,143.7 L155.2,144.4 L161.6,144.9 L168.0,145.4 L174.4,145.7 L180.8,145.9 L187.2,146.0 L193.6,146.0 L200.0,145.8 L206.4,145.6 L212.8,145.2 L219.2,144.7 L225.6,144.1 L232.0,143.4 L238.4,142.6 L244.8,141.7 L251.2,140.7 L257.6,139.6 L264.0,138.4 L270.4,137.1 L276.8,135.7 L283.2,134.3 L289.6,132.8 L296.0,131.2 L302.4,129.6 L308.8,128.0 L315.2,126.3 L321.6,124.6 L328.0,122.9 L334.4,121.1 L340.8,119.4 L347.2,117.6 L353.6,115.9 L360.0,114.2 L366.4,112.5 L372.8,110.8 L379.2,109.2 L385.6,107.6 L392.0,106.1 L398.4,104.7 L404.8,103.3 L411.2,102.0 L417.6,100.8 L424.0,99.6 L430.4,98.6 L436.8,97.6 L443.2,96.8 L449.6,96.1 L456.0,95.4 L462.4,94.9 L468.8,94.5 L475.2,94.2 L481.6,94.1 L488.0,94.0 L494.4,94.1 L500.8,94.2 L507.2,94.5 L513.6,95.0 L520.0,95.5 L526.4,96.1 L532.8,96.9 L539.2,97.7 L545.6,98.7 L552.0,99.7 L558.4,100.9 L564.8,102.1 L571.2,103.4 L577.6,104.8 L584.0,106.3 L590.4,107.8 L596.8,109.3 L603.2,111.0 L609.6,112.6 L616.0,114.3 L622.4,116.0 L628.8,117.8 L635.2,119.5 L641.6,121.3 L648.0,123.0 L654.4,124.8 L660.8,126.5 L667.2,128.2 L673.6,129.8 L680.0,131.4 L680.0,191.4 L673.6,189.8 L667.2,188.2 L660.8,186.5 L654.4,184.8 L648.0,183.0 L641.6,181.3 L635.2,179.5 L628.8,177.8 L622.4,176.0 L616.0,174.3 L609.6,172.6 L603.2,171.0 L596.8,169.3 L590.4,167.8 L584.0,166.3 L577.6,164.8 L571.2,163.4 L564.8,162.1 L558.4,160.9 L552.0,159.7 L545.6,158.7 L539.2,157.7 L532.8,156.9 L526.4,156.1 L520.0,155.5 L513.6,155.0 L507.2,154.5 L500.8,154.2 L494.4,154.1 L488.0,154.0 L481.6,154.1 L475.2,154.2 L468.8,154.5 L462.4,154.9 L456.0,155.4 L449.6,156.1 L443.2,156.8 L436.8,157.6 L430.4,158.6 L424.0,159.6 L417.6,160.8 L411.2,162.0 L404.8,163.3 L398.4,164.7 L392.0,166.1 L385.6,167.6 L379.2,169.2 L372.8,170.8 L366.4,172.5 L360.0,174.2 L353.6,175.9 L347.2,177.6 L340.8,179.4 L334.4,181.1 L328.0,182.9 L321.6,184.6 L315.2,186.3 L308.8,188.0 L302.4,189.6 L296.0,191.2 L289.6,192.8 L283.2,194.3 L276.8,195.7 L270.4,197.1 L264.0,198.4 L257.6,199.6 L251.2,200.7 L244.8,201.7 L238.4,202.6 L232.0,203.4 L225.6,204.1 L219.2,204.7 L212.8,205.2 L206.4,205.6 L200.0,205.8 L193.6,206.0 L187.2,206.0 L180.8,205.9 L174.4,205.7 L168.0,205.4 L161.6,204.9 L155.2,204.4 L148.8,203.7 L142.4,202.9 L136.0,202.0 L129.6,201.0 L123.2,200.0 L116.8,198.8 L110.4,197.6 L104.0,196.2 L97.6,194.8 L91.2,193.3 L84.8,191.8 L78.4,190.2 L72.0,188.6 L65.6,186.9 L59.2,185.2 L52.8,183.5 L46.4,181.8 L40.0,180.0 Z" fill="none" stroke="var(--global-theme-color)" stroke-opacity=".30" stroke-width="1" stroke-dasharray="4 4"/>
-<path d="M70.0,164.1 L130.0,163.1 L190.0,180.0 L250.0,165.9 L310.0,164.7 L370.0,138.5" fill="none" stroke="var(--global-theme-color)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M370.0,138.5 L430.0,81.8 L490.0,44.8 L550.0,-3.8 L610.0,-66.1" fill="none" stroke="#d97706" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 5"/>
-<circle cx="70.0" cy="164.1" r="4.6" fill="var(--global-theme-color)"/>
-<circle cx="130.0" cy="163.1" r="4.6" fill="var(--global-theme-color)"/>
-<circle cx="190.0" cy="180.0" r="4.6" fill="var(--global-theme-color)"/>
-<circle cx="250.0" cy="165.9" r="4.6" fill="var(--global-theme-color)"/>
-<circle cx="310.0" cy="164.7" r="4.6" fill="var(--global-theme-color)"/>
-<circle cx="370.0" cy="138.5" r="4.6" fill="var(--global-theme-color)"/>
-<circle cx="430.0" cy="81.8" r="7.5" fill="none" stroke="#d97706" stroke-width="2"/>
-<circle cx="430.0" cy="81.8" r="4.6" fill="#d97706"/>
-<circle cx="490.0" cy="44.8" r="4.6" fill="#d97706" fill-opacity=".55"/>
-<circle cx="550.0" cy="-3.8" r="4.6" fill="#d97706" fill-opacity=".55"/>
-<circle cx="610.0" cy="-66.1" r="4.6" fill="#d97706" fill-opacity=".55"/>
-<line x1="430.0" y1="67.8" x2="430.0" y2="43.8" stroke="#d97706" stroke-width="1.2"/>
-<text x="430.0" y="35.8" text-anchor="middle" font-size="13" font-weight="700" fill="#d97706">first error</text>
-<text x="60" y="219" font-size="12.5" fill="var(--global-theme-color)" font-weight="600">band of coherent transitions</text>
-<text x="690" y="46" text-anchor="end" font-size="12.5" fill="#d97706" font-weight="600">excursion</text>
-<text x="40" y="268" font-size="11.5" fill="currentColor" fill-opacity=".55">reasoning step &#8594;</text>
+<svg viewBox="0 0 720 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two panels of the same reasoning chain. In the text, every step looks uniformly fluent and nothing marks the error. In representation space, the steps stay inside a band of coherent transitions until one step departs and later steps travel further away.">
+<text x="40" y="34" font-size="12" font-weight="700" letter-spacing="1.4" fill="currentColor" fill-opacity=".55">IN THE TEXT</text>
+<text x="40" y="52" font-size="12.5" fill="currentColor" fill-opacity=".45">every step reads fluently &#8212; nothing marks the error</text>
+<line x1="40" y1="78" x2="680" y2="78" stroke="currentColor" stroke-opacity=".28" stroke-width="2"/>
+<circle cx="70.0" cy="78.0" r="4.4" fill="currentColor" fill-opacity=".38"/>
+<circle cx="130.0" cy="75.0" r="4.4" fill="currentColor" fill-opacity=".38"/>
+<circle cx="190.0" cy="80.0" r="4.4" fill="currentColor" fill-opacity=".38"/>
+<circle cx="250.0" cy="76.0" r="4.4" fill="currentColor" fill-opacity=".38"/>
+<circle cx="310.0" cy="81.0" r="4.4" fill="currentColor" fill-opacity=".38"/>
+<circle cx="370.0" cy="77.0" r="4.4" fill="currentColor" fill-opacity=".38"/>
+<circle cx="430.0" cy="79.0" r="4.4" fill="currentColor" fill-opacity=".38"/>
+<circle cx="490.0" cy="76.0" r="4.4" fill="currentColor" fill-opacity=".38"/>
+<circle cx="550.0" cy="80.0" r="4.4" fill="currentColor" fill-opacity=".38"/>
+<circle cx="610.0" cy="77.0" r="4.4" fill="currentColor" fill-opacity=".38"/>
+<line x1="40" y1="120" x2="680" y2="120" stroke="currentColor" stroke-opacity=".13" stroke-width="1"/>
+<text x="40" y="150" font-size="12" font-weight="700" letter-spacing="1.4" fill="var(--global-theme-color)">IN REPRESENTATION SPACE</text>
+<path d="M40.0,209.0 L46.4,210.3 L52.8,211.7 L59.2,213.0 L65.6,214.3 L72.0,215.6 L78.4,216.9 L84.8,218.1 L91.2,219.3 L97.6,220.4 L104.0,221.5 L110.4,222.5 L116.8,223.5 L123.2,224.4 L129.6,225.2 L136.0,225.9 L142.4,226.6 L148.8,227.2 L155.2,227.7 L161.6,228.2 L168.0,228.5 L174.4,228.8 L180.8,228.9 L187.2,229.0 L193.6,229.0 L200.0,228.9 L206.4,228.7 L212.8,228.4 L219.2,228.0 L225.6,227.6 L232.0,227.0 L238.4,226.4 L244.8,225.7 L251.2,224.9 L257.6,224.0 L264.0,223.1 L270.4,222.1 L276.8,221.1 L283.2,220.0 L289.6,218.8 L296.0,217.6 L302.4,216.4 L308.8,215.1 L315.2,213.8 L321.6,212.5 L328.0,211.2 L334.4,209.9 L340.8,208.5 L347.2,207.2 L353.6,205.8 L360.0,204.5 L366.4,203.2 L372.8,201.9 L379.2,200.7 L385.6,199.5 L392.0,198.3 L398.4,197.2 L404.8,196.1 L411.2,195.1 L417.6,194.2 L424.0,193.3 L430.4,192.5 L436.8,191.8 L443.2,191.2 L449.6,190.6 L456.0,190.1 L462.4,189.7 L468.8,189.4 L475.2,189.2 L481.6,189.0 L488.0,189.0 L494.4,189.1 L500.8,189.2 L507.2,189.4 L513.6,189.7 L520.0,190.1 L526.4,190.6 L532.8,191.2 L539.2,191.9 L545.6,192.6 L552.0,193.4 L558.4,194.3 L564.8,195.2 L571.2,196.2 L577.6,197.3 L584.0,198.4 L590.4,199.6 L596.8,200.8 L603.2,202.1 L609.6,203.3 L616.0,204.6 L622.4,206.0 L628.8,207.3 L635.2,208.6 L641.6,210.0 L648.0,211.3 L654.4,212.7 L660.8,214.0 L667.2,215.3 L673.6,216.5 L680.0,217.8 L680.0,269.8 L673.6,268.5 L667.2,267.3 L660.8,266.0 L654.4,264.7 L648.0,263.3 L641.6,262.0 L635.2,260.6 L628.8,259.3 L622.4,258.0 L616.0,256.6 L609.6,255.3 L603.2,254.1 L596.8,252.8 L590.4,251.6 L584.0,250.4 L577.6,249.3 L571.2,248.2 L564.8,247.2 L558.4,246.3 L552.0,245.4 L545.6,244.6 L539.2,243.9 L532.8,243.2 L526.4,242.6 L520.0,242.1 L513.6,241.7 L507.2,241.4 L500.8,241.2 L494.4,241.1 L488.0,241.0 L481.6,241.0 L475.2,241.2 L468.8,241.4 L462.4,241.7 L456.0,242.1 L449.6,242.6 L443.2,243.2 L436.8,243.8 L430.4,244.5 L424.0,245.3 L417.6,246.2 L411.2,247.1 L404.8,248.1 L398.4,249.2 L392.0,250.3 L385.6,251.5 L379.2,252.7 L372.8,253.9 L366.4,255.2 L360.0,256.5 L353.6,257.8 L347.2,259.2 L340.8,260.5 L334.4,261.9 L328.0,263.2 L321.6,264.5 L315.2,265.8 L308.8,267.1 L302.4,268.4 L296.0,269.6 L289.6,270.8 L283.2,272.0 L276.8,273.1 L270.4,274.1 L264.0,275.1 L257.6,276.0 L251.2,276.9 L244.8,277.7 L238.4,278.4 L232.0,279.0 L225.6,279.6 L219.2,280.0 L212.8,280.4 L206.4,280.7 L200.0,280.9 L193.6,281.0 L187.2,281.0 L180.8,280.9 L174.4,280.8 L168.0,280.5 L161.6,280.2 L155.2,279.7 L148.8,279.2 L142.4,278.6 L136.0,277.9 L129.6,277.2 L123.2,276.4 L116.8,275.5 L110.4,274.5 L104.0,273.5 L97.6,272.4 L91.2,271.3 L84.8,270.1 L78.4,268.9 L72.0,267.6 L65.6,266.3 L59.2,265.0 L52.8,263.7 L46.4,262.3 L40.0,261.0 Z" fill="var(--global-theme-color)" fill-opacity=".10"/>
+<path d="M40.0,209.0 L46.4,210.3 L52.8,211.7 L59.2,213.0 L65.6,214.3 L72.0,215.6 L78.4,216.9 L84.8,218.1 L91.2,219.3 L97.6,220.4 L104.0,221.5 L110.4,222.5 L116.8,223.5 L123.2,224.4 L129.6,225.2 L136.0,225.9 L142.4,226.6 L148.8,227.2 L155.2,227.7 L161.6,228.2 L168.0,228.5 L174.4,228.8 L180.8,228.9 L187.2,229.0 L193.6,229.0 L200.0,228.9 L206.4,228.7 L212.8,228.4 L219.2,228.0 L225.6,227.6 L232.0,227.0 L238.4,226.4 L244.8,225.7 L251.2,224.9 L257.6,224.0 L264.0,223.1 L270.4,222.1 L276.8,221.1 L283.2,220.0 L289.6,218.8 L296.0,217.6 L302.4,216.4 L308.8,215.1 L315.2,213.8 L321.6,212.5 L328.0,211.2 L334.4,209.9 L340.8,208.5 L347.2,207.2 L353.6,205.8 L360.0,204.5 L366.4,203.2 L372.8,201.9 L379.2,200.7 L385.6,199.5 L392.0,198.3 L398.4,197.2 L404.8,196.1 L411.2,195.1 L417.6,194.2 L424.0,193.3 L430.4,192.5 L436.8,191.8 L443.2,191.2 L449.6,190.6 L456.0,190.1 L462.4,189.7 L468.8,189.4 L475.2,189.2 L481.6,189.0 L488.0,189.0 L494.4,189.1 L500.8,189.2 L507.2,189.4 L513.6,189.7 L520.0,190.1 L526.4,190.6 L532.8,191.2 L539.2,191.9 L545.6,192.6 L552.0,193.4 L558.4,194.3 L564.8,195.2 L571.2,196.2 L577.6,197.3 L584.0,198.4 L590.4,199.6 L596.8,200.8 L603.2,202.1 L609.6,203.3 L616.0,204.6 L622.4,206.0 L628.8,207.3 L635.2,208.6 L641.6,210.0 L648.0,211.3 L654.4,212.7 L660.8,214.0 L667.2,215.3 L673.6,216.5 L680.0,217.8 L680.0,269.8 L673.6,268.5 L667.2,267.3 L660.8,266.0 L654.4,264.7 L648.0,263.3 L641.6,262.0 L635.2,260.6 L628.8,259.3 L622.4,258.0 L616.0,256.6 L609.6,255.3 L603.2,254.1 L596.8,252.8 L590.4,251.6 L584.0,250.4 L577.6,249.3 L571.2,248.2 L564.8,247.2 L558.4,246.3 L552.0,245.4 L545.6,244.6 L539.2,243.9 L532.8,243.2 L526.4,242.6 L520.0,242.1 L513.6,241.7 L507.2,241.4 L500.8,241.2 L494.4,241.1 L488.0,241.0 L481.6,241.0 L475.2,241.2 L468.8,241.4 L462.4,241.7 L456.0,242.1 L449.6,242.6 L443.2,243.2 L436.8,243.8 L430.4,244.5 L424.0,245.3 L417.6,246.2 L411.2,247.1 L404.8,248.1 L398.4,249.2 L392.0,250.3 L385.6,251.5 L379.2,252.7 L372.8,253.9 L366.4,255.2 L360.0,256.5 L353.6,257.8 L347.2,259.2 L340.8,260.5 L334.4,261.9 L328.0,263.2 L321.6,264.5 L315.2,265.8 L308.8,267.1 L302.4,268.4 L296.0,269.6 L289.6,270.8 L283.2,272.0 L276.8,273.1 L270.4,274.1 L264.0,275.1 L257.6,276.0 L251.2,276.9 L244.8,277.7 L238.4,278.4 L232.0,279.0 L225.6,279.6 L219.2,280.0 L212.8,280.4 L206.4,280.7 L200.0,280.9 L193.6,281.0 L187.2,281.0 L180.8,280.9 L174.4,280.8 L168.0,280.5 L161.6,280.2 L155.2,279.7 L148.8,279.2 L142.4,278.6 L136.0,277.9 L129.6,277.2 L123.2,276.4 L116.8,275.5 L110.4,274.5 L104.0,273.5 L97.6,272.4 L91.2,271.3 L84.8,270.1 L78.4,268.9 L72.0,267.6 L65.6,266.3 L59.2,265.0 L52.8,263.7 L46.4,262.3 L40.0,261.0 Z" fill="none" stroke="var(--global-theme-color)" stroke-opacity=".28" stroke-width="1" stroke-dasharray="4 4"/>
+<path d="M70.0,246.2 L130.0,244.2 L190.0,258.0 L250.0,247.0 L310.0,246.9 L370.0,226.5" fill="none" stroke="var(--global-theme-color)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M370.0,226.5 L430.0,178.2 L490.0,146.6 L550.0,104.0 L610.0,48.8" fill="none" stroke="#d97706" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 5"/>
+<circle cx="70.0" cy="246.2" r="4.6" fill="var(--global-theme-color)"/>
+<circle cx="130.0" cy="244.2" r="4.6" fill="var(--global-theme-color)"/>
+<circle cx="190.0" cy="258.0" r="4.6" fill="var(--global-theme-color)"/>
+<circle cx="250.0" cy="247.0" r="4.6" fill="var(--global-theme-color)"/>
+<circle cx="310.0" cy="246.9" r="4.6" fill="var(--global-theme-color)"/>
+<circle cx="370.0" cy="226.5" r="4.6" fill="var(--global-theme-color)"/>
+<circle cx="430.0" cy="178.2" r="7.6" fill="none" stroke="#d97706" stroke-width="2"/>
+<circle cx="430.0" cy="178.2" r="4.6" fill="#d97706"/>
+<circle cx="490.0" cy="146.6" r="4.6" fill="#d97706" fill-opacity=".5"/>
+<circle cx="550.0" cy="104.0" r="4.6" fill="#d97706" fill-opacity=".5"/>
+<circle cx="610.0" cy="48.8" r="4.6" fill="#d97706" fill-opacity=".5"/>
+<line x1="430" y1="89" x2="430" y2="164.22417694325506" stroke="#d97706" stroke-opacity=".45" stroke-width="1.2" stroke-dasharray="3 4"/>
+<text x="442" y="109" font-size="12" font-weight="600" fill="#d97706">same step</text>
+<text x="430" y="156.22417694325506" text-anchor="middle" font-size="13" font-weight="700" fill="#d97706">first error</text>
+<text x="680" y="296" text-anchor="end" font-size="12" fill="var(--global-theme-color)" font-weight="600">band of coherent transitions</text>
+<text x="40" y="320" font-size="11.5" fill="currentColor" fill-opacity=".5">reasoning step &#8594;</text>
 </svg>
-<figcaption>Each dot is one reasoning step. While the chain holds together, the steps stay
-inside a band of transitions that look like the ones we see when reasoning goes well. A
-first error shows up as a departure from that band &mdash; and once the trajectory leaves,
-later steps travel further still.</figcaption>
+<figcaption>The same reasoning chain, seen two ways. Read as text, every step is equally
+fluent and the error leaves no trace. Seen as a trajectory, the steps hold inside a band
+of coherent transitions until one of them breaks away.</figcaption>
 </figure>
 
-The important point is that this gives us information that is different from simply
-looking at the text.
+The everyday version of this: you do not need to read someone's mind to notice they have
+walked off the trail.
 
-A model can produce a sentence that sounds completely confident and reasonable while
-still taking a wrong step. The language may look smooth even when the underlying
-reasoning process has changed.
+## The part that surprised us
 
-Geometry gives us another signal: not just what the model is saying, but how its
-internal reasoning state is moving.
+It would be tidy to stop there. The more useful result is the one that complicates it.
 
-## A different question to ask
+We built two detectors. A **teacher** uses step labels to construct a contrastive
+geometric lens and score how unstable each transition is. It is accurate, but it is not
+deployable &mdash; at deployment you do not have labels. So we distilled it into a
+**student** that scores raw hidden states in a single pass, with no labels at all.
 
-We find this especially interesting because it shifts the question from:
+In-domain, both beat entropy-based, probing-based, and attention-based baselines. Then we
+changed the model and changed the dataset. The teacher held up. The student collapsed.
+
+That gap is the finding worth carrying out of the paper. The teacher's transfer says the
+geometric signal is not an artifact of one model or one benchmark &mdash; the structure
+is shared. What fails to transfer is the *decision boundary*. The margin separating
+coherent transitions from excursions shifts when the distribution shifts, and a student
+that has learned where the boundary sat no longer finds it.
+
+So the obstacle to deploying this is not detecting the signal. It is preserving the
+margin under shift. That is a narrower problem than "generalization is hard," and a more
+honest description of where the work stands.
+
+## The question this changes
 
 <div class="shift">
 <div class="q"><span class="lbl">from</span><span>&ldquo;Does this sentence look wrong?&rdquo;</span></div>
-<div class="q to"><span class="lbl">to</span><span>&ldquo;Does this reasoning step behave like the steps we usually see when reasoning is going well?&rdquo;</span></div>
+<div class="q to"><span class="lbl">to</span><span>&ldquo;Does this step move the way steps move when reasoning is going well?&rdquo;</span></div>
 </div>
 
-There are still major challenges. A geometric signal that is easy to discover in
-experiments is not automatically a reliable detector that works across every model and
-every task. GeoReason itself shows that this generalization problem is far from solved.
+These are not the same question, and the second one is answerable from a quantity the
+first cannot see.
 
-But the broader idea feels promising.
-
-If reasoning is a process, then perhaps we should study its dynamics, not only its
-outputs. Mistakes may appear not only as incorrect words, but as unusual movements,
-turns, or departures in a model's internal representation.
+There is a broader habit underneath this. We tend to evaluate reasoning the way we grade
+an exam: check the final answer, maybe skim the working. But reasoning is a process, and
+processes have dynamics. If a failure leaves a signature in how a model moves, then what
+matters is not only that it arrived somewhere wrong.
 
 <div class="takeaway" markdown="1">
 <span class="tl">The takeaway</span>
-Understanding reasoning might require us to look not just at where a model ends up, but
-at the path it takes to get there.
+Understanding reasoning may require looking not just at where a model ends up, but at the
+path it took &mdash; and at the point where that path turned.
 </div>
 
 <div class="paper-note" markdown="1">
 **The paper:** *Where Does Reasoning Break? Step-Level Hallucination Detection via
 Hidden-State Transport Geometry* &mdash; available on
-[arXiv](https://arxiv.org/abs/2605.13772){:target="_blank"}.
+[arXiv](https://arxiv.org/abs/2605.13772){:target="_blank"}. The geometry we use to
+measure those departures comes from optimal transport, a thread that runs through much of
+our [research](/research/).
 </div>
