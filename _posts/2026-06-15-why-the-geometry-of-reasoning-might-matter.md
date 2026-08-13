@@ -76,8 +76,6 @@ to be watching.
 
 ## Why reading the text is not enough
 
-There is a structural reason for this, and it is worth stating carefully.
-
 A model producing a reasoning chain is satisfying two constraints at once. One is
 **fluency**: does this look like a well-formed continuation? The other is **coherence**:
 does this actually follow from what came before? Most of the time the two travel
