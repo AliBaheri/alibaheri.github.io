@@ -4,7 +4,7 @@ permalink: /research/
 title: research
 description: Building autonomous systems that can be trusted &mdash; safe reinforcement learning, safety validation, and calibrated uncertainty for autonomous systems and clinical decision support.
 nav: true
-nav_order: 2
+nav_order: 1
 ---
 
 <!-- Plain HTML on purpose: no Jekyll plugins required, so this builds on
