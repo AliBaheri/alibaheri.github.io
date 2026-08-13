@@ -188,6 +188,18 @@ an exam: check the final answer, maybe skim the working. But reasoning is a proc
 processes have dynamics. If a failure leaves a signature in how a model moves, then what
 matters is not only that it arrived somewhere wrong.
 
+The case sharpens for vision-language-action models. A VLA does not narrate: it maps
+pixels and an instruction straight to motor commands, so there is no chain of thought to
+read and no fluent sentence to catch. The monitoring channel we normally rely on is
+simply absent. The trajectory is not &mdash; the backbone still moves through hidden
+states as the episode unfolds, which makes an internal geometric signal not an additional
+check but the only one available before an action is committed. And a step that does not
+follow is no longer a wrong claim; it is a wrong motion, executed in the world and
+compounding through contact. A monitor that flags the departure mid-episode buys what a
+robot actually needs: time to slow, fall back to a conservative controller, or hand back
+to a human. The caveat carries over and bites harder, since robot deployment is
+distribution shift by definition &mdash; precisely where our student model struggled.
+
 <div class="takeaway" markdown="1">
 <span class="tl">The takeaway</span>
 Understanding reasoning may require looking not just at where a model ends up, but at the
