@@ -188,7 +188,7 @@ an exam: check the final answer, maybe skim the working. But reasoning is a proc
 processes have dynamics. If a failure leaves a signature in how a model moves, then what
 matters is not only that it arrived somewhere wrong.
 
-The case sharpens for vision-language-action models. A VLA does not narrate: it maps
+The case sharpens for vision-language-action models. A VLA maps
 pixels and an instruction straight to motor commands, so there is no chain of thought to
 read and no fluent sentence to catch. The monitoring channel we normally rely on is
 simply absent. The trajectory is not &mdash; the backbone still moves through hidden
