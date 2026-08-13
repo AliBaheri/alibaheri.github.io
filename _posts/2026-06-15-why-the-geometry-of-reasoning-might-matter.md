@@ -172,9 +172,7 @@ coherent transitions from excursions shifts when the distribution shifts, and a 
 that has learned where the boundary sat no longer finds it.
 
 So the obstacle to deploying this is not detecting the signal. It is preserving the
-margin under shift. That is a narrower problem than "generalization is hard," and a more
-honest description of where the work stands.
-
+margin under shift. That is a narrower problem than "generalization is hard".
 ## The question this changes
 
 <div class="shift">
