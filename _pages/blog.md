@@ -4,7 +4,7 @@ permalink: /blog/
 title: blog
 description: Occasional notes on the ideas behind our research.
 nav: true
-nav_order: 5
+nav_order: 7
 ---
 
 <style>
