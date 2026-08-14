@@ -4,7 +4,7 @@ permalink: /publications/
 title: publications
 description: Publications since 2023, organised around the four themes described on my <a href="/research/">research page</a>. Filter by theme below, or see my <a href="https://scholar.google.com/citations?user=MhIEockAAAAJ" target="_blank">Google Scholar</a> profile and <a href="/assets/pdf/cv_academic.pdf" target="_blank">CV</a>.
 nav: true
-nav_order: 1
+nav_order: 2
 ---
 
 <!-- Plain HTML on purpose: no Jekyll plugins required, so this builds on
