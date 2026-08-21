@@ -2,7 +2,7 @@
 layout: post
 title: Why the geometry of LLMs reasoning might matter?
 date: 2026-06-15 09:00:00-0400
-description: a wrong reasoning step can read perfectly well; it may still move differently
+
 tags: reasoning llm optimal-transport interpretability
 categories: research-notes
 _styles: >
