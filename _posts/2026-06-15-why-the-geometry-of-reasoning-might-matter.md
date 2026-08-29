@@ -66,8 +66,8 @@ _styles: >
 
 <p class="lede" markdown="1">
 A model is working through a problem. At step four it carries a quantity across
-incorrectly &mdash; nothing dramatic, no confusion, just a small wrong turn. Steps five
-through nine build on it, fluently and confidently. The final answer is wrong.
+incorrectly. Nothing dramatic, no confusion, just a small wrong turn. Steps five through
+nine build on it, fluently and confidently. The final answer is wrong.
 </p>
 
 Now read the transcript. Step four looks like every other step: same measured tone, same
@@ -86,7 +86,7 @@ fluent and not follow at all.
 
 Text is where fluency lives. It is what was optimized, and it is what you are reading. So
 when fluency and coherence separate, a detector that reads the text is not merely
-unlucky &mdash; it is measuring the wrong quantity.
+unlucky. It is measuring the wrong quantity.
 
 Which raises the obvious question: is there somewhere else to look?
 
@@ -100,17 +100,17 @@ too. A chain of reasoning traces a path through a very high-dimensional space.
 
 That path is what we studied in GeoReason.
 
-The premise is a claim about *motion*, not location. Correct reasoning ranges widely
-&mdash; it has to, since it covers different territory as it goes. What stays regular is
-the step-to-step transition: the kind of move that follows from a given prefix belongs to
-a comparatively narrow family. A first error is a move outside that family. It shows up
-as a localized departure &mdash; an excursion &mdash; and once the trajectory has left,
-later steps tend to travel further out.
+The premise is a claim about *motion*, not location. Correct reasoning ranges widely. It
+has to, since it covers different territory as it goes. What stays regular is the
+step-to-step transition: the kind of move that follows from a given prefix belongs to a
+comparatively narrow family. A first error is a move outside that family. It shows up as
+a localized departure, an excursion. Once the trajectory has left, later steps tend to
+travel further out.
 
 <figure class="fig">
 <svg viewBox="0 0 720 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two panels of the same reasoning chain. In the text, every step looks uniformly fluent and nothing marks the error. In representation space, the steps stay inside a band of coherent transitions until one step departs and later steps travel further away.">
 <text x="40" y="34" font-size="12" font-weight="700" letter-spacing="1.4" fill="currentColor" fill-opacity=".55">IN THE TEXT</text>
-<text x="40" y="52" font-size="12.5" fill="currentColor" fill-opacity=".45">every step reads fluently &#8212; nothing marks the error</text>
+<text x="40" y="52" font-size="12.5" fill="currentColor" fill-opacity=".45">every step reads fluently and nothing marks the error</text>
 <line x1="40" y1="78" x2="680" y2="78" stroke="currentColor" stroke-opacity=".28" stroke-width="2"/>
 <circle cx="70.0" cy="78.0" r="4.4" fill="currentColor" fill-opacity=".38"/>
 <circle cx="130.0" cy="75.0" r="4.4" fill="currentColor" fill-opacity=".38"/>
@@ -159,20 +159,21 @@ It would be tidy to stop there. The more useful result is the one that complicat
 
 We built two detectors. A **teacher** uses step labels to construct a contrastive
 geometric lens and score how unstable each transition is. It is accurate, but it is not
-deployable &mdash; at deployment you do not have labels. So we distilled it into a
+deployable, because at deployment you do not have labels. So we distilled it into a
 **student** that scores raw hidden states in a single pass, with no labels at all.
 
 In-domain, both beat entropy-based, probing-based, and attention-based baselines. Then we
 changed the model and changed the dataset. The teacher held up. The student collapsed.
 
 That gap is the finding worth carrying out of the paper. The teacher's transfer says the
-geometric signal is not an artifact of one model or one benchmark &mdash; the structure
-is shared. What fails to transfer is the *decision boundary*. The margin separating
-coherent transitions from excursions shifts when the distribution shifts, and a student
-that has learned where the boundary sat no longer finds it.
+geometric signal is not an artifact of one model or one benchmark. The structure is
+shared. What fails to transfer is the *decision boundary*. The margin separating coherent
+transitions from excursions shifts when the distribution shifts, and a student that has
+learned where the boundary sat no longer finds it.
 
 So the obstacle to deploying this is not detecting the signal. It is preserving the
 margin under shift. That is a narrower problem than "generalization is hard".
+
 ## The question this changes
 
 <div class="shift">
@@ -188,16 +189,25 @@ an exam: check the final answer, maybe skim the working. But reasoning is a proc
 processes have dynamics. If a failure leaves a signature in how a model moves, then what
 matters is not only that it arrived somewhere wrong.
 
-The result leaves a harder question open. We found evidence that the first wrong step can have a geometric signature, but not that every wrong step must have one. Some errors may move through hidden space almost exactly as correct reasoning does. And even when the signal exists, our student results show that detecting it reliably across models and datasets is another problem entirely. What, then, makes the geometry of a reasoning failure stable? Is there a representation in which the transport margin survives model and task changes? Or are these signatures inherently local to a particular model’s internal coordinates? Those questions seem more important now than simply asking whether a model “knows” that it is wrong.
+The result leaves a harder question open. We found evidence that the first wrong step can
+have a geometric signature, but not that every wrong step must have one. Some errors may
+move through hidden space almost exactly as correct reasoning does. And even when the
+signal exists, our student results show that detecting it reliably across models and
+datasets is another problem entirely. What, then, makes the geometry of a reasoning
+failure stable? Is there a representation in which the transport margin survives model
+and task changes? Or are these signatures inherently local to a particular model's
+internal coordinates? Those questions seem more important now than simply asking whether
+a model "knows" that it is wrong.
+
 <div class="takeaway" markdown="1">
 <span class="tl">The takeaway</span>
 Understanding reasoning may require looking not just at where a model ends up, but at the
-path it took &mdash; and at the point where that path turned.
+path it took, and at the point where that path turned.
 </div>
 
 <div class="paper-note" markdown="1">
 **The paper:** *Where Does Reasoning Break? Step-Level Hallucination Detection via
-Hidden-State Transport Geometry* &mdash; available on
+Hidden-State Transport Geometry*, available on
 [arXiv](https://arxiv.org/abs/2605.13772){:target="_blank"}. The geometry we use to
 measure those departures comes from optimal transport, a thread that runs through much of
 our [research](/research/).
