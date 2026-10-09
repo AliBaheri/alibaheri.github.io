@@ -2,7 +2,7 @@
 layout: page
 permalink: /publications/
 title: publications
-description: Publications since 2023, organised around the four themes described on my <a href="/research/">research page</a>. Filter by theme below, or see my <a href="https://scholar.google.com/citations?user=MhIEockAAAAJ" target="_blank">Google Scholar</a> profile and <a href="/assets/pdf/cv_academic.pdf" target="_blank">CV</a>.
+description: Publications since 2023, organized around the four themes of my <a href="/research/">research</a> &mdash; physical AI, geometric foundations, safe reinforcement learning, and uncertainty quantification. Filter by theme below, or see my <a href="https://scholar.google.com/citations?user=MhIEockAAAAJ" target="_blank">Google Scholar</a> profile and <a href="/assets/pdf/cv_academic.pdf" target="_blank">CV</a>.
 nav: true
 nav_order: 2
 ---
@@ -11,7 +11,7 @@ nav_order: 2
      GitHub Pages with no extra setup. The BibTeX source of record lives in
      _bibliography/papers.bib.
      To add a paper: copy one list item below and edit the text.
-     data-topics takes ONE of: geo rl uq val  (the four research pillars).
+     data-topics takes ONE of: phys geo rl uq  (the four research pillars).
      To flag a spotlight or oral, add class "highlight" plus
      data-award="spotlight" or "oral", and drop the matching
      span.pub-award into the title div.
@@ -107,28 +107,28 @@ button.pcard .cc { font-size: .68rem; color: var(--global-text-color-light); mar
 </style>
 
 <div class="pcards" id="pub-cards">
+<button class="pcard" data-topic="phys">
+<div class="ci"><i class="fas fa-robot" aria-hidden="true"></i></div>
+<div class="cn">01</div>
+<div class="ct">Physical AI</div>
+<div class="cc">15 papers</div>
+</button>
 <button class="pcard" data-topic="geo">
 <div class="ci"><i class="fas fa-shapes" aria-hidden="true"></i></div>
-<div class="cn">01</div>
+<div class="cn">02</div>
 <div class="ct">Geometric Foundations</div>
-<div class="cc">18 papers</div>
+<div class="cc">16 papers</div>
 </button>
 <button class="pcard" data-topic="rl">
-<div class="ci"><i class="fas fa-robot" aria-hidden="true"></i></div>
-<div class="cn">02</div>
+<div class="ci"><i class="fas fa-shield-alt" aria-hidden="true"></i></div>
+<div class="cn">03</div>
 <div class="ct">Safe Reinforcement Learning</div>
-<div class="cc">12 papers</div>
+<div class="cc">9 papers</div>
 </button>
 <button class="pcard" data-topic="uq">
 <div class="ci"><i class="fas fa-bullseye" aria-hidden="true"></i></div>
-<div class="cn">03</div>
-<div class="ct">Uncertainty Quantification</div>
-<div class="cc">8 papers</div>
-</button>
-<button class="pcard" data-topic="val">
-<div class="ci"><i class="fas fa-clipboard-check" aria-hidden="true"></i></div>
 <div class="cn">04</div>
-<div class="ct">Safety Validation</div>
+<div class="ct">Uncertainty Quantification</div>
 <div class="cc">7 papers</div>
 </button>
 </div>
@@ -146,7 +146,7 @@ button.pcard .cc { font-size: .68rem; color: var(--global-text-color-light); mar
 <div class="year-group" data-year="2026">
 <h2 class="year">2026</h2>
 <ol class="bibliography">
-<li class="pub" data-topics="uq">
+<li class="pub" data-topics="phys">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">OJ-CSYS</abbr></div>
  <div id="baheri2026disagree" class="col-sm-8">
@@ -181,7 +181,7 @@ button.pcard .cc { font-size: .68rem; color: var(--global-text-color-light); mar
  </div>
 </div>
 </li>
-<li class="pub" data-topics="val">
+<li class="pub" data-topics="phys">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">IEEE Access</abbr></div>
  <div id="shahrooei2026efficient" class="col-sm-8">
@@ -214,6 +214,19 @@ button.pcard .cc { font-size: .68rem; color: var(--global-text-color-light); mar
   <div class="periodical"><em>arXiv preprint</em> 2026</div>
   <div class="links">
  <a href="https://arxiv.org/abs/2603.17820" class="btn btn-sm z-depth-0" role="button" target="_blank">arXiv</a>
+ </div>
+ </div>
+</div>
+</li>
+<li class="pub" data-topics="uq">
+<div class="row">
+ <div class="col-sm-2 abbr"><abbr class="badge">Forecasting</abbr></div>
+ <div id="amirishahbazi2026forecasting" class="col-sm-8">
+  <div class="title">Heterogeneous-Horizon Conformal Ensembles for Online Prediction Under Distribution Shift: An Empirical Comparison with Strongly Adaptive Methods</div>
+  <div class="author">Amiri Shahbazi, Marzieh, and <em>Baheri, Ali</em></div>
+  <div class="periodical"><em>Forecasting</em> 2026</div>
+  <div class="links">
+ <a href="https://www.mdpi.com/2571-9394/8/5/77" class="btn btn-sm z-depth-0" role="button" target="_blank">HTML</a>
  </div>
  </div>
 </div>
@@ -255,7 +268,7 @@ button.pcard .cc { font-size: .68rem; color: var(--global-text-color-light); mar
  </div>
 </div>
 </li>
-<li class="pub" data-topics="rl">
+<li class="pub" data-topics="phys">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">ACC</abbr></div>
  <div id="karpoorasundarapandian2026density" class="col-sm-8">
@@ -276,6 +289,17 @@ button.pcard .cc { font-size: .68rem; color: var(--global-text-color-light); mar
   <div class="links">
  <a href="https://arxiv.org/abs/2606.23933" class="btn btn-sm z-depth-0" role="button" target="_blank">arXiv</a>
  </div>
+ </div>
+</div>
+</li>
+<li class="pub" data-topics="geo">
+<div class="row">
+ <div class="col-sm-2 abbr"><abbr class="badge">NeurIPS</abbr></div>
+ <div id="alvarez2026georeason" class="col-sm-8">
+  <div class="title">GeoReason: Step-Level Hallucination Detection via Hidden-State Trajectory Geometry</div>
+  <div class="author">Alvarez, Tyler, and <em>Baheri, Ali</em></div>
+  <div class="periodical"><em>In NeurReps Workshop, NeurIPS (Proceedings Track)</em> 2026</div>
+  <div class="links"></div>
  </div>
 </div>
 </li>
@@ -329,7 +353,7 @@ button.pcard .cc { font-size: .68rem; color: var(--global-text-color-light); mar
  </div>
 </div>
 </li>
-<li class="pub" data-topics="geo">
+<li class="pub" data-topics="phys">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">ECC</abbr></div>
  <div id="baheri2026metriplectic" class="col-sm-8">
@@ -353,7 +377,7 @@ button.pcard .cc { font-size: .68rem; color: var(--global-text-color-light); mar
  </div>
 </div>
 </li>
-<li class="pub" data-topics="geo">
+<li class="pub" data-topics="phys">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">ICLR</abbr></div>
  <div id="baheri2026pde" class="col-sm-8">
@@ -404,7 +428,7 @@ button.pcard .cc { font-size: .68rem; color: var(--global-text-color-light); mar
  </div>
 </div>
 </li>
-<li class="pub" data-topics="rl">
+<li class="pub" data-topics="phys">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">RICO</abbr></div>
  <div id="baheri2025lyapunov" class="col-sm-8">
@@ -417,7 +441,7 @@ button.pcard .cc { font-size: .68rem; color: var(--global-text-color-light); mar
  </div>
 </div>
 </li>
-<li class="pub" data-topics="val">
+<li class="pub" data-topics="phys">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">Logics</abbr></div>
  <div id="baheri2025temporal" class="col-sm-8">
@@ -483,7 +507,7 @@ button.pcard .cc { font-size: .68rem; color: var(--global-text-color-light); mar
  </div>
 </div>
 </li>
-<li class="pub" data-topics="geo">
+<li class="pub" data-topics="phys">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">NeurIPS</abbr></div>
  <div id="baheri2025metriplectic" class="col-sm-8">
@@ -525,7 +549,7 @@ button.pcard .cc { font-size: .68rem; color: var(--global-text-color-light); mar
 <div class="year-group" data-year="2024">
 <h2 class="year">2024</h2>
 <ol class="bibliography">
-<li class="pub" data-topics="rl">
+<li class="pub" data-topics="phys">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">EAAI</abbr></div>
  <div id="razzaghi2024survey" class="col-sm-8">
@@ -539,7 +563,7 @@ button.pcard .cc { font-size: .68rem; color: var(--global-text-color-light); mar
  </div>
 </div>
 </li>
-<li class="pub" data-topics="val">
+<li class="pub" data-topics="phys">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">IEEE Access</abbr></div>
  <div id="yancosek2024beacon" class="col-sm-8">
@@ -567,7 +591,7 @@ button.pcard .cc { font-size: .68rem; color: var(--global-text-color-light); mar
  </div>
 </div>
 </li>
-<li class="pub" data-topics="uq">
+<li class="pub" data-topics="phys">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">PLOS ONE</abbr></div>
  <div id="hayes2024forward" class="col-sm-8">
@@ -609,7 +633,7 @@ button.pcard .cc { font-size: .68rem; color: var(--global-text-color-light); mar
 <div class="year-group" data-year="2023">
 <h2 class="year">2023</h2>
 <ol class="bibliography">
-<li class="pub" data-topics="val">
+<li class="pub" data-topics="phys">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">AI Mag.</abbr></div>
  <div id="baheri2023fidelity" class="col-sm-8">
@@ -620,7 +644,7 @@ button.pcard .cc { font-size: .68rem; color: var(--global-text-color-light); mar
  </div>
 </div>
 </li>
-<li class="pub" data-topics="val">
+<li class="pub" data-topics="phys">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">arXiv</abbr></div>
  <div id="baheri2023fidelitysettings" class="col-sm-8">
@@ -633,7 +657,7 @@ button.pcard .cc { font-size: .68rem; color: var(--global-text-color-light); mar
  </div>
 </div>
 </li>
-<li class="pub" data-topics="val">
+<li class="pub" data-topics="phys">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">ECC</abbr></div>
  <div id="shahrooei2023falsification" class="col-sm-8">
@@ -688,7 +712,7 @@ button.pcard .cc { font-size: .68rem; color: var(--global-text-color-light); mar
  </div>
 </div>
 </li>
-<li class="pub" data-topics="val">
+<li class="pub" data-topics="phys">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">AAAI</abbr></div>
  <div id="baheri2023validation" class="col-sm-8">
