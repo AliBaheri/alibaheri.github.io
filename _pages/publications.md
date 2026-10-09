@@ -123,7 +123,7 @@ button.pcard .cc { font-size: .68rem; color: var(--global-text-color-light); mar
 <div class="ci"><i class="fas fa-shield-alt" aria-hidden="true"></i></div>
 <div class="cn">03</div>
 <div class="ct">Safe Reinforcement Learning</div>
-<div class="cc">9 papers</div>
+<div class="cc">10 papers</div>
 </button>
 <button class="pcard" data-topic="uq">
 <div class="ci"><i class="fas fa-bullseye" aria-hidden="true"></i></div>
@@ -146,6 +146,17 @@ button.pcard .cc { font-size: .68rem; color: var(--global-text-color-light); mar
 <div class="year-group" data-year="2026">
 <h2 class="year">2026</h2>
 <ol class="bibliography">
+<li class="pub" data-topics="rl">
+<div class="row">
+ <div class="col-sm-2 abbr"><abbr class="badge">L-CSS</abbr></div>
+ <div id="baheri2026runtime" class="col-sm-8">
+  <div class="title">Controller-Agnostic Runtime Safety Certificates for Tool-Using AI Agents via Data-Driven Robust Reachability</div>
+  <div class="author"><em>Baheri, Ali</em>, and Wei, Peng</div>
+  <div class="periodical"><em>IEEE Control Systems Letters</em> 2026</div>
+  <div class="links"></div>
+ </div>
+</div>
+</li>
 <li class="pub" data-topics="phys">
 <div class="row">
  <div class="col-sm-2 abbr"><abbr class="badge">OJ-CSYS</abbr></div>
