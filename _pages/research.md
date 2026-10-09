@@ -2,7 +2,7 @@
 layout: page
 permalink: /research/
 title: research
-description: Building autonomous systems that can be trusted &mdash; safe reinforcement learning, safety validation, and calibrated uncertainty for autonomous systems and clinical decision support.
+description: Physical AI that can be trusted &mdash; learned dynamics, safe decision-making, and calibrated uncertainty for aircraft, robots, and autonomous vehicles.
 nav: true
 nav_order: 1
 ---
@@ -113,55 +113,89 @@ a.tcard .cc { font-size: .72rem; color: var(--global-text-color-light); margin-t
 </style>
 
 <div class="rintro" markdown="1">
-Autonomous systems increasingly depend on learned components &mdash; perception models,
-control policies, and now foundation models. These components are capable but opaque:
-they fail in ways their designers did not anticipate, and they offer no native account
-of their own reliability. My research asks what it takes to deploy them where failure
-is not an option, in aviation and airspace operations, robots working around people,
-and clinical decision support.
+AI is moving off the screen and into the world. Learned models are now being asked to
+fly aircraft, drive vehicles, and manipulate objects &mdash; **physical AI**, where a
+model's output is an action rather than a sentence. That changes what failure means: a
+wrong action is executed, compounds through contact and dynamics, and cannot be taken
+back. My research asks what it takes to build physical AI that can be trusted.
 
-The work follows four connected pillars: the **geometric foundations** that make
-guarantees tractable in the first place; **learning policies that respect safety
-requirements** even when those requirements are never fully specified; **quantifying
-uncertainty** so a system knows when it should not be trusted; and **finding failures
-before deployment**, efficiently enough to be practical. This agenda is supported by
-NSF, the FAA, and NASA.
+At the core is physical AI itself: learned dynamics models, controllers, and perception
+systems that respect the physics they act in. Three pillars make that work trustworthy
+&mdash; the **geometric foundations** that make guarantees tractable, **safe
+reinforcement learning** for decisions under requirements that are never fully
+specified, and **uncertainty quantification** so a system knows when it should not be
+trusted. This agenda is supported by NSF, the FAA, NASA, and the NSA.
 </div>
 
 <div class="tgrid">
+<a class="tcard" href="#physical-ai">
+<div class="ci"><i class="fas fa-robot" aria-hidden="true"></i></div>
+<div class="cn">01</div>
+<div class="ct">Physical AI</div>
+<div class="cc">8 selected papers</div>
+</a>
 <a class="tcard" href="#geometry">
 <div class="ci"><i class="fas fa-shapes" aria-hidden="true"></i></div>
-<div class="cn">01</div>
+<div class="cn">02</div>
 <div class="ct">Geometric Foundations</div>
 <div class="cc">9 selected papers</div>
 </a>
 <a class="tcard" href="#safe-rl">
-<div class="ci"><i class="fas fa-robot" aria-hidden="true"></i></div>
-<div class="cn">02</div>
+<div class="ci"><i class="fas fa-shield-alt" aria-hidden="true"></i></div>
+<div class="cn">03</div>
 <div class="ct">Safe Reinforcement Learning</div>
-<div class="cc">8 selected papers</div>
+<div class="cc">6 selected papers</div>
 </a>
 <a class="tcard" href="#uncertainty">
 <div class="ci"><i class="fas fa-bullseye" aria-hidden="true"></i></div>
-<div class="cn">03</div>
+<div class="cn">04</div>
 <div class="ct">Uncertainty Quantification</div>
 <div class="cc">5 selected papers</div>
 </a>
-<a class="tcard" href="#validation">
-<div class="ci"><i class="fas fa-clipboard-check" aria-hidden="true"></i></div>
-<div class="cn">04</div>
-<div class="ct">Safety Validation</div>
-<div class="cc">7 selected papers</div>
-</a>
+</div>
+
+<div class="theme" id="physical-ai">
+<div class="watermark" aria-hidden="true">01</div>
+<div class="thead">
+<div class="ticon"><i class="fas fa-robot" aria-hidden="true"></i></div>
+<div>
+<h2 class="ttitle">Physical AI: Learning That Respects Physics</h2>
+<div class="tsub">Dynamics, control, and perception for systems that act in the world</div>
+</div>
+</div>
+<p class="tbody">A learned model of the physical world is only as trustworthy as the structure it
+respects. A network fit to trajectory data will often predict well over a short horizon
+while quietly violating the physics the real system obeys, and a controller that plans
+on that model inherits every violation, compounded over the rollout. My work builds the
+structure in rather than hoping it is learned: metriplectic flow matching that respects
+the thermodynamics of dissipative systems, fast and accurate system identification, and
+diagnostics for what neural PDE solvers actually learn. The same principle governs
+control &mdash; Lyapunov&ndash;barrier networks that enforce stability and safety
+jointly, model-predictive controllers that widen their safety margins when an ensemble
+of learned models starts to disagree, and imitation learning that reweights corrupted
+demonstrations so a robot does not inherit the mistakes in its data. New NSA-funded work
+carries the principle into perception, developing tools to attack and certify the
+symmetry-aware networks that encode 3D physical symmetries for LiDAR perception and
+robotic manipulation.</p>
+<ul class="papers">
+<li><span class="pv">ECC</span><span class="pt">Metriplectic Conditional Flow Matching for Structure-Preserving Dynamics Learning</span><span class="py">2026</span></li>
+<li><span class="pv">NeurIPS</span><span class="pt"><a href="https://arxiv.org/abs/2509.19526" target="_blank">Metriplectic Conditional Flow Matching for Dissipative Dynamics</a></span><span class="py">2025</span></li>
+<li><span class="pv">PLOS ONE</span><span class="pt"><a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0309661" target="_blank">Forward Variable Selection Enables Fast and Accurate Dynamic System Identification with Karhunen-Loève Decomposed Gaussian Processes</a></span><span class="py">2024</span></li>
+<li><span class="pv">ICLR</span><span class="pt">What Does a Neural PDE Solver Really Learn? A Residual-Spectrum Diagnostic</span><span class="py">2026</span></li>
+<li><span class="pv">RICO</span><span class="pt"><a href="https://www.sciencedirect.com/science/article/pii/S2666720725000426" target="_blank">Distributionally Robust Lyapunov-Barrier Networks for Safe and Stable Control Under Uncertainty</a></span><span class="py">2025</span></li>
+<li><span class="pv">OJ-CSYS</span><span class="pt">How Much Do Your Models Disagree? Adaptive MPC Safety from Ensemble Uncertainty</span><span class="py">2026</span></li>
+<li><span class="pv">ACC</span><span class="pt">Density-Ratio Weighted Behavioral Cloning: Learning Control Policies from Corrupted Datasets</span><span class="py">2026</span></li>
+<li><span class="pv">EAAI</span><span class="pt"><a href="https://www.sciencedirect.com/science/article/abs/pii/S0952197624010698" target="_blank">A Survey on Reinforcement Learning in Aviation Applications</a></span><span class="py">2024</span></li>
+</ul>
 </div>
 
 <div class="theme" id="geometry">
-<div class="watermark" aria-hidden="true">01</div>
+<div class="watermark" aria-hidden="true">02</div>
 <div class="thead">
 <div class="ticon"><i class="fas fa-shapes" aria-hidden="true"></i></div>
 <div>
 <h2 class="ttitle">Geometric Foundations for Trustworthy Learning</h2>
-<div class="tsub">Optimal transport and structure-preserving generative models</div>
+<div class="tsub">Optimal transport and the geometry of generative flows</div>
 </div>
 </div>
 <p class="tbody">Every method here eventually asks how far apart two probability
@@ -183,46 +217,44 @@ guarantees are written in.</p>
 <li><span class="pv">CDC</span><span class="pt"><a href="https://arxiv.org/abs/2607.14291" target="_blank">Wasserstein Stability of Contracting Flows: Effective Rates, Euler Self-Correction, and Noise Tightening</a></span><span class="py">2026</span></li>
 <li><span class="pv">L4DC</span><span class="pt">WAVE: Wasserstein Adaptive Value Estimation for Actor-Critic Reinforcement Learning</span><span class="py">2025</span></li>
 <li><span class="pv">ICML</span><span class="pt"><a href="https://arxiv.org/abs/2506.12497" target="_blank">Wasserstein-Barycenter Consensus for Cooperative Multi-Agent Reinforcement Learning</a></span><span class="py">2025</span></li>
-<li><span class="pv">ECC</span><span class="pt">Metriplectic Conditional Flow Matching for Structure-Preserving Dynamics Learning</span><span class="py">2026</span></li>
 <li><span class="pv">NeuS</span><span class="pt"><a href="https://arxiv.org/abs/2602.02009" target="_blank">Logic-Guided Vector Fields for Constrained Generative Modeling</a></span><span class="py">2026</span></li>
 <li><span class="pv">ICLR</span><span class="pt">Geometry-Grounded Flow Matching on Compact Manifolds</span><span class="py">2026</span></li>
+<li><span class="pv">NeurIPS</span><span class="pt">GeoReason: Step-Level Hallucination Detection via Hidden-State Trajectory Geometry</span><span class="py">2026</span></li>
 <li><span class="pv">ACC</span><span class="pt"><a href="https://arxiv.org/abs/2509.14521" target="_blank">Geometry-Aware Decentralized Sinkhorn for Wasserstein Barycenters</a></span><span class="py">2026</span></li>
 <li><span class="pv">NeurIPS</span><span class="pt">Understanding Reward Ambiguity Through Optimal Transport Theory in Inverse Reinforcement Learning</span><span class="py">2023</span></li>
 </ul>
 </div>
 
 <div class="theme" id="safe-rl">
-<div class="watermark" aria-hidden="true">02</div>
+<div class="watermark" aria-hidden="true">03</div>
 <div class="thead">
-<div class="ticon"><i class="fas fa-robot" aria-hidden="true"></i></div>
+<div class="ticon"><i class="fas fa-shield-alt" aria-hidden="true"></i></div>
 <div>
 <h2 class="ttitle">Safe and Constraint-Aware Reinforcement Learning</h2>
 <div class="tsub">Policies that carry a safety argument, not just good average performance</div>
 </div>
 </div>
 <p class="tbody">Most work on safe reinforcement learning assumes the constraint is handed
-to you in closed form. In deployment it rarely is: the specification is partial,
-expressed in temporal logic, implied by human corrections, or buried in a dataset of
-demonstrations of unknown quality. My work learns the policy and the constraint
-<em>together</em> &mdash; inferring unknown temporal specifications during training,
-refining behavior from human feedback, and enforcing safety through learned
-Lyapunov&ndash;barrier certificates that come with stability guarantees. A recurring
-device is hierarchy: decomposing long-horizon tasks so that safety can be reasoned
-about at the level of abstraction where it is actually specified.</p>
+to you in closed form. For a robot or an aircraft it rarely is: the specification is
+partial, expressed in temporal logic, implied by human corrections, or buried in a
+dataset of demonstrations of unknown quality. My work learns the policy and the
+constraint <em>together</em> &mdash; inferring unknown temporal specifications during
+training, refining behavior from human feedback, and correcting offline policies for
+constraints the data only implies. A recurring device is hierarchy: decomposing
+long-horizon tasks so that safety can be reasoned about at the level of abstraction
+where it is actually specified.</p>
 <ul class="papers">
 <li><span class="pv">OJ-CSYS</span><span class="pt"><a href="https://ieeexplore.ieee.org/abstract/document/10569078" target="_blank">Concurrent Learning of Control Policy and Unknown Safety Specifications in Reinforcement Learning</a></span><span class="py">2024</span></li>
-<li><span class="pv">RICO</span><span class="pt"><a href="https://www.sciencedirect.com/science/article/pii/S2666720725000426" target="_blank">Distributionally Robust Lyapunov-Barrier Networks for Safe and Stable Control Under Uncertainty</a></span><span class="py">2025</span></li>
+<li><span class="pv">ICAPS</span><span class="pt">Policy Refinement with Human Feedback for Safe Reinforcement Learning</span><span class="py">2023</span></li>
 <li><span class="pv">RSS</span><span class="pt"><a href="https://arxiv.org/abs/2506.14058" target="_blank">Implicit Constraint-Aware Off-Policy Correction for Offline Reinforcement Learning</a></span><span class="py">2025</span></li>
 <li><span class="pv">MDPI</span><span class="pt"><a href="https://www.mdpi.com/2227-7390/13/1/149" target="_blank">Multilevel Constrained Bandits: A Hierarchical Upper Confidence Bound Approach with Safety Guarantees</a></span><span class="py">2025</span></li>
 <li><span class="pv">NeSy</span><span class="pt"><a href="https://openreview.net/forum?id=tXOU6EULup" target="_blank">Hierarchical Neuro-Symbolic Decision Transformer</a></span><span class="py">2025</span></li>
-<li><span class="pv">ACC</span><span class="pt">Density-Ratio Weighted Behavioral Cloning: Learning Control Policies from Corrupted Datasets</span><span class="py">2026</span></li>
-<li><span class="pv">ICAPS</span><span class="pt">Policy Refinement with Human Feedback for Safe Reinforcement Learning</span><span class="py">2023</span></li>
-<li><span class="pv">EAAI</span><span class="pt"><a href="https://www.sciencedirect.com/science/article/abs/pii/S0952197624010698" target="_blank">A Survey on Reinforcement Learning in Aviation Applications</a></span><span class="py">2024</span></li>
+<li><span class="pv">RLC</span><span class="pt"><a href="https://arxiv.org/abs/2606.23933" target="_blank">Flow-Corrected Thompson Sampling for Non-Stationary Contextual Bandits</a></span><span class="py">2026</span></li>
 </ul>
 </div>
 
 <div class="theme" id="uncertainty">
-<div class="watermark" aria-hidden="true">03</div>
+<div class="watermark" aria-hidden="true">04</div>
 <div class="thead">
 <div class="ticon"><i class="fas fa-bullseye" aria-hidden="true"></i></div>
 <div>
@@ -234,47 +266,18 @@ about at the level of abstraction where it is actually specified.</p>
 a defensible account of its own uncertainty, and a controller should become more
 conservative exactly when its models are least reliable. Conformal prediction offers
 distribution-free, finite-sample coverage guarantees, but standard formulations assume
-flat, exchangeable data. I extend it to settings with real structure &mdash;
-hierarchical data with group-level effects, and predictions living on manifolds
-&mdash; while preserving coverage. A companion line turns disagreement among ensemble
-members into an online signal for adapting the safety margin of a model-predictive
-controller. Applications run from aviation autonomy to clinical decision support.</p>
+flat, exchangeable data &mdash; an assumption a physical system breaks routinely as it
+drifts into conditions its training data never covered. I extend it to settings with
+real structure &mdash; hierarchical data with group-level effects, and predictions
+living on manifolds &mdash; while preserving coverage, and study how conformal
+ensembles hold up when the distribution shifts online. Applications run from
+autonomous systems to clinical decision support.</p>
 <ul class="papers">
-<li><span class="pv">OJ-CSYS</span><span class="pt">How Much Do Your Models Disagree? Adaptive MPC Safety from Ensemble Uncertainty</span><span class="py">2026</span></li>
 <li><span class="pv">RAM</span><span class="pt"><a href="https://www.sciencedirect.com/science/article/pii/S2590037425000536" target="_blank">Conformal Prediction Across Scales: Finite-Sample Coverage with Hierarchical Efficiency</a></span><span class="py">2025</span></li>
-<li><span class="pv">ICML</span><span class="pt"><a href="https://arxiv.org/abs/2602.16015" target="_blank">Geometry-Aware Uncertainty Quantification via Conformal Prediction on Manifolds</a></span><span class="py">2026</span></li>
-<li><span class="pv">AAAI</span><span class="pt"><a href="https://arxiv.org/abs/2601.01223" target="_blank">Adaptive Conformal Prediction via Bayesian Uncertainty Weighting for Hierarchical Healthcare Data</a></span><span class="py">2026</span></li>
 <li><span class="pv">Sci. Rep.</span><span class="pt">A Hierarchical Conformal Framework for Uncertainty-Aware Length of Stay Prediction in Multi-Hospital Settings</span><span class="py">2026</span></li>
-</ul>
-</div>
-
-<div class="theme" id="validation">
-<div class="watermark" aria-hidden="true">04</div>
-<div class="thead">
-<div class="ticon"><i class="fas fa-clipboard-check" aria-hidden="true"></i></div>
-<div>
-<h2 class="ttitle">Safety Validation of Learning-Enabled Autonomous Systems</h2>
-<div class="tsub">Finding the failures before deployment does</div>
-</div>
-</div>
-<p class="tbody">A learned controller can pass millions of random simulation trials and still
-fail catastrophically on the rare input that matters. Exhaustive verification is out
-of reach, and high-fidelity simulation is far too expensive to search with. I develop
-<em>multi-fidelity falsification</em>: methods that search broadly using cheap,
-approximate simulators and spend expensive high-fidelity evaluations only where a
-failure looks likely, with the fidelity level itself treated as a decision variable.
-Related work asks how much simulator fidelity is actually required to certify a given
-property, and develops stratified temporal logics for requirements that span scales.
-This thread underpins my NSF- and FAA-funded projects and was the subject of my
-AAAI New Faculty Highlights talk.</p>
-<ul class="papers">
-<li><span class="pv">IEEE Access</span><span class="pt"><a href="https://ieeexplore.ieee.org/abstract/document/11488849" target="_blank">Efficient Counterexample Generation for Control Systems Using Multi-Fidelity Bayesian Optimization</a></span><span class="py">2026</span></li>
-<li><span class="pv">Logics</span><span class="pt"><a href="https://www.mdpi.com/2813-0405/3/2/5" target="_blank">Multi-Fidelity Temporal Reasoning: A Stratified Logic for Cross-Scale System Specifications</a></span><span class="py">2025</span></li>
-<li><span class="pv">IEEE Access</span><span class="pt"><a href="https://ieeexplore.ieee.org/document/10620179" target="_blank">BEACON: A Bayesian Evolutionary Approach for Counterexample Generation of Control Systems</a></span><span class="py">2024</span></li>
-<li><span class="pv">AI Mag.</span><span class="pt">Exploring the Role of Simulator Fidelity in the Safety Validation of Learning-Enabled Autonomous Systems</span><span class="py">2023</span></li>
-<li><span class="pv">ECC</span><span class="pt">Falsification of Learning-Based Controllers through Multi-Fidelity Bayesian Optimization</span><span class="py">2023</span></li>
-<li><span class="pv">AAAI</span><span class="pt">Safety Validation of Learning-Based Autonomous Systems: A Multi-Fidelity Approach</span><span class="py">2023</span></li>
-<li><span class="pv">arXiv</span><span class="pt"><a href="https://arxiv.org/abs/2305.06111" target="_blank">Joint Falsification and Fidelity Settings Optimization for Validation of Safety-Critical Systems: A Theoretical Analysis</a></span><span class="py">2023</span></li>
+<li><span class="pv">AAAI</span><span class="pt"><a href="https://arxiv.org/abs/2601.01223" target="_blank">Adaptive Conformal Prediction via Bayesian Uncertainty Weighting for Hierarchical Healthcare Data</a></span><span class="py">2026</span></li>
+<li><span class="pv">ICML</span><span class="pt"><a href="https://arxiv.org/abs/2602.16015" target="_blank">Geometry-Aware Uncertainty Quantification via Conformal Prediction on Manifolds</a></span><span class="py">2026</span></li>
+<li><span class="pv">Forecasting</span><span class="pt"><a href="https://www.mdpi.com/2571-9394/8/5/77" target="_blank">Heterogeneous-Horizon Conformal Ensembles for Online Prediction Under Distribution Shift: An Empirical Comparison with Strongly Adaptive Methods</a></span><span class="py">2026</span></li>
 </ul>
 </div>
 
@@ -283,6 +286,7 @@ AAAI New Faculty Highlights talk.</p>
 ## Funding
 
 <ul>
+<li><span class="agency">National Security Agency</span> — NCAE-C: Red-Teaming and Assurance for Geometric AI in Defense Autonomy, 2026&ndash;2028<br><span class="role">PI</span></li>
 <li><span class="agency">National Science Foundation</span> — RII: Safety Validation of Autonomous Systems from Multiple Sources of Information, 2022&ndash;2024<br><span class="role">Single PI</span></li>
 <li><span class="agency">Federal Aviation Administration</span> — Safety Verification Framework for Learning-based Aviation Systems (SVF-LAS), 2021&ndash;2023<br><span class="role">Lead PI</span></li>
 <li><span class="agency">NASA</span> — Fault Diagnosis for Safety-Critical Autonomous Systems using Reinforcement Learning, 2021&ndash;2022<br><span class="role">Lead PI</span></li>
