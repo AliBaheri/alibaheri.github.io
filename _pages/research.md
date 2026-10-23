@@ -317,10 +317,10 @@ training, refining behavior from human feedback, and correcting offline policies
 constraints the data only implies. A recurring device is hierarchy: decomposing
 long-horizon tasks so that safety can be reasoned about at the level of abstraction
 where it is actually specified.</p>
-<div class="demo" id="demo-rl">
-<div class="demo-head"><span class="demo-title"><span class="demo-live"><i></i>Live</span>Learning where not to go</span><span class="demo-hud" data-hud></span></div>
-<canvas role="img" aria-label="Animation of an agent travelling from start to goal over five episodes. A hidden unsafe region lies on the direct route. In early episodes the agent cuts through it and each violation is counted; a learned constraint grows around the region, and later episodes route around it with no violations."></canvas>
-<div class="demo-foot"><span>The agent learns the constraint from its own mistakes, then stops making them.</span><button type="button" class="demo-btn" data-act="replay">Replay</button></div>
+<div class="demo demo-drag" id="demo-rl">
+<div class="demo-head"><span class="demo-title"><span class="demo-live"><i></i>Live</span>Learning the safety rule and the policy together</span><span class="demo-hud" data-hud></span></div>
+<canvas role="img" aria-label="Animation of our method for learning an unknown safety specification during training. A robot circles an arena whose true safety limits, two vertical lines, are hidden from it. The specification is a parametric signal temporal logic formula, always stay between theta 1 and theta 2, with unknown limits. Each iteration, Bayesian optimization fits the limits to runs that an expert labeled safe or unsafe, the policy is retrained under the new limits, and the expert labels new runs. The learned limits converge to the true ones and the runs become safe."></canvas>
+<div class="demo-foot"><span>Drag an amber line to hide a new rule; the robot learns it from scratch.</span><button type="button" class="demo-btn" data-act="replay">Restart</button></div>
 </div>
 <ul class="papers">
 <li><span class="pv">OJ-CSYS</span><span class="pt"><a href="https://ieeexplore.ieee.org/abstract/document/10569078" target="_blank">Concurrent Learning of Control Policy and Unknown Safety Specifications in Reinforcement Learning</a></span><span class="py">2024</span></li>
@@ -492,6 +492,7 @@ if (!cv || !cv.getContext) return;
 var d = { el: el, cv: cv, ctx: cv.getContext('2d'), W: 0, H: 0, dpr: 1, run: false, last: 0, hud: el.querySelector('[data-hud]') };
 d.size = function () {
 d.dpr = Math.min(window.devicePixelRatio || 1, 2);
+if (d.heightFor) cv.style.height = d.heightFor(cv.clientWidth) + 'px';
 d.W = cv.clientWidth; d.H = cv.clientHeight;
 if (!d.W || !d.H) return;
 cv.width = Math.round(d.W * d.dpr); cv.height = Math.round(d.H * d.dpr);
@@ -782,137 +783,386 @@ d.cv.addEventListener('pointercancel', up);
 hud();
 });
 /* ================================================================
-   3. Safe RL: learning where not to go
+   3. Safe RL: learning an unknown safety rule and the policy together
+   (illustration of concurrent policy / pSTL-parameter learning on the
+   Circle task: Bayesian optimization fits the rule's limits to runs an
+   expert labels, the policy is retrained under each estimate, and the
+   loop stops once 90% of a round's runs are safe)
    ================================================================ */
 demo('demo-rl', function (d) {
-var EP = 5, DUR = 2.5, GAP = 0.9, ENDHOLD = 3;
-/* path bend per episode; clearance from the true region (in region radii) is
-   0.10, 0.75 (both inside: violations), then 1.51, 1.31, 1.21 (outside) */
-var DEV = [0, 0.45, 1.0, 0.85, 0.78], EST = [0.6, 1.12, 1.12, 1.12, 1.12];
-var S, G, Zn, ep, t, vio, epHit, est, estTo, traces, trail, rip, phase, wait, flash, pops, reach;
-function restart() {
-ep = 0; t = 0; vio = 0; epHit = false; est = 0; estTo = 0; traces = []; trail = []; rip = []; pops = [];
-phase = 'run'; wait = 0; flash = 0; reach = -1; hud();
+var RC = 1.5, M = 0.08, SD = 0.035, KS = 25, BONUS = 0.008, NROLL = 10, TR = 0.14, NG = 30, MAXIT = 9;
+var B1 = [-1.6, -0.4], B2 = [0.4, 1.6], PAPER = [-1.2, 1.0], SEED = 1;
+var r = rng(7), time = 0, geo = null, dragging = -1, hoverLine = -1, userRule = false;
+var truth, data, prev, warm, bo, ppath, it, phase, pt, est, shownLim, limFrom, limT, pol, polFrom, polTo, polT;
+var shownTr, oldTr, revealed, roundSafe, conv, heat, heatOld, heatT, phi = 0, trail = [];
+var STEPS = ['fit the rule (Bayesian opt.)', 'retrain the policy (RL)', 'expert labels new runs'];
+var STEPS_S = ['fit rule', 'retrain policy', 'label runs'];
+function U(a, b) { return a + (b - a) * r(); }
+function toT(u) { return [B1[0] + u[0] * (B1[1] - B1[0]), B2[0] + u[1] * (B2[1] - B2[0])]; }
+function toU(t) { return [(t[0] - B1[0]) / (B1[1] - B1[0]), (t[1] - B2[0]) / (B2[1] - B2[0])]; }
+function run(lo, hi, safe) { return { lo: Math.max(lo, -RC), hi: Math.min(hi, RC), safe: safe, w: r() * 6.283 }; }
+function initialData() {
+var out = [], k;
+for (k = 0; k < 10; k++) out.push(run(truth[0] + U(0.12, 0.35), truth[1] - U(0.12, 0.35), true));
+for (k = 0; k < 10; k++) {
+if (k % 2) out.push(run(truth[0] - U(0.7, 1.0), truth[1] - U(0.12, 0.35), false));
+else out.push(run(truth[0] + U(0.12, 0.35), truth[1] + U(0.7, 1.0), false));
 }
+return out;
+}
+/* objective: misclassification of the labeled runs by the rule (smoothed), with a
+   slight preference for the least restrictive rule among equally good ones */
+function sig(z) { return 1 / (1 + Math.exp(-Math.max(-40, Math.min(40, z)))); }
+function obj(t1, t2) {
+var es = 0, eu = 0, ns = 0, nu = 0, i, q, rho;
+for (i = 0; i < data.length; i++) {
+q = data[i]; rho = Math.min(q.lo - t1, t2 - q.hi);
+if (q.safe) { es += sig(-KS * rho); ns++; } else { eu += sig(KS * rho); nu++; }
+}
+return 0.5 * (es / Math.max(ns, 1) + eu / Math.max(nu, 1)) - BONUS * (t2 - t1) / 2.8;
+}
+/* a small Gaussian-process surrogate with expected improvement */
+function kern(a, b) { var x = a[0] - b[0], y = a[1] - b[1]; return Math.exp(-(x * x + y * y) / (2 * 0.12 * 0.12)); }
+function chol(A, n) {
+var L = [], i, j, k, s;
+for (i = 0; i < n; i++) L.push(new Float64Array(n));
+for (i = 0; i < n; i++) for (j = 0; j <= i; j++) {
+s = A[i][j];
+for (k = 0; k < j; k++) s -= L[i][k] * L[j][k];
+L[i][j] = i === j ? Math.sqrt(Math.max(s, 1e-12)) : s / L[j][j];
+}
+return L;
+}
+function fsub(L, b, n) { var x = new Float64Array(n), i, k, s; for (i = 0; i < n; i++) { s = b[i]; for (k = 0; k < i; k++) s -= L[i][k] * x[k]; x[i] = s / L[i][i]; } return x; }
+function bsub(L, y, n) { var x = new Float64Array(n), i, k, s; for (i = n - 1; i >= 0; i--) { s = y[i]; for (k = i + 1; k < n; k++) s -= L[k][i] * x[k]; x[i] = s / L[i][i]; } return x; }
+function erf(x) {
+var sg = x < 0 ? -1 : 1, t;
+x = Math.abs(x); t = 1 / (1 + 0.3275911 * x);
+return sg * (1 - ((((1.061405429 * t - 1.453152027) * t + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x));
+}
+function nextEI(Us, F, C) {
+var n = Us.length, i, j, mu0 = 0, best = Infinity, K = [], bi = 0, bv = -1;
+for (i = 0; i < n; i++) { mu0 += F[i] / n; best = Math.min(best, F[i]); }
+for (i = 0; i < n; i++) { K.push(new Float64Array(n)); for (j = 0; j < n; j++) K[i][j] = kern(Us[i], Us[j]) + (i === j ? 1e-3 : 0); }
+var L = chol(K, n), y = new Float64Array(n);
+for (i = 0; i < n; i++) y[i] = F[i] - mu0;
+var a = bsub(L, fsub(L, y, n), n), ks = new Float64Array(n);
+for (var c = 0; c < C.length; c++) {
+for (i = 0; i < n; i++) ks[i] = kern(C[c], Us[i]);
+var mu = mu0, v = fsub(L, ks, n), vv = 0;
+for (i = 0; i < n; i++) { mu += ks[i] * a[i]; vv += v[i] * v[i]; }
+var sd = Math.sqrt(Math.max(1e-12, 1 - vv)), g = best - mu - 0.005, z = g / sd;
+var ei = g * 0.5 * (1 + erf(z / Math.SQRT2)) + sd * Math.exp(-0.5 * z * z) / 2.5066;
+if (ei > bv) { bv = ei; bi = c; }
+}
+return C[bi];
+}
+function runBO() {
+var Us = [], F = [], k, lo, hi, C = [], gi, gj;
+function ev(u) { u = [clamp(u[0], 0, 1), clamp(u[1], 0, 1)]; var t = toT(u); Us.push(u); F.push(obj(t[0], t[1])); }
+warm.forEach(ev);
+if (prev) { ev(prev); [[0.03, 0], [0, 0.03], [-0.03, 0], [0, -0.03]].forEach(function (q) { ev([prev[0] + q[0], prev[1] + q[1]]); }); }
+lo = prev ? [clamp(prev[0] - TR, 0, 1), clamp(prev[1] - TR, 0, 1)] : [0, 0];
+hi = prev ? [clamp(prev[0] + TR, 0, 1), clamp(prev[1] + TR, 0, 1)] : [1, 1];
+for (gi = 0; gi < NG; gi++) for (gj = 0; gj < NG; gj++) C.push([lo[0] + (hi[0] - lo[0]) * gi / (NG - 1), lo[1] + (hi[1] - lo[1]) * gj / (NG - 1)]);
+for (k = 0; k < 3; k++) ev([lo[0] + r() * (hi[0] - lo[0]), lo[1] + r() * (hi[1] - lo[1])]);
+for (k = 0; k < 10; k++) { var c = nextEI(Us, F, C); ev([c[0] + gauss(r) * 0.003, c[1] + gauss(r) * 0.003]); }
+var bf = Math.min.apply(null, F), bi = 0, bw = -1;
+for (k = 0; k < F.length; k++) if (F[k] <= bf + 1e-12) { var t = toT(Us[k]); if (t[1] - t[0] > bw) { bw = t[1] - t[0]; bi = k; } }
+var idx = F.map(function (f, kk) { return kk; }).sort(function (p, q) { return F[p] - F[q]; });
+warm = idx.slice(0, 3).map(function (kk) { return Us[kk]; });
+prev = Us[bi];
+return { U: Us, F: F, best: bi };
+}
+function nominal(t) { return t ? [Math.max(t[0] + M, -RC), Math.min(t[1] - M, RC)] : [-RC, RC]; }
+function rollout(t) {
+var n = nominal(t), lo = n[0] > -RC ? n[0] + gauss(r) * SD : -RC, hi = n[1] < RC ? n[1] + gauss(r) * SD : RC;
+lo = Math.max(lo, -RC); hi = Math.min(hi, RC);
+return { lo: lo, hi: hi, safe: lo >= truth[0] && hi <= truth[1], w: r() * 6.283 };
+}
+function makeHeat() {
+var c = document.createElement('canvas'), n = 40, g, i, j, v;
+c.width = c.height = n; g = c.getContext('2d');
+for (i = 0; i < n; i++) for (j = 0; j < n; j++) {
+var t = toT([(i + 0.5) / n, 1 - (j + 0.5) / n]);
+v = Math.pow(clamp(1 - (obj(t[0], t[1]) + 0.01) / 0.36, 0, 1), 2.2);
+g.fillStyle = col(P.acc, 0.03 + 0.72 * v); g.fillRect(i, j, 1, 1);
+}
+c.acc = P.acc.join();
+return c;
+}
+function hud() { d.setHud('iteration <b>' + it + '</b> &middot; labeled runs <b>' + data.length + '</b>'); }
+function counts() { var s = 0; data.forEach(function (q) { if (q.safe) s++; }); return [s, data.length - s]; }
+/* the loop: compute steps (shared by the animation and the still frame) */
+function doFit() { it++; heatOld = heat; heat = makeHeat(); heatT = 0; bo = runBO(); est = toT(bo.U[bo.best]); ppath.push(bo.U[bo.best]); }
+function doLabel() { var tr = [], k; for (k = 0; k < NROLL; k++) tr.push(rollout(est)); roundSafe = tr.filter(function (q) { return q.safe; }).length; return tr; }
+function newRun(randomRule, seed) {
+r = rng(seed != null ? seed : (Math.random() * 1e9) | 0);
+if (randomRule) { truth = [-U(0.85, 1.35), U(0.75, 1.3)]; }
+data = initialData(); prev = null; warm = []; ppath = []; it = 0; est = null; shownLim = null; limFrom = null; limT = 1;
+pol = nominal(null); polFrom = pol; polTo = pol; polT = 1;
+shownTr = data.slice(); oldTr = []; revealed = shownTr.length; roundSafe = -1; conv = false; bo = null;
+heatOld = null; heat = makeHeat(); heatT = 1; phase = 'intro'; pt = 0; hud();
+}
+function startFit() { doFit(); oldTr = shownTr; shownTr = []; revealed = 0; phase = 'fit'; pt = 0; hud(); }
+function startTrain() {
+oldTr = [];
+limFrom = shownLim ? shownLim.slice() : null; shownLim = est.slice(); limT = 0;
+polFrom = pol.slice(); polTo = nominal(est); polT = 0; phase = 'train'; pt = 0;
+}
+function startLabel() { oldTr = []; shownTr = doLabel(); revealed = 0; phase = 'label'; pt = 0; }
+function endRound() {
+data = data.concat(shownTr); hud();
+if (roundSafe >= 9 || it >= MAXIT) { conv = roundSafe >= 9; phase = 'done'; pt = 0; } else startFit();
+}
+d.heightFor = function (w) { return w < 560 ? 622 : 360; };
 d.layout = function () {
-S = [d.W * 0.08, d.H * 0.7]; G = [d.W * 0.92, d.H * 0.38];
-Zn = { x: d.W * 0.5, y: d.H * 0.56, rx: Math.min(d.W * 0.14, 110), ry: d.H * 0.2 };
-};
-function bez(e, u) {
-var dy = DEV[e] * d.H * 0.4, v = 1 - u;
-var c1 = [S[0] + (G[0] - S[0]) * 0.3, S[1] + (G[1] - S[1]) * 0.3 - dy];
-var c2 = [S[0] + (G[0] - S[0]) * 0.7, S[1] + (G[1] - S[1]) * 0.7 - dy];
-return [v * v * v * S[0] + 3 * v * v * u * c1[0] + 3 * v * u * u * c2[0] + u * u * u * G[0],
-v * v * v * S[1] + 3 * v * v * u * c1[1] + 3 * v * u * u * c2[1] + u * u * u * G[1]];
-}
-function inside(p) { var x = (p[0] - Zn.x) / Zn.rx, y = (p[1] - Zn.y) / Zn.ry; return x * x + y * y < 1; }
-function hud() { d.setHud('episode <b>' + Math.min(ep + 1, EP) + '</b>/' + EP + ' &nbsp;&middot;&nbsp; violations <b>' + vio + '</b>'); }
-function finish() { traces.push({ e: ep, bad: epHit }); estTo = EST[ep]; reach = 0; }
-d.step = function (dt) {
-est += (estTo - est) * Math.min(1, dt * 3.5);
-rip = rip.filter(function (q) { q.a += dt; return q.a < 0.9; });
-pops = pops.filter(function (q) { q.a += dt; return q.a < 1.6; });
-if (reach >= 0) { reach += dt; if (reach > 0.9) reach = -1; }
-flash = Math.max(0, flash - dt * 1.6);
-if (phase === 'run') {
-var prev = bez(ep, ease(Math.min(t / DUR, 1)));
-t += dt;
-var p = bez(ep, ease(Math.min(t / DUR, 1)));
-if (inside(p)) {
-flash = 1;
-if (!inside(prev)) { rip.push({ x: p[0], y: p[1], a: 0 }); pops.push({ x: p[0], y: p[1], a: 0 }); if (!epHit) { epHit = true; vio++; } }
-}
-trail.push(p); if (trail.length > 36) trail.shift();
-if (t >= DUR) { finish(); phase = 'gap'; wait = 0; }
-hud();
+var W = d.W, H = d.H, w, x0, s;
+if (W >= 560) {
+w = Math.round(W * 0.49); x0 = 12 + w + 18; s = 136;
+geo = { narrow: false, pills: 20, world: { x: 12, y: 40, w: w, h: H - 70 }, fx: x0, fy: 60, map: { x: x0 + 20, y: 130, s: s } };
+geo.stats = geo.map.x + s + 16; geo.sum = H - 13;
 } else {
-wait += dt;
-if (phase === 'gap' && wait > GAP) {
-if (ep + 1 >= EP) { phase = 'end'; wait = 0; } else { ep++; t = 0; epHit = false; trail = []; phase = 'run'; hud(); }
-} else if (phase === 'end' && wait > ENDHOLD) restart();
+s = 140;
+geo = { narrow: true, pills: 18, world: { x: 10, y: 34, w: W - 20, h: 250 }, fx: 16, fy: 348, map: { x: 34, y: 416, s: s } };
+geo.stats = geo.map.x + s + 16; geo.sum = H - 13;
+}
+var wd = geo.world;
+geo.sc = Math.min(wd.w / 3.9, wd.h / 3.7); geo.cx = wd.x + wd.w / 2; geo.cy = wd.y + wd.h / 2 + 4;
+};
+function wx(x) { return geo.cx + x * geo.sc; }
+function wy(y) { return geo.cy - y * geo.sc; }
+function mx(u) { return geo.map.x + u * geo.map.s; }
+function my(u) { return geo.map.y + (1 - u) * geo.map.s; }
+d.step = function (dt) {
+time += dt; heatT = Math.min(1, heatT + dt * 2); limT = Math.min(1, limT + dt / 0.7);
+if (phase === 'train') polT = Math.min(1, pt / 1.0);
+pol = [polFrom[0] + (polTo[0] - polFrom[0]) * ease(polT), polFrom[1] + (polTo[1] - polFrom[1]) * ease(polT)];
+phi += dt * 1.7;
+var x = clamp(RC * Math.cos(phi), pol[0], pol[1]), y = RC * Math.sin(phi);
+trail.push([x, y]); if (trail.length > 28) trail.shift();
+if (dragging >= 0) return;
+pt += dt;
+if (phase === 'intro') { if (pt > 1.8) startFit(); }
+else if (phase === 'fit') { if (pt > 0.25 + bo.U.length * 0.065 + 0.4) startTrain(); }
+else if (phase === 'train') { if (pt > 1.35) startLabel(); }
+else if (phase === 'label') { revealed = Math.min(NROLL, Math.floor(pt / 0.13) + 1); if (pt > NROLL * 0.13 + 0.5) endRound(); }
+else if (phase === 'done') { if (pt > 7) newRun(!userRule); }
+};
+function tracePath(c, q) {
+c.beginPath();
+for (var k = 0; k <= 64; k++) {
+var a = k / 64 * 6.2832, rr = RC * (1 + 0.012 * Math.sin(3 * a + q.w));
+var x = clamp(rr * Math.cos(a), q.lo, q.hi), y = rr * Math.sin(a);
+if (k) c.lineTo(wx(x), wy(y)); else c.moveTo(wx(x), wy(y));
+}
+}
+function drawWorld(c) {
+var wd = geo.world, k, x, i;
+/* regions outside the true limits: unsafe, hidden from the robot */
+[[wd.x, wx(truth[0])], [wx(truth[1]), wd.x + wd.w]].forEach(function (z) {
+c.save(); rrect(c, wd.x, wd.y, wd.w, wd.h, 10); c.clip();
+c.beginPath(); c.rect(z[0], wd.y, z[1] - z[0], wd.h); c.clip();
+c.fillStyle = col(P.warn, 0.07); c.fillRect(z[0], wd.y, z[1] - z[0], wd.h);
+c.strokeStyle = col(P.warn, 0.14); c.lineWidth = 1; c.beginPath();
+for (k = z[0] - wd.h; k < z[1]; k += 9) { c.moveTo(k, wd.y + wd.h); c.lineTo(k + wd.h, wd.y); }
+c.stroke(); c.restore();
+});
+for (i = 0; i < 2; i++) {
+x = wx(truth[i]);
+c.setLineDash([5, 4]); c.strokeStyle = col(P.warn, hoverLine === i || dragging === i ? 1 : 0.75); c.lineWidth = hoverLine === i || dragging === i ? 2.5 : 1.5;
+c.beginPath(); c.moveTo(x, wd.y + 6); c.lineTo(x, wd.y + wd.h - 6); c.stroke(); c.setLineDash([]);
+if (dragging === i || hoverLine === i) label(c, 'true limit ' + truth[i].toFixed(2), i ? x - 6 : x + 6, wd.y + 34, { align: i ? 'right' : 'left', size: 11.5, w: 500, color: P.t1 });
+}
+/* the circle the robot is rewarded for following */
+c.strokeStyle = col(P.hair); c.lineWidth = 1; circle(c, geo.cx, geo.cy, RC * geo.sc); c.stroke();
+/* the learned rule: a band between the estimated limits */
+if (shownLim) {
+var e = ease(limT), L0 = limFrom ? limFrom[0] + (shownLim[0] - limFrom[0]) * e : shownLim[0], L1 = limFrom ? limFrom[1] + (shownLim[1] - limFrom[1]) * e : shownLim[1];
+var a0 = Math.max(wx(L0), wd.x), a1 = Math.min(wx(L1), wd.x + wd.w);
+c.fillStyle = col(P.acc, 0.07); c.fillRect(a0, wd.y, a1 - a0, wd.h);
+[L0, L1].forEach(function (v, j) {
+var xx = wx(v);
+if (xx < wd.x || xx > wd.x + wd.w) return;
+add(c, true); c.strokeStyle = col(P.acc, 0.18); c.lineWidth = 7; c.beginPath(); c.moveTo(xx, wd.y + 6); c.lineTo(xx, wd.y + wd.h - 6); c.stroke(); add(c, false);
+c.strokeStyle = col(P.acc); c.lineWidth = 2; c.beginPath(); c.moveTo(xx, wd.y + 6); c.lineTo(xx, wd.y + wd.h - 6); c.stroke();
+label(c, (j ? 'θ₂ = ' : 'θ₁ = ') + v.toFixed(2), clamp(xx, wd.x + 34, wd.x + wd.w - 34), wd.y + wd.h - 10, { align: 'center', size: 11.5, w: 500, color: P.t1 });
+});
+}
+/* runs: last round (fading) and the current one, colored by the expert's label */
+var drawSet = function (set, n, alpha) {
+for (k = 0; k < Math.min(n, set.length); k++) {
+var q = set[k];
+tracePath(c, q); c.strokeStyle = col(q.safe ? P.acc : P.warn, (q.safe ? 0.42 : 0.8) * alpha); c.lineWidth = q.safe ? 1.1 : 1.4; c.stroke();
+if (!q.safe && alpha > 0.5) {
+var vx = q.lo < truth[0] ? q.lo : q.hi;
+circle(c, wx(vx), wy(0), 3); c.fillStyle = col(P.warn, alpha); c.fill();
+}
 }
 };
-d.draw = function () {
-var c = d.ctx, k, q;
-d.clear();
-/* the true unsafe region: hatched, unknown to the agent; flashes on contact */
-c.save();
-c.beginPath(); c.ellipse(Zn.x, Zn.y, Zn.rx, Zn.ry, 0, 0, 2 * Math.PI); c.clip();
-c.fillStyle = col(P.warn, 0.05 + 0.2 * flash); c.fillRect(Zn.x - Zn.rx, Zn.y - Zn.ry, 2 * Zn.rx, 2 * Zn.ry);
-c.strokeStyle = col(P.mut, 0.2); c.lineWidth = 1; c.beginPath();
-for (k = -2 * Zn.ry; k < 2 * Zn.rx + 2 * Zn.ry; k += 9) { c.moveTo(Zn.x - Zn.rx + k, Zn.y - Zn.ry); c.lineTo(Zn.x - Zn.rx + k - 2 * Zn.ry, Zn.y + Zn.ry); }
-c.stroke(); c.restore();
-c.setLineDash([4, 4]); c.strokeStyle = col(P.mut, 0.6); c.lineWidth = 1;
-c.beginPath(); c.ellipse(Zn.x, Zn.y, Zn.rx, Zn.ry, 0, 0, 2 * Math.PI); c.stroke(); c.setLineDash([]);
-label(c, 'unsafe region (hidden from the agent)', Zn.x, Zn.y + Zn.ry * 1.12 + 21, { align: 'center', size: 11.5 });
-/* learned constraint */
-if (est > 0.03) {
-add(c, true);
-c.strokeStyle = col(P.acc, 0.16); c.lineWidth = 7;
-c.beginPath(); c.ellipse(Zn.x, Zn.y, Zn.rx * est, Zn.ry * est, 0, 0, 2 * Math.PI); c.stroke();
-add(c, false);
-c.setLineDash([7, 5]); c.strokeStyle = col(P.acc); c.lineWidth = 2;
-c.beginPath(); c.ellipse(Zn.x, Zn.y, Zn.rx * est, Zn.ry * est, 0, 0, 2 * Math.PI); c.stroke(); c.setLineDash([]);
-if (est > 0.3) label(c, 'learned constraint', Zn.x + Zn.rx * est + 10, Zn.y + 4, { size: 11.5, w: 500, color: P.t1, a: Math.min(1, (est - 0.3) * 4) });
-}
-/* finished episodes */
-c.lineWidth = 1.6;
-traces.forEach(function (tr) {
-c.strokeStyle = col(tr.bad ? P.warn : P.acc, 0.6);
-c.beginPath(); c.moveTo(S[0], S[1]);
-for (var j = 1; j <= 70; j++) { var q = bez(tr.e, j / 70); c.lineTo(q[0], q[1]); }
-c.stroke();
-});
-/* the agent's comet trail */
+var fade = phase === 'fit' ? Math.max(0, 1 - pt / 0.8) : 1;
+if (oldTr.length && phase === 'fit') drawSet(oldTr, oldTr.length, fade);
+drawSet(shownTr, phase === 'label' ? revealed : shownTr.length, phase === 'intro' || phase === 'label' || phase === 'done' ? 1 : fade);
+/* the robot following its current policy */
+var cur = trail[trail.length - 1] || [RC, 0], bad = cur[0] < truth[0] || cur[0] > truth[1];
 add(c, true); c.lineCap = 'round';
 for (k = 1; k < trail.length; k++) {
 var f = k / trail.length;
-c.strokeStyle = col(P.acc, 0.05 + 0.6 * f * f); c.lineWidth = 1.5 + 4 * f;
-c.beginPath(); c.moveTo(trail[k - 1][0], trail[k - 1][1]); c.lineTo(trail[k][0], trail[k][1]); c.stroke();
+c.strokeStyle = col(P.acc, 0.05 + 0.5 * f * f); c.lineWidth = 1.5 + 3 * f;
+c.beginPath(); c.moveTo(wx(trail[k - 1][0]), wy(trail[k - 1][1])); c.lineTo(wx(trail[k][0]), wy(trail[k][1])); c.stroke();
 }
-rip.forEach(function (q) { c.strokeStyle = col(P.warn, 1 - q.a / 0.9); c.lineWidth = 2; circle(c, q.x, q.y, 6 + q.a * 48); c.stroke(); });
+glow(c, bad ? P.sWarn : P.sAcc, wx(cur[0]), wy(cur[1]), 44, 1);
 add(c, false);
-/* start and goal */
-circle(c, S[0], S[1], 7); c.strokeStyle = col(P.t1); c.lineWidth = 2; c.stroke();
-label(c, 'start', S[0], S[1] + 23, { align: 'center' });
-add(c, true); glow(c, P.sAcc, G[0], G[1], 34, 0.6);
-if (reach >= 0) { c.strokeStyle = col(P.acc, 1 - reach / 0.9); c.lineWidth = 2; circle(c, G[0], G[1], 8 + reach * 34); c.stroke(); }
-add(c, false);
-circle(c, G[0], G[1], 9); c.strokeStyle = col(P.t1); c.lineWidth = 1.5; c.stroke();
-circle(c, G[0], G[1], 4); c.fillStyle = col(P.t1); c.fill();
-label(c, 'goal', G[0], G[1] + 25, { align: 'center' });
-/* the agent */
-if (phase === 'run') {
-var p = bez(ep, ease(Math.min(t / DUR, 1))), bad = inside(p);
-add(c, true); glow(c, bad ? P.sWarn : P.sAcc, p[0], p[1], 52, 1); add(c, false);
-circle(c, p[0], p[1], 7); c.fillStyle = col(bad ? P.warn : P.acc); c.fill();
-circle(c, p[0] - 2, p[1] - 2.2, 2); c.fillStyle = col(WHITE, 0.6); c.fill();
+circle(c, wx(cur[0]), wy(cur[1]), 6.5); c.fillStyle = col(bad ? P.warn : P.acc); c.fill();
+circle(c, wx(cur[0]) - 1.8, wy(cur[1]) - 2, 1.8); c.fillStyle = col(WHITE, 0.6); c.fill();
+label(c, 'Circle task, top view', wd.x + 10, wd.y + 17, { size: 11 });
+c.strokeStyle = col(P.hair); c.lineWidth = 1; rrect(c, wd.x + 0.5, wd.y + 0.5, wd.w - 1, wd.h - 1, 10); c.stroke();
+/* legend under the panel */
+var ly = wd.y + wd.h + 16, lx = wd.x + 2, wl;
+c.strokeStyle = col(P.acc, 0.85); c.lineWidth = 1.6; c.beginPath(); c.moveTo(lx, ly - 4); c.lineTo(lx + 14, ly - 4); c.stroke();
+wl = label(c, 'safe run', lx + 19, ly, { size: 11 }); lx += 19 + wl + 14;
+c.strokeStyle = col(P.warn, 0.85); c.beginPath(); c.moveTo(lx, ly - 4); c.lineTo(lx + 14, ly - 4); c.stroke();
+wl = label(c, 'unsafe run', lx + 19, ly, { size: 11 }); lx += 19 + wl + 14;
+c.setLineDash([3, 3]); c.strokeStyle = col(P.warn, 0.85); c.beginPath(); c.moveTo(lx + 4, ly - 10); c.lineTo(lx + 4, ly + 2); c.stroke(); c.setLineDash([]);
+wl = label(c, 'true limit (hidden, drag me)', lx + 12, ly, { size: 11 });
 }
-pops.forEach(function (q) {
-var a = q.a < 1.1 ? 1 : 1 - (q.a - 1.1) / 0.5, y = q.y - 20 - q.a * 10;
-warnMark(c, q.x - 30, y, a);
-label(c, 'violation', q.x - 20, y, { size: 11.5, w: 600, color: P.t1, a: a });
-});
-/* legend and verdict */
-var ly = d.H - 12;
-c.lineWidth = 2;
-c.strokeStyle = col(P.warn, 0.8); c.beginPath(); c.moveTo(14, ly - 4); c.lineTo(30, ly - 4); c.stroke();
-var w1 = label(c, 'violating episode', 36, ly, { size: 11 });
-c.strokeStyle = col(P.acc); c.beginPath(); c.moveTo(52 + w1, ly - 4); c.lineTo(68 + w1, ly - 4); c.stroke();
-label(c, 'safe episode', 74 + w1, ly, { size: 11 });
-if (phase === 'end') label(c, 'episodes 3–5: zero violations', d.W / 2, 24, { align: 'center', size: 13, w: 600, color: P.t1, a: Math.min(1, wait * 2.5) });
+function drawPills(c) {
+var labels = geo.narrow ? STEPS_S : STEPS, fs = geo.narrow ? 11 : 11.5, ws = [], tot = 0, gap = geo.narrow ? 16 : 22, k, act = phase === 'fit' ? 0 : phase === 'train' ? 1 : phase === 'label' ? 2 : -1;
+c.font = '500 ' + fs + 'px ' + FONT;
+for (k = 0; k < 3; k++) { ws.push(c.measureText((k + 1) + '  ' + labels[k]).width + 20); tot += ws[k]; }
+tot += gap * 2;
+var x = Math.round((d.W - tot) / 2), y = geo.pills - 10;
+for (k = 0; k < 3; k++) {
+var on = k === act;
+rrect(c, x, y, ws[k], 20, 10);
+c.fillStyle = col(P.acc, on ? 0.24 : 0.05); c.fill();
+c.strokeStyle = col(on ? P.acc : P.hair, on ? 0.9 : 1); c.lineWidth = 1; c.stroke();
+if (on) { add(c, true); glow(c, P.sAcc, x + 11, y + 10, 26, 0.5); add(c, false); }
+label(c, (k + 1) + '  ' + labels[k], x + 10, y + 14, { size: fs, w: 500, color: on ? P.t1 : P.t2 });
+x += ws[k];
+if (k < 2) {
+c.strokeStyle = col(P.t2, 0.7); c.lineWidth = 1.2; c.beginPath();
+c.moveTo(x + 4, y + 10); c.lineTo(x + gap - 5, y + 10); c.moveTo(x + gap - 9, y + 6.5); c.lineTo(x + gap - 5, y + 10); c.lineTo(x + gap - 9, y + 13.5); c.stroke();
+x += gap;
+}
+}
+}
+function drawSpec(c) {
+var fx = geo.fx, fy = geo.fy, m = geo.map, k;
+label(c, 'G ¬( x < θ₁ ∨ x > θ₂ )', fx, fy, { size: 15, w: 500, color: P.t1 });
+label(c, 'always stay between θ₁ and θ₂', fx, fy + 17, { size: 11 });
+label(c, 'unknown safety rule (parametric STL)', fx, fy - 20, { size: 11 });
+var vt = est ? 'θ₁ = ' + (shownLim || est)[0].toFixed(2) + '     θ₂ = ' + (shownLim || est)[1].toFixed(2) : 'θ₁ = ?     θ₂ = ?';
+if (est && phase === 'fit') vt = 'θ₁, θ₂: searching…';
+label(c, vt, fx, fy + 39, { size: 13, w: 500, color: P.t1 });
+label(c, 'Bayesian optimization over (θ₁, θ₂)', fx, m.y - 9, { size: 11 });
+/* how well each candidate rule explains the labeled runs (brighter = better) */
+if (heat.acc !== P.acc.join()) { heat = makeHeat(); heatOld = null; }
+c.save(); c.imageSmoothingEnabled = true;
+if (heatOld && heatT < 1) { c.globalAlpha = 1 - heatT; c.drawImage(heatOld, m.x, m.y, m.s, m.s); }
+c.globalAlpha = heatOld && heatT < 1 ? heatT : 1; c.drawImage(heat, m.x, m.y, m.s, m.s); c.restore(); c.globalAlpha = 1;
+c.strokeStyle = col(P.hair); c.lineWidth = 1; c.strokeRect(m.x + 0.5, m.y + 0.5, m.s - 1, m.s - 1);
+var tu = toU(truth);
+c.setLineDash([3, 3]); c.strokeStyle = col(P.warn, 0.7); c.lineWidth = 1; c.beginPath();
+c.moveTo(mx(tu[0]), m.y); c.lineTo(mx(tu[0]), m.y + m.s); c.moveTo(m.x, my(tu[1])); c.lineTo(m.x + m.s, my(tu[1])); c.stroke(); c.setLineDash([]);
+label(c, 'true', mx(tu[0]) + 4, my(tu[1]) - 5, { size: 11, color: P.t2 });
+/* evaluations of this iteration, the running best, and the path of estimates */
+var shownN = 0, bestK = -1;
+if (bo) {
+shownN = phase === 'fit' ? Math.max(0, Math.min(bo.U.length, Math.floor((pt - 0.25) / 0.065) + 1)) : bo.U.length;
+for (k = 0; k < shownN; k++) {
+circle(c, mx(bo.U[k][0]), my(bo.U[k][1]), 2.1); c.fillStyle = col(P.t1, 0.85); c.fill();
+if (bestK < 0 || bo.F[k] < bo.F[bestK] - 1e-12 || (Math.abs(bo.F[k] - bo.F[bestK]) <= 1e-12 && toT(bo.U[k])[1] - toT(bo.U[k])[0] > toT(bo.U[bestK])[1] - toT(bo.U[bestK])[0])) bestK = k;
+}
+if (phase === 'fit' && shownN > 0 && shownN <= bo.U.length) {
+var nu = bo.U[shownN - 1], ag = clamp((pt - 0.25) / 0.065 - (shownN - 1), 0, 1);
+c.strokeStyle = col(P.t1, 1 - ag); c.lineWidth = 1.2; circle(c, mx(nu[0]), my(nu[1]), 3 + ag * 8); c.stroke();
+}
+}
+var pts = ppath.slice(0, phase === 'fit' ? ppath.length - 1 : ppath.length);
+if (pts.length > 1) {
+c.beginPath(); pts.forEach(function (u, j) { if (j) c.lineTo(mx(u[0]), my(u[1])); else c.moveTo(mx(u[0]), my(u[1])); });
+c.strokeStyle = col(P.acc, 0.75); c.lineWidth = 1.5; c.stroke();
+}
+var cu = phase === 'fit' && bestK >= 0 ? bo.U[bestK] : pts[pts.length - 1];
+if (cu) {
+add(c, true); glow(c, P.sAcc, mx(cu[0]), my(cu[1]), 26, 0.9); add(c, false);
+circle(c, mx(cu[0]), my(cu[1]), 4.5); c.strokeStyle = col(P.acc); c.lineWidth = 2; c.stroke();
+}
+label(c, 'θ₁', m.x + m.s / 2, m.y + m.s + 15, { align: 'center', size: 12, color: P.t1 });
+label(c, B1[0].toFixed(1), m.x, m.y + m.s + 15, { size: 11 });
+label(c, B1[1].toFixed(1), m.x + m.s, m.y + m.s + 15, { align: 'right', size: 11 });
+label(c, 'θ₂', m.x - 8, m.y + m.s / 2 + 4, { align: 'right', size: 12, color: P.t1 });
+label(c, B2[1].toFixed(1), m.x - 5, m.y + 10, { align: 'right', size: 11 });
+label(c, B2[0].toFixed(1), m.x - 5, m.y + m.s - 2, { align: 'right', size: 11 });
+/* labeled runs and this round's verdict */
+var sx = geo.stats, sy = m.y + 10, cn = counts(), rs = phase === 'label' ? shownTr.slice(0, revealed).filter(function (q) { return q.safe; }).length : roundSafe;
+var rn = phase === 'label' ? revealed : NROLL;
+label(c, 'labeled runs', sx, sy, { size: 11 });
+label(c, cn[0] + ' safe · ' + cn[1] + ' unsafe', sx, sy + 17, { size: 12.5, w: 500, color: P.t1 });
+label(c, 'this round', sx, sy + 44, { size: 11 });
+label(c, rs < 0 ? '—' : rs + ' of ' + rn + ' runs safe', sx, sy + 61, { size: 12.5, w: 500, color: P.t1 });
+var bw = Math.min(118, d.W - 12 - sx), fr = rs < 0 ? 0 : rs / NROLL;
+rrect(c, sx, sy + 71, bw, 6, 3); c.fillStyle = col(P.hair); c.fill();
+if (fr > 0) { rrect(c, sx, sy + 71, Math.max(6, bw * fr), 6, 3); c.fillStyle = col(P.acc); c.fill(); }
+c.fillStyle = col(P.t1); c.fillRect(sx + bw * 0.9 - 0.5, sy + 67, 1.5, 14);
+label(c, 'stop at 90% safe', sx, sy + 96, { size: 11 });
+if (phase === 'done' && conv) {
+c.strokeStyle = col(P.acc); c.lineWidth = 2.2; c.beginPath(); c.moveTo(sx + 1, sy + 117); c.lineTo(sx + 5, sy + 121); c.lineTo(sx + 12, sy + 112); c.stroke();
+label(c, 'converged', sx + 18, sy + 121, { size: 12.5, w: 600, color: P.t1 });
+}
+/* summary */
+var st;
+if (phase === 'done' && est) st = 'learned (' + est[0].toFixed(2) + ', ' + est[1].toFixed(2) + ')  ·  true (' + truth[0].toFixed(2) + ', ' + truth[1].toFixed(2) + ')';
+else if (phase === 'intro') st = 'start: 20 runs labeled by an expert';
+else st = phase === 'fit' ? 'fitting the limits to the labeled runs' : phase === 'train' ? 'retraining the policy under the new limits' : 'the expert labels each new run';
+label(c, st, geo.narrow ? geo.fx : geo.fx, geo.sum, { size: geo.narrow ? 11 : 11.5, w: phase === 'done' ? 600 : 400, color: phase === 'done' ? P.t1 : P.t2 });
+}
+d.draw = function () {
+d.clear();
+if (!geo) return;
+var c = d.ctx;
+drawWorld(c); drawPills(c); drawSpec(c);
 };
 d.still = function () {
-restart();
-for (var e = 0; e < EP; e++) {
-var hit = false;
-for (var k = 0; k <= 70; k++) if (inside(bez(e, k / 70))) hit = true;
-traces.push({ e: e, bad: hit }); if (hit) vio++;
-}
-ep = EP - 1; est = estTo = EST[EP - 1]; phase = 'end'; wait = 1; hud(); d.draw();
+newRun(false, truth[0] === PAPER[0] && truth[1] === PAPER[1] ? SEED : null);
+while (it < MAXIT) { doFit(); shownLim = est.slice(); limFrom = null; limT = 1; shownTr = doLabel(); data = data.concat(shownTr); if (roundSafe >= 9) break; }
+conv = roundSafe >= 9; phase = 'done'; pt = 0; revealed = NROLL; oldTr = []; heatT = 1; heat = makeHeat();
+pol = nominal(est); polFrom = pol; polTo = pol; polT = 1;
+trail = []; for (var k = 0; k < 28; k++) { var a = 0.6 + k * 0.03; trail.push([clamp(RC * Math.cos(a), pol[0], pol[1]), RC * Math.sin(a)]); }
+hud(); d.draw();
 };
-d.act = function () { restart(); };
-restart();
+d.act = function () { newRun(false, truth[0] === PAPER[0] && truth[1] === PAPER[1] ? SEED : null); };
+function nearLine(p) {
+if (!geo) return -1;
+var wd = geo.world;
+if (p[1] < wd.y || p[1] > wd.y + wd.h) return -1;
+for (var i = 0; i < 2; i++) if (Math.abs(p[0] - wx(truth[i])) < 11) return i;
+return -1;
+}
+d.cv.addEventListener('pointerdown', function (e) {
+var i = nearLine(d.pt(e));
+if (i < 0) return;
+dragging = i; d.cv.setPointerCapture(e.pointerId); e.preventDefault(); d.cv.style.cursor = 'ew-resize';
+if (!d.run) d.paint();
+});
+d.cv.addEventListener('pointermove', function (e) {
+var p = d.pt(e);
+if (dragging >= 0) {
+var v = (p[0] - geo.cx) / geo.sc;
+truth[dragging] = dragging ? clamp(v, 0.6, 1.4) : clamp(v, -1.4, -0.6);
+if (!d.run) d.paint();
+} else {
+var h = nearLine(p);
+if (h !== hoverLine) { hoverLine = h; d.cv.style.cursor = h >= 0 ? 'ew-resize' : ''; if (!d.run) d.paint(); }
+}
+});
+function up() { if (dragging >= 0) { dragging = -1; userRule = true; d.cv.style.cursor = ''; newRun(false); if (!d.run) d.paint(true); } }
+d.cv.addEventListener('pointerup', up);
+d.cv.addEventListener('pointercancel', up);
+d.cv.addEventListener('pointerleave', function () { if (hoverLine >= 0 && dragging < 0) { hoverLine = -1; if (!d.run) d.paint(); } });
+truth = PAPER.slice();
+newRun(false, SEED);
 });
 /* ================================================================
    4. Uncertainty: a live prediction interval through a shift
