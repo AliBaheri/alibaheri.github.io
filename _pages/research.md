@@ -174,6 +174,39 @@ html[data-theme='dark'] .demo {
 }
 @media (max-width: 576px) { .demo canvas { height: 250px; } .demo-head, .demo-foot { padding-left: .8rem; padding-right: .8rem; } }
 @media (prefers-reduced-motion: reduce) { .demo-live i { animation: none; } .demo-btn { transition: none; } }
+/* ---------- concept figure (safe RL) ---------- */
+.demo-tag {
+  display: inline-flex; align-items: center; padding: .12rem .55rem; border-radius: 999px;
+  font-size: .6rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--dm-acc);
+  background: color-mix(in srgb, var(--dm-acc) 14%, transparent);
+}
+.demo-cite { font-variant-numeric: normal; }
+.demo-fig .fig {
+  --dm-warn: #e0911f;
+  padding: .7rem .5rem .4rem;
+  background: radial-gradient(ellipse 70% 60% at 50% 42%, color-mix(in srgb, var(--dm-acc) 13%, transparent), transparent 72%),
+  radial-gradient(rgba(255, 255, 255, .075) 1px, transparent 1.3px) 11px 11px / 22px 22px;
+}
+.demo-fig svg { display: block; width: 100%; height: auto; font-family: inherit; overflow: visible; }
+.demo-fig svg.ft2 { display: none; max-width: 370px; margin: 0 auto; }
+@media (max-width: 620px) { .demo-fig svg.fw { display: none; } .demo-fig svg.ft2 { display: block; } }
+.demo-fig .gc { stroke-width: 1.4; }
+.demo-fig .gc.acc { fill: color-mix(in srgb, var(--dm-acc) 14%, var(--dm-bg)); stroke: var(--dm-acc); }
+.demo-fig .gc.hum { fill: color-mix(in srgb, var(--dm-warn) 14%, var(--dm-bg)); stroke: var(--dm-warn); }
+.demo-fig .gi { fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.demo-fig .gi.acc { stroke: var(--dm-acc); }
+.demo-fig .gi.hum { stroke: var(--dm-warn); }
+.demo-fig .gi .gl { stroke-width: 1; opacity: .55; }
+.demo-fig .gi.acc .gn { fill: var(--dm-acc); stroke: none; }
+.demo-fig .gt { fill: var(--dm-t1); font-size: 15px; font-weight: 600; }
+.demo-fig .gs { fill: var(--dm-t2); font-size: 12px; }
+.demo-fig .gal { fill: var(--dm-t1); font-size: 12.5px; font-weight: 500; }
+.demo-fig .gnote { fill: var(--dm-t2); font-size: 11.5px; font-style: italic; }
+.demo-fig .gcap { fill: var(--dm-acc); font-size: 10px; font-weight: 700; letter-spacing: .14em; }
+.demo-fig .gbr { fill: none; stroke: color-mix(in srgb, var(--dm-acc) 65%, transparent); stroke-width: 1.3; }
+.demo-fig .ga { fill: none; stroke: color-mix(in srgb, var(--dm-t1) 72%, transparent); stroke-width: 1.6; stroke-linejoin: round; }
+.demo-fig .gah { fill: color-mix(in srgb, var(--dm-t1) 72%, transparent); }
+.demo .demo-foot a.demo-btn, .demo .demo-foot a.demo-btn:hover, .demo .demo-foot a.demo-btn:focus-visible { color: var(--dm-t1); text-decoration: none; display: inline-block; }
 </style>
 
 <div class="rintro" markdown="1">
@@ -283,8 +316,8 @@ one: shaping transport paths so a learned simulator is stable in the very metric
 guarantees are written in.</p>
 <div class="demo demo-drag" id="demo-geo">
 <div class="demo-head"><span class="demo-title"><span class="demo-live"><i></i>Live</span>Blending optimism and pessimism with a Wasserstein barycenter</span><span class="demo-hud" data-hud></span></div>
-<canvas role="img" aria-label="Animation of how WBSAC explores. A pessimistic actor, a narrow bell, plays it safe on a known good action. An optimistic actor, a wide bell, bets on actions the critics are unsure about. The exploration policy is their Wasserstein barycenter: a single bell whose center and width move smoothly from the pessimistic actor to the optimistic one as the optimism weight rises during training. A plain mixture would instead split into two separate humps."></canvas>
-<div class="demo-foot"><span>Drag the knob to change the blend. The barycenter stays one policy; a mixture splits in two.</span><button type="button" class="demo-btn" data-act="toggle">Show the mixture</button></div>
+<canvas role="img" aria-label="Schematic animation of how WBSAC explores, shown at a single state with the actors held fixed. Each curve is a Gaussian policy over a one-dimensional action. The pessimistic actor maximizes the lower bound of the twin critics; the optimistic actor maximizes their mean plus a bonus for their disagreement, which pulls it toward actions the critics are unsure about. Actions are sampled from the Wasserstein barycenter of the two policies: a single Gaussian whose mean and standard deviation interpolate linearly, moving along the Wasserstein geodesic from the pessimistic actor to the optimistic one as the optimism weight grows from zero during training. For comparison, a KL-constrained exploration policy stays close to the pessimistic actor. Positions, widths and the KL radius are illustrative."></canvas>
+<div class="demo-foot"><span>Drag the knob to change the blend. A KL constraint keeps exploration near the pessimistic actor; the barycenter can travel all the way. Schematic: one state, actors held fixed, illustrative sizes.</span><button type="button" class="demo-btn" data-act="toggle">Compare with a KL constraint</button></div>
 </div>
 <ul class="papers">
 <li><span class="pv">L-CSS</span><span class="pt"><a href="https://ieeexplore.ieee.org/document/11563844" target="_blank">Blending Optimism and Pessimism via Wasserstein Barycenters for Continuous Control</a></span><span class="py">2026</span></li>
@@ -317,10 +350,10 @@ training, refining behavior from human feedback, and correcting offline policies
 constraints the data only implies. A recurring device is hierarchy: decomposing
 long-horizon tasks so that safety can be reasoned about at the level of abstraction
 where it is actually specified.</p>
-<div class="demo demo-drag" id="demo-rl">
-<div class="demo-head"><span class="demo-title"><span class="demo-live"><i></i>Live</span>Learning the safety rule and the policy together</span><span class="demo-hud" data-hud></span></div>
-<canvas role="img" aria-label="Animation of our method for learning an unknown safety specification during training. A robot circles an arena whose true safety limits, two vertical lines, are hidden from it. The specification is a parametric signal temporal logic formula, always stay between theta 1 and theta 2, with unknown limits. Each iteration, Bayesian optimization fits the limits to runs that an expert labeled safe or unsafe, the policy is retrained under the new limits, and the expert labels new runs. The learned limits converge to the true ones and the runs become safe."></canvas>
-<div class="demo-foot"><span>Drag an amber line to hide a new rule; the robot learns it from scratch.</span><button type="button" class="demo-btn" data-act="replay">Restart</button></div>
+<div class="demo demo-fig" id="demo-rl">
+<div class="demo-head"><span class="demo-title"><span class="demo-tag">Method</span>Learning the safety rule and the policy together</span><span class="demo-hud demo-cite">IEEE OJ-CSYS 2024</span></div>
+<div class="fig"><svg class="fw" viewBox="0 0 700 316" role="img" aria-label="Concept diagram. The safety rule and the policy are learned together. The rule starts with unknown parameters. The current rule constrains the policy; a human expert labels the policy’s behavior safe or unsafe; those labels refine the rule. The loop repeats until most rollouts are safe." xmlns="http://www.w3.org/2000/svg"><path class="gbr" d="M170,34 L170,22 L284,22 M416,22 L530,22 L530,34"/><text x="350" y="25.5" class="gcap" text-anchor="middle">LEARNED TOGETHER</text><rect class="gc acc" x="70" y="44" width="200" height="132" rx="14"/><g class="gi acc" transform="translate(170,74)"><path d="M0,-15 L12,-10 L12,0 C12,8 6.5,13 0,15.5 C-6.5,13 -12,8 -12,0 L-12,-10 Z"/><path d="M-5.5,0.5 L-1.5,4.5 L6,-4"/></g><text x="170" y="116" class="gt" text-anchor="middle">Safety rule</text><text x="170" y="136" class="gs" text-anchor="middle">parameters unknown,</text><text x="170" y="152" class="gs" text-anchor="middle">learned from labels</text><rect class="gc acc" x="430" y="44" width="200" height="132" rx="14"/><g class="gi acc" transform="translate(530,74)"><path class="gl" d="M-13,-7 L0,-12"/><path class="gl" d="M-13,-7 L0,0"/><path class="gl" d="M-13,-7 L0,12"/><path class="gl" d="M-13,7 L0,-12"/><path class="gl" d="M-13,7 L0,0"/><path class="gl" d="M-13,7 L0,12"/><path class="gl" d="M0,-12 L13,-6"/><path class="gl" d="M0,-12 L13,6"/><path class="gl" d="M0,0 L13,-6"/><path class="gl" d="M0,0 L13,6"/><path class="gl" d="M0,12 L13,-6"/><path class="gl" d="M0,12 L13,6"/><circle class="gn" cx="-13" cy="-7" r="3"/><circle class="gn" cx="-13" cy="7" r="3"/><circle class="gn" cx="0" cy="-12" r="3"/><circle class="gn" cx="0" cy="0" r="3"/><circle class="gn" cx="0" cy="12" r="3"/><circle class="gn" cx="13" cy="-6" r="3"/><circle class="gn" cx="13" cy="6" r="3"/></g><text x="530" y="116" class="gt" text-anchor="middle">Policy</text><text x="530" y="136" class="gs" text-anchor="middle">trained under</text><text x="530" y="152" class="gs" text-anchor="middle">the current rule</text><rect class="gc hum" x="245" y="232" width="210" height="70" rx="14"/><g class="gi hum" transform="translate(277,267)"><circle cx="0" cy="-7" r="5.5"/><path d="M-11,13 C-11,4 -6,0.5 0,0.5 C6,0.5 11,4 11,13"/></g><text x="305" y="255" class="gt" text-anchor="start">Human expert</text><text x="305" y="272" class="gs" text-anchor="start">labels behavior</text><text x="305" y="287" class="gs" text-anchor="start">safe or unsafe</text><polyline class="ga" points="270,96 422.5,96"/><polygon class="gah" points="430,96 422.5,99.9 422.5,92.1"/><text x="350" y="87" class="gal" text-anchor="middle">constrains</text><path class="ga" d="M530,176 C530,263 522.5,267 462.5,267"/><polygon class="gah" points="455,267 462.5,263.1 462.5,270.9"/><text x="542" y="220" class="gal" text-anchor="start">behavior</text><path class="ga" d="M245,267 C185,267 170,270.5 170,183.5"/><polygon class="gah" points="170,176 173.9,183.5 166.1,183.5"/><text x="158" y="220" class="gal" text-anchor="end">labels</text><text x="350" y="208" class="gnote" text-anchor="middle">repeat until most rollouts are safe</text></svg><svg class="ft2" viewBox="0 0 340 374" role="img" aria-label="Concept diagram. The safety rule and the policy are learned together. The rule starts with unknown parameters. The current rule constrains the policy; a human expert labels the policy’s behavior safe or unsafe; those labels refine the rule. The loop repeats until most rollouts are safe." xmlns="http://www.w3.org/2000/svg"><rect class="gc acc" x="34" y="10" width="290" height="78" rx="14"/><g class="gi acc" transform="translate(66,49)"><path d="M0,-15 L12,-10 L12,0 C12,8 6.5,13 0,15.5 C-6.5,13 -12,8 -12,0 L-12,-10 Z"/><path d="M-5.5,0.5 L-1.5,4.5 L6,-4"/></g><text x="94" y="37" class="gt" text-anchor="start">Safety rule</text><text x="94" y="54" class="gs" text-anchor="start">parameters unknown,</text><text x="94" y="69" class="gs" text-anchor="start">learned from labels</text><polyline class="ga" points="179,88 179,114.5"/><polygon class="gah" points="179,122 175.1,114.5 182.9,114.5"/><text x="189" y="109" class="gal" text-anchor="start">constrains</text><rect class="gc acc" x="34" y="122" width="290" height="78" rx="14"/><g class="gi acc" transform="translate(66,161)"><path class="gl" d="M-13,-7 L0,-12"/><path class="gl" d="M-13,-7 L0,0"/><path class="gl" d="M-13,-7 L0,12"/><path class="gl" d="M-13,7 L0,-12"/><path class="gl" d="M-13,7 L0,0"/><path class="gl" d="M-13,7 L0,12"/><path class="gl" d="M0,-12 L13,-6"/><path class="gl" d="M0,-12 L13,6"/><path class="gl" d="M0,0 L13,-6"/><path class="gl" d="M0,0 L13,6"/><path class="gl" d="M0,12 L13,-6"/><path class="gl" d="M0,12 L13,6"/><circle class="gn" cx="-13" cy="-7" r="3"/><circle class="gn" cx="-13" cy="7" r="3"/><circle class="gn" cx="0" cy="-12" r="3"/><circle class="gn" cx="0" cy="0" r="3"/><circle class="gn" cx="0" cy="12" r="3"/><circle class="gn" cx="13" cy="-6" r="3"/><circle class="gn" cx="13" cy="6" r="3"/></g><text x="94" y="149" class="gt" text-anchor="start">Policy</text><text x="94" y="166" class="gs" text-anchor="start">trained under</text><text x="94" y="181" class="gs" text-anchor="start">the current rule</text><polyline class="ga" points="179,200 179,226.5"/><polygon class="gah" points="179,234 175.1,226.5 182.9,226.5"/><text x="189" y="221" class="gal" text-anchor="start">behavior</text><rect class="gc hum" x="34" y="234" width="290" height="78" rx="14"/><g class="gi hum" transform="translate(66,273)"><circle cx="0" cy="-7" r="5.5"/><path d="M-11,13 C-11,4 -6,0.5 0,0.5 C6,0.5 11,4 11,13"/></g><text x="94" y="261" class="gt" text-anchor="start">Human expert</text><text x="94" y="278" class="gs" text-anchor="start">labels behavior</text><text x="94" y="293" class="gs" text-anchor="start">safe or unsafe</text><polyline class="ga" points="179,312 179,334 14,334 14,49 26.5,49"/><polygon class="gah" points="34,49 26.5,52.9 26.5,45.1"/><text x="102.5" y="327" class="gal" text-anchor="middle">labels</text><text x="170" y="360" class="gnote" text-anchor="middle">repeat until most rollouts are safe</text></svg></div>
+<div class="demo-foot"><span>The rule’s parameters start unknown. The policy is trained under the current estimate of the rule, an expert labels its behavior safe or unsafe, and those labels refine the rule. The two are learned together until most rollouts are safe.</span><a class="demo-btn" href="https://ieeexplore.ieee.org/abstract/document/10569078" target="_blank" rel="noopener">Read the paper</a></div>
 </div>
 <ul class="papers">
 <li><span class="pv">OJ-CSYS</span><span class="pt"><a href="https://ieeexplore.ieee.org/abstract/document/10569078" target="_blank">Concurrent Learning of Control Policy and Unknown Safety Specifications in Reinforcement Learning</a></span><span class="py">2024</span></li>
@@ -666,35 +699,58 @@ setState(TH0); hud();
 });
 /* ================================================================
    2. Geometric foundations: blending optimism and pessimism with a
-   Wasserstein barycenter (WBSAC, abstract view). A pessimistic actor plays
-   it safe; an optimistic actor bets on actions the critics are unsure about.
-   The exploration policy is their W2 barycenter: one Gaussian whose mean and
-   width blend linearly with the optimism weight, which rises during training.
+   Wasserstein barycenter (WBSAC, Shahrooei and Baheri, IEEE L-CSS 2026).
+   The pessimistic actor maximizes the twin critics' lower bound (eq. 6); the
+   optimistic actor maximizes their mean plus beta times their standard
+   deviation (eq. 7). Actions are sampled from the W2 barycenter of the two
+   Gaussian policies (eqs. 9-10: means and standard deviations interpolate
+   linearly), which lies on the constant-speed W2 geodesic between them
+   (Prop. 2). The optimism weight starts at zero and grows linearly during
+   training (the schedule only increases; the loop restarts with a fade).
+   Curves are true densities, so each encloses the same area. The comparison
+   curve is drawn as in OAC: the pessimistic Gaussian with its mean shifted
+   within a KL ball, which keeps exploration close to the pessimistic policy.
+   Schematic of one state with the actors held fixed; positions, widths and
+   the KL radius are illustrative.
    ================================================================ */
 demo('demo-geo', function (d) {
-var MP = -0.45, SP = 0.075, MO = 0.42, SO = 0.2, SREF = 0.075;
-var xi = 0, dir = 1, hold = 0, drag = false, idle = 9, mix = false, time = 0, drops = [], acc = 0, geo = null, r = rng(9);
-function hud() { d.setHud('optimism weight ξ <b>' + xi.toFixed(2) + '</b>'); }
-d.heightFor = function (w) { return w < 540 ? 300 : 280; };
+var MP = -0.45, SP = 0.075, MO = 0.42, SO = 0.2, KLM = MP + SP * Math.SQRT2;
+var xi = 0, phase = 0, pt = 0, fade = 0, drag = false, idle = 9, kl = false, time = 0, drops = [], acc = 0, geo = null, r = rng(9), ly2 = null, lyT = 0;
+function hud() { d.setHud('optimism weight ξₒ <b>' + xi.toFixed(2) + '</b>'); }
+d.heightFor = function (w) { return w < 540 ? 346 : 324; };
 d.layout = function () {
 var W = d.W, n = W < 540;
-geo = { n: n, x0: n ? 18 : 40, x1: W - (n ? 18 : 40), top: 34, base: n ? 196 : 186 };
-geo.ty = geo.base + (n ? 62 : 58); geo.tx0 = n ? 88 : Math.round(W * 0.27); geo.tx1 = W - geo.tx0;
+geo = { n: n, x0: n ? 18 : 40, x1: W - (n ? 18 : 40), top: 62 };
+geo.base = geo.top + (n ? 162 : 152);
+geo.ty = geo.base + (n ? 78 : 74); geo.tx0 = n ? 88 : Math.round(W * 0.27); geo.tx1 = W - geo.tx0;
+ly2 = null;
 };
 function xa(a) { return geo.x0 + (a + 1) / 2 * (geo.x1 - geo.x0); }
-function bell(a, mu, sg) { return Math.exp(-(a - mu) * (a - mu) / (2 * sg * sg)) * Math.min(1, Math.sqrt(SREF / sg)); }
+/* a Gaussian density, scaled so that the pessimistic actor peaks at 1 */
+function bell(a, mu, sg) { return Math.exp(-(a - mu) * (a - mu) / (2 * sg * sg)) * SP / sg; }
 function yb(h) { return geo.base - h * (geo.base - geo.top); }
 function path(c, fn) {
 c.beginPath();
-for (var k = 0; k <= 160; k++) { var a = -1 + k / 80, x = xa(a), y = yb(fn(a)); if (k) c.lineTo(x, y); else c.moveTo(x, y); }
+for (var k = 0; k <= 200; k++) { var a = -1 + k / 100, x = xa(a), y = yb(fn(a)); if (k) c.lineTo(x, y); else c.moveTo(x, y); }
 }
 function blend() { return [(1 - xi) * MP + xi * MO, (1 - xi) * SP + xi * SO]; }
+/* screen y of the highest point of the pessimistic (and KL) curves between two x positions */
+function tallest(xl, xr) {
+var h = 0;
+for (var x = xl; x <= xr; x += 1) { var a = (x - geo.x0) / (geo.x1 - geo.x0) * 2 - 1; h = Math.max(h, bell(a, MP, SP), kl ? bell(a, KLM, SP) : 0); }
+return yb(h);
+}
 d.step = function (dt) {
 time += dt; idle += dt;
-if (!drag && idle > 2.5) {
-if (hold > 0) { hold -= dt; if (hold <= 0) dir = xi >= 1 ? -1 : 1; }
-else if (dir < 0) { xi = Math.max(0, xi - dt / 1.2); if (xi <= 0) { dir = 1; hold = 0.8; } }
-else { xi = Math.min(1, xi + dt / 7); if (xi >= 1) hold = 2.4; }
+/* autoplay: the weight rises from 0 to 1, pauses, then the run restarts behind a fade */
+if (drag || idle <= 2.5) fade = 0;
+else {
+pt += dt;
+if (phase === 0) { xi = Math.min(1, xi + dt / 7); if (xi >= 1) { phase = 1; pt = 0; } }
+else if (phase === 1) { if (pt > 2.4) { phase = 2; pt = 0; } }
+else if (phase === 2) { fade = Math.min(1, pt / 0.45); if (pt >= 0.45) { xi = 0; drops = []; ly2 = null; phase = 3; pt = 0; } }
+else if (phase === 3) { fade = Math.max(0, 1 - pt / 0.45); if (pt >= 0.45) { fade = 0; phase = 4; pt = 0; } }
+else if (pt > 0.6) { phase = 0; pt = 0; }
 }
 /* the agent tries actions drawn from the exploration policy */
 acc += dt * 9;
@@ -706,25 +762,28 @@ hud();
 d.draw = function () {
 d.clear();
 if (!geo) return;
-var c = d.ctx, b = blend(), me = b[0], se = b[1];
-/* actions the critics are unsure about: a soft haze that thins as they get explored */
-var fx = xa(MO), fy = geo.base - (geo.base - geo.top) * 0.42, rx = (geo.x1 - geo.x0) * 0.3, ry = (geo.base - geo.top) * 0.72, haze = 0.2 * (1 - 0.6 * xi);
+var c = d.ctx, b = blend(), me = b[0], se = b[1], ph = geo.base - geo.top;
+/* where the twin critics disagree (high epistemic uncertainty); the optimistic actor is pulled toward it */
+var fx = xa(MO + 0.1), fy = geo.base - ph * 0.3, rx = (geo.x1 - geo.x0) * 0.28, ry = ph * 0.62, haze = 0.18;
 c.save(); c.translate(fx, fy); c.scale(rx / ry, 1);
 var g = c.createRadialGradient(0, 0, 0, 0, 0, ry);
 g.addColorStop(0, col(P.t1, haze)); g.addColorStop(0.55, col(P.t1, haze * 0.7)); g.addColorStop(1, col(P.t1, 0));
 c.fillStyle = g; circle(c, 0, 0, ry); c.fill(); c.restore();
-label(c, 'critics disagree here', fx + rx * 0.55, geo.top + 4, { align: 'center', size: 11 });
+if (geo.n) label(c, 'critics disagree here', geo.x1, geo.top + 6, { align: 'right', size: 11 });
+else label(c, 'critics disagree here', fx, geo.base - ph * 0.86, { align: 'center', size: 11 });
 c.fillStyle = col(P.hair); c.fillRect(geo.x0, geo.base, geo.x1 - geo.x0, 1);
+label(c, 'action', geo.x1, geo.base + 20, { align: 'right', size: 11, a: 0.8 });
 /* the two actors */
 path(c, function (a) { return bell(a, MP, SP); }); c.lineTo(xa(1), geo.base); c.lineTo(xa(-1), geo.base); c.closePath();
 c.fillStyle = col(P.mut, 0.2); c.fill();
 path(c, function (a) { return bell(a, MP, SP); }); c.strokeStyle = col(P.mut); c.lineWidth = 1.8; c.stroke();
 c.setLineDash([6, 4]); path(c, function (a) { return bell(a, MO, SO); }); c.strokeStyle = col(P.t1, 0.85); c.lineWidth = 1.6; c.stroke(); c.setLineDash([]);
-if (mix) {
-c.setLineDash([2, 3]); path(c, function (a) { return (1 - xi) * bell(a, MP, SP) + xi * bell(a, MO, SO); });
-c.strokeStyle = col(P.t1, 0.75); c.lineWidth = 2.2; c.stroke(); c.setLineDash([]);
+if (kl) {
+/* KL-constrained exploration: the pessimistic Gaussian, mean shifted within a KL ball (illustrative radius: 1 nat) */
+c.setLineDash([2, 3]); path(c, function (a) { return bell(a, KLM, SP); });
+c.strokeStyle = col(P.t1, 0.8); c.lineWidth = 2.2; c.stroke(); c.setLineDash([]);
 }
-/* the exploration policy: their Wasserstein barycenter, always one bell */
+/* the exploration policy: their Wasserstein barycenter, always one Gaussian */
 path(c, function (a) { return bell(a, me, se); }); c.lineTo(xa(1), geo.base); c.lineTo(xa(-1), geo.base); c.closePath();
 c.fillStyle = col(P.acc, P.dark ? 0.28 : 0.26); c.fill();
 add(c, true); path(c, function (a) { return bell(a, me, se); }); c.strokeStyle = col(P.acc, 0.35); c.lineWidth = 8; c.stroke(); add(c, false);
@@ -746,28 +805,48 @@ c.beginPath(); c.moveTo(xm, geo.base - 6); c.lineTo(xm + 6, geo.base); c.lineTo(
 /* labels */
 label(c, geo.n ? 'pessimistic' : 'pessimistic actor', xa(MP), geo.base + 20, { align: 'center', size: 12, w: 500, color: P.t1 });
 label(c, geo.n ? 'optimistic' : 'optimistic actor', xa(MO), geo.base + 20, { align: 'center', size: 12, w: 500, color: P.t1 });
+label(c, geo.n ? 'critics’ lower bound' : 'maximizes the critics’ lower bound', xa(MP), geo.base + 35, { align: 'center', size: 11 });
+label(c, geo.n ? 'mean + β·disagreement' : 'maximizes mean + β · disagreement', xa(MO), geo.base + 35, { align: 'center', size: 11 });
 var pk = yb(bell(me, me, se)), lx = clamp(xm, geo.x0 + 80, geo.x1 - 80);
-label(c, 'W₂ barycenter', lx, pk - 22, { align: 'center', size: 12.5, w: 600, color: P.t1 });
-label(c, 'the exploration policy', lx, pk - 8, { align: 'center', size: 11 });
-if (mix) {
-c.setLineDash([2, 3]); c.strokeStyle = col(P.t1, 0.75); c.lineWidth = 2.2;
-c.beginPath(); c.moveTo(geo.x0, geo.top + 2); c.lineTo(geo.x0 + 18, geo.top + 2); c.stroke(); c.setLineDash([]);
-label(c, 'plain mixture', geo.x0 + 24, geo.top + 6, { size: 11 });
+/* the label sits above the peak, rising just enough to clear the taller curves beneath it */
+c.font = '600 12.5px ' + FONT; var hw1 = c.measureText('W₂ barycenter').width / 2 + 4;
+c.font = '400 11px ' + FONT; var hw2 = c.measureText('the exploration policy').width / 2 + 4;
+var target = Math.min(pk - 11, tallest(lx - hw2, lx + hw2) - 6, tallest(lx - hw1, lx + hw1) + 8), dtl = time - lyT;
+/* rise at once (never overlap), settle back down gently */
+lyT = time;
+if (ly2 === null || !d.run || drag || dtl <= 0 || dtl > 0.2 || target < ly2) ly2 = target;
+else ly2 += (target - ly2) * (1 - Math.exp(-dtl / 0.3));
+var y2 = ly2;
+/* a faint leader once the label has risen, unless a taller curve is in the way */
+var la = 0.55 * clamp((pk - y2 - 20) / 8, 0, 1) * clamp((tallest(xm - 1, xm + 1) - pk + 2) / 10, 0, 1);
+if (la > 0.01) { c.strokeStyle = col(P.t2, la); c.lineWidth = 1; c.beginPath(); c.moveTo(lx, y2 + 6); c.lineTo(xm, pk - 5); c.stroke(); }
+label(c, 'W₂ barycenter', lx, y2 - 14, { align: 'center', size: 12.5, w: 600, color: P.t1 });
+label(c, 'the exploration policy', lx, y2, { align: 'center', size: 11 });
+if (kl) {
+/* legend, in a strip above the curves that nothing else uses */
+var ly = 19, room = geo.x1 - geo.x0 - 24, txt = 'KL-constrained exploration: stays near the pessimistic actor';
+c.font = '400 11px ' + FONT;
+if (c.measureText(txt).width > room) txt = 'KL-constrained: stays near the pessimistic actor';
+if (c.measureText(txt).width > room) txt = 'KL-constrained exploration';
+c.setLineDash([2, 3]); c.strokeStyle = col(P.t1, 0.8); c.lineWidth = 2.2;
+c.beginPath(); c.moveTo(geo.x0, ly - 4); c.lineTo(geo.x0 + 18, ly - 4); c.stroke(); c.setLineDash([]);
+label(c, txt, geo.x0 + 24, ly, { size: 11 });
 }
 /* the optimism weight */
 var tx0 = geo.tx0, tx1 = geo.tx1, ty = geo.ty, kx = tx0 + xi * (tx1 - tx0);
-label(c, 'pessimistic', tx0 - 12, ty + 4, { align: 'right', size: 11 });
-label(c, 'optimistic', tx1 + 12, ty + 4, { size: 11 });
+label(c, 'pessimistic', tx0 - 18, ty + 4, { align: 'right', size: 11 });
+label(c, 'optimistic', tx1 + 18, ty + 4, { size: 11 });
 rrect(c, tx0, ty - 3, tx1 - tx0, 6, 3); c.fillStyle = col(P.hair); c.fill();
 rrect(c, tx0, ty - 3, Math.max(6, kx - tx0), 6, 3); c.fillStyle = col(P.acc); c.fill();
 add(c, true); glow(c, P.sAcc, kx, ty, 30, 0.7); add(c, false);
 circle(c, kx, ty, 7.5); c.fillStyle = col(P.bg); c.fill(); c.strokeStyle = col(P.acc); c.lineWidth = 2.5; c.stroke();
-label(c, 'optimism weight ξ rises as training goes on', (tx0 + tx1) / 2, ty + 22, { align: 'center', size: 11 });
+label(c, 'optimism weight ξₒ starts at 0 and grows linearly during training', (tx0 + tx1) / 2, ty + 22, { align: 'center', size: 11 });
+if (fade > 0) { c.globalAlpha = fade; c.drawImage(d.bgc, 0, 0, d.W, d.H); c.globalAlpha = 1; }
 };
-d.still = function () { xi = 0.5; drops = []; hud(); d.draw(); };
-d.act = function (a, btn) { mix = !mix; btn.textContent = mix ? 'Hide the mixture' : 'Show the mixture'; };
+d.still = function () { xi = 0.5; fade = 0; drops = []; ly2 = null; hud(); d.draw(); };
+d.act = function (a, btn) { kl = !kl; btn.textContent = kl ? 'Hide the KL constraint' : 'Compare with a KL constraint'; };
 function onTrack(p) { return geo && Math.abs(p[1] - geo.ty) < 18 && p[0] > geo.tx0 - 16 && p[0] < geo.tx1 + 16; }
-function seek(p) { xi = clamp((p[0] - geo.tx0) / (geo.tx1 - geo.tx0), 0, 1); hold = 0; idle = 0; hud(); }
+function seek(p) { xi = clamp((p[0] - geo.tx0) / (geo.tx1 - geo.tx0), 0, 1); phase = xi >= 1 ? 1 : 0; pt = 0; fade = 0; idle = 0; hud(); }
 d.cv.addEventListener('pointerdown', function (e) {
 var p = d.pt(e);
 if (!onTrack(p)) return;
@@ -783,388 +862,6 @@ function up() { if (drag) { drag = false; idle = 0; } }
 d.cv.addEventListener('pointerup', up);
 d.cv.addEventListener('pointercancel', up);
 hud();
-});
-/* ================================================================
-   3. Safe RL: learning an unknown safety rule and the policy together
-   (illustration of concurrent policy / pSTL-parameter learning on the
-   Circle task: Bayesian optimization fits the rule's limits to runs an
-   expert labels, the policy is retrained under each estimate, and the
-   loop stops once 90% of a round's runs are safe)
-   ================================================================ */
-demo('demo-rl', function (d) {
-var RC = 1.5, M = 0.08, SD = 0.035, KS = 25, BONUS = 0.008, NROLL = 10, TR = 0.14, NG = 30, MAXIT = 9;
-var B1 = [-1.6, -0.4], B2 = [0.4, 1.6], PAPER = [-1.2, 1.0], SEED = 1;
-var r = rng(7), time = 0, geo = null, dragging = -1, hoverLine = -1, userRule = false;
-var truth, data, prev, warm, bo, ppath, it, phase, pt, est, shownLim, limFrom, limT, pol, polFrom, polTo, polT;
-var shownTr, oldTr, revealed, roundSafe, conv, heat, heatOld, heatT, phi = 0, trail = [];
-var STEPS = ['fit the rule (Bayesian opt.)', 'retrain the policy (RL)', 'expert labels new runs'];
-var STEPS_S = ['fit rule', 'retrain policy', 'label runs'];
-function U(a, b) { return a + (b - a) * r(); }
-function toT(u) { return [B1[0] + u[0] * (B1[1] - B1[0]), B2[0] + u[1] * (B2[1] - B2[0])]; }
-function toU(t) { return [(t[0] - B1[0]) / (B1[1] - B1[0]), (t[1] - B2[0]) / (B2[1] - B2[0])]; }
-function run(lo, hi, safe) { return { lo: Math.max(lo, -RC), hi: Math.min(hi, RC), safe: safe, w: r() * 6.283 }; }
-function initialData() {
-var out = [], k;
-for (k = 0; k < 10; k++) out.push(run(truth[0] + U(0.12, 0.35), truth[1] - U(0.12, 0.35), true));
-for (k = 0; k < 10; k++) {
-if (k % 2) out.push(run(truth[0] - U(0.7, 1.0), truth[1] - U(0.12, 0.35), false));
-else out.push(run(truth[0] + U(0.12, 0.35), truth[1] + U(0.7, 1.0), false));
-}
-return out;
-}
-/* objective: misclassification of the labeled runs by the rule (smoothed), with a
-   slight preference for the least restrictive rule among equally good ones */
-function sig(z) { return 1 / (1 + Math.exp(-Math.max(-40, Math.min(40, z)))); }
-function obj(t1, t2) {
-var es = 0, eu = 0, ns = 0, nu = 0, i, q, rho;
-for (i = 0; i < data.length; i++) {
-q = data[i]; rho = Math.min(q.lo - t1, t2 - q.hi);
-if (q.safe) { es += sig(-KS * rho); ns++; } else { eu += sig(KS * rho); nu++; }
-}
-return 0.5 * (es / Math.max(ns, 1) + eu / Math.max(nu, 1)) - BONUS * (t2 - t1) / 2.8;
-}
-/* a small Gaussian-process surrogate with expected improvement */
-function kern(a, b) { var x = a[0] - b[0], y = a[1] - b[1]; return Math.exp(-(x * x + y * y) / (2 * 0.12 * 0.12)); }
-function chol(A, n) {
-var L = [], i, j, k, s;
-for (i = 0; i < n; i++) L.push(new Float64Array(n));
-for (i = 0; i < n; i++) for (j = 0; j <= i; j++) {
-s = A[i][j];
-for (k = 0; k < j; k++) s -= L[i][k] * L[j][k];
-L[i][j] = i === j ? Math.sqrt(Math.max(s, 1e-12)) : s / L[j][j];
-}
-return L;
-}
-function fsub(L, b, n) { var x = new Float64Array(n), i, k, s; for (i = 0; i < n; i++) { s = b[i]; for (k = 0; k < i; k++) s -= L[i][k] * x[k]; x[i] = s / L[i][i]; } return x; }
-function bsub(L, y, n) { var x = new Float64Array(n), i, k, s; for (i = n - 1; i >= 0; i--) { s = y[i]; for (k = i + 1; k < n; k++) s -= L[k][i] * x[k]; x[i] = s / L[i][i]; } return x; }
-function erf(x) {
-var sg = x < 0 ? -1 : 1, t;
-x = Math.abs(x); t = 1 / (1 + 0.3275911 * x);
-return sg * (1 - ((((1.061405429 * t - 1.453152027) * t + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x));
-}
-function nextEI(Us, F, C) {
-var n = Us.length, i, j, mu0 = 0, best = Infinity, K = [], bi = 0, bv = -1;
-for (i = 0; i < n; i++) { mu0 += F[i] / n; best = Math.min(best, F[i]); }
-for (i = 0; i < n; i++) { K.push(new Float64Array(n)); for (j = 0; j < n; j++) K[i][j] = kern(Us[i], Us[j]) + (i === j ? 1e-3 : 0); }
-var L = chol(K, n), y = new Float64Array(n);
-for (i = 0; i < n; i++) y[i] = F[i] - mu0;
-var a = bsub(L, fsub(L, y, n), n), ks = new Float64Array(n);
-for (var c = 0; c < C.length; c++) {
-for (i = 0; i < n; i++) ks[i] = kern(C[c], Us[i]);
-var mu = mu0, v = fsub(L, ks, n), vv = 0;
-for (i = 0; i < n; i++) { mu += ks[i] * a[i]; vv += v[i] * v[i]; }
-var sd = Math.sqrt(Math.max(1e-12, 1 - vv)), g = best - mu - 0.005, z = g / sd;
-var ei = g * 0.5 * (1 + erf(z / Math.SQRT2)) + sd * Math.exp(-0.5 * z * z) / 2.5066;
-if (ei > bv) { bv = ei; bi = c; }
-}
-return C[bi];
-}
-function runBO() {
-var Us = [], F = [], k, lo, hi, C = [], gi, gj;
-function ev(u) { u = [clamp(u[0], 0, 1), clamp(u[1], 0, 1)]; var t = toT(u); Us.push(u); F.push(obj(t[0], t[1])); }
-warm.forEach(ev);
-if (prev) { ev(prev); [[0.03, 0], [0, 0.03], [-0.03, 0], [0, -0.03]].forEach(function (q) { ev([prev[0] + q[0], prev[1] + q[1]]); }); }
-lo = prev ? [clamp(prev[0] - TR, 0, 1), clamp(prev[1] - TR, 0, 1)] : [0, 0];
-hi = prev ? [clamp(prev[0] + TR, 0, 1), clamp(prev[1] + TR, 0, 1)] : [1, 1];
-for (gi = 0; gi < NG; gi++) for (gj = 0; gj < NG; gj++) C.push([lo[0] + (hi[0] - lo[0]) * gi / (NG - 1), lo[1] + (hi[1] - lo[1]) * gj / (NG - 1)]);
-for (k = 0; k < 3; k++) ev([lo[0] + r() * (hi[0] - lo[0]), lo[1] + r() * (hi[1] - lo[1])]);
-for (k = 0; k < 10; k++) { var c = nextEI(Us, F, C); ev([c[0] + gauss(r) * 0.003, c[1] + gauss(r) * 0.003]); }
-var bf = Math.min.apply(null, F), bi = 0, bw = -1;
-for (k = 0; k < F.length; k++) if (F[k] <= bf + 1e-12) { var t = toT(Us[k]); if (t[1] - t[0] > bw) { bw = t[1] - t[0]; bi = k; } }
-var idx = F.map(function (f, kk) { return kk; }).sort(function (p, q) { return F[p] - F[q]; });
-warm = idx.slice(0, 3).map(function (kk) { return Us[kk]; });
-prev = Us[bi];
-return { U: Us, F: F, best: bi };
-}
-function nominal(t) { return t ? [Math.max(t[0] + M, -RC), Math.min(t[1] - M, RC)] : [-RC, RC]; }
-function rollout(t) {
-var n = nominal(t), lo = n[0] > -RC ? n[0] + gauss(r) * SD : -RC, hi = n[1] < RC ? n[1] + gauss(r) * SD : RC;
-lo = Math.max(lo, -RC); hi = Math.min(hi, RC);
-return { lo: lo, hi: hi, safe: lo >= truth[0] && hi <= truth[1], w: r() * 6.283 };
-}
-function makeHeat() {
-var c = document.createElement('canvas'), n = 40, g, i, j, v;
-c.width = c.height = n; g = c.getContext('2d');
-for (i = 0; i < n; i++) for (j = 0; j < n; j++) {
-var t = toT([(i + 0.5) / n, 1 - (j + 0.5) / n]);
-v = Math.pow(clamp(1 - (obj(t[0], t[1]) + 0.01) / 0.36, 0, 1), 2.2);
-g.fillStyle = col(P.acc, 0.03 + 0.72 * v); g.fillRect(i, j, 1, 1);
-}
-c.acc = P.acc.join();
-return c;
-}
-function hud() { d.setHud('iteration <b>' + it + '</b> &middot; labeled runs <b>' + data.length + '</b>'); }
-function counts() { var s = 0; data.forEach(function (q) { if (q.safe) s++; }); return [s, data.length - s]; }
-/* the loop: compute steps (shared by the animation and the still frame) */
-function doFit() { it++; heatOld = heat; heat = makeHeat(); heatT = 0; bo = runBO(); est = toT(bo.U[bo.best]); ppath.push(bo.U[bo.best]); }
-function doLabel() { var tr = [], k; for (k = 0; k < NROLL; k++) tr.push(rollout(est)); roundSafe = tr.filter(function (q) { return q.safe; }).length; return tr; }
-function newRun(randomRule, seed) {
-r = rng(seed != null ? seed : (Math.random() * 1e9) | 0);
-if (randomRule) { truth = [-U(0.85, 1.35), U(0.75, 1.3)]; }
-data = initialData(); prev = null; warm = []; ppath = []; it = 0; est = null; shownLim = null; limFrom = null; limT = 1;
-pol = nominal(null); polFrom = pol; polTo = pol; polT = 1;
-shownTr = data.slice(); oldTr = []; revealed = shownTr.length; roundSafe = -1; conv = false; bo = null;
-heatOld = null; heat = makeHeat(); heatT = 1; phase = 'intro'; pt = 0; hud();
-}
-function startFit() { doFit(); oldTr = shownTr; shownTr = []; revealed = 0; phase = 'fit'; pt = 0; hud(); }
-function startTrain() {
-oldTr = [];
-limFrom = shownLim ? shownLim.slice() : null; shownLim = est.slice(); limT = 0;
-polFrom = pol.slice(); polTo = nominal(est); polT = 0; phase = 'train'; pt = 0;
-}
-function startLabel() { oldTr = []; shownTr = doLabel(); revealed = 0; phase = 'label'; pt = 0; }
-function endRound() {
-data = data.concat(shownTr); hud();
-if (roundSafe >= 9 || it >= MAXIT) { conv = roundSafe >= 9; phase = 'done'; pt = 0; } else startFit();
-}
-d.heightFor = function (w) { return w < 560 ? 622 : 360; };
-d.layout = function () {
-var W = d.W, H = d.H, w, x0, s;
-if (W >= 560) {
-w = Math.round(W * 0.49); x0 = 12 + w + 18; s = 136;
-geo = { narrow: false, pills: 20, world: { x: 12, y: 40, w: w, h: H - 70 }, fx: x0, fy: 60, map: { x: x0 + 20, y: 130, s: s } };
-geo.stats = geo.map.x + s + 16; geo.sum = H - 13;
-} else {
-s = 140;
-geo = { narrow: true, pills: 18, world: { x: 10, y: 34, w: W - 20, h: 250 }, fx: 16, fy: 348, map: { x: 34, y: 416, s: s } };
-geo.stats = geo.map.x + s + 16; geo.sum = H - 13;
-}
-var wd = geo.world;
-geo.sc = Math.min(wd.w / 3.9, wd.h / 3.7); geo.cx = wd.x + wd.w / 2; geo.cy = wd.y + wd.h / 2 + 4;
-};
-function wx(x) { return geo.cx + x * geo.sc; }
-function wy(y) { return geo.cy - y * geo.sc; }
-function mx(u) { return geo.map.x + u * geo.map.s; }
-function my(u) { return geo.map.y + (1 - u) * geo.map.s; }
-d.step = function (dt) {
-time += dt; heatT = Math.min(1, heatT + dt * 2); limT = Math.min(1, limT + dt / 0.7);
-if (phase === 'train') polT = Math.min(1, pt / 1.0);
-pol = [polFrom[0] + (polTo[0] - polFrom[0]) * ease(polT), polFrom[1] + (polTo[1] - polFrom[1]) * ease(polT)];
-phi += dt * 1.7;
-var x = clamp(RC * Math.cos(phi), pol[0], pol[1]), y = RC * Math.sin(phi);
-trail.push([x, y]); if (trail.length > 28) trail.shift();
-if (dragging >= 0) return;
-pt += dt;
-if (phase === 'intro') { if (pt > 1.8) startFit(); }
-else if (phase === 'fit') { if (pt > 0.25 + bo.U.length * 0.065 + 0.4) startTrain(); }
-else if (phase === 'train') { if (pt > 1.35) startLabel(); }
-else if (phase === 'label') { revealed = Math.min(NROLL, Math.floor(pt / 0.13) + 1); if (pt > NROLL * 0.13 + 0.5) endRound(); }
-else if (phase === 'done') { if (pt > 7) newRun(!userRule); }
-};
-function tracePath(c, q) {
-c.beginPath();
-for (var k = 0; k <= 64; k++) {
-var a = k / 64 * 6.2832, rr = RC * (1 + 0.012 * Math.sin(3 * a + q.w));
-var x = clamp(rr * Math.cos(a), q.lo, q.hi), y = rr * Math.sin(a);
-if (k) c.lineTo(wx(x), wy(y)); else c.moveTo(wx(x), wy(y));
-}
-}
-function drawWorld(c) {
-var wd = geo.world, k, x, i;
-/* regions outside the true limits: unsafe, hidden from the robot */
-[[wd.x, wx(truth[0])], [wx(truth[1]), wd.x + wd.w]].forEach(function (z) {
-c.save(); rrect(c, wd.x, wd.y, wd.w, wd.h, 10); c.clip();
-c.beginPath(); c.rect(z[0], wd.y, z[1] - z[0], wd.h); c.clip();
-c.fillStyle = col(P.warn, 0.07); c.fillRect(z[0], wd.y, z[1] - z[0], wd.h);
-c.strokeStyle = col(P.warn, 0.14); c.lineWidth = 1; c.beginPath();
-for (k = z[0] - wd.h; k < z[1]; k += 9) { c.moveTo(k, wd.y + wd.h); c.lineTo(k + wd.h, wd.y); }
-c.stroke(); c.restore();
-});
-for (i = 0; i < 2; i++) {
-x = wx(truth[i]);
-c.setLineDash([5, 4]); c.strokeStyle = col(P.warn, hoverLine === i || dragging === i ? 1 : 0.75); c.lineWidth = hoverLine === i || dragging === i ? 2.5 : 1.5;
-c.beginPath(); c.moveTo(x, wd.y + 6); c.lineTo(x, wd.y + wd.h - 6); c.stroke(); c.setLineDash([]);
-if (dragging === i || hoverLine === i) label(c, 'true limit ' + truth[i].toFixed(2), i ? x - 6 : x + 6, wd.y + 34, { align: i ? 'right' : 'left', size: 11.5, w: 500, color: P.t1 });
-}
-/* the circle the robot is rewarded for following */
-c.strokeStyle = col(P.hair); c.lineWidth = 1; circle(c, geo.cx, geo.cy, RC * geo.sc); c.stroke();
-/* the learned rule: a band between the estimated limits */
-if (shownLim) {
-var e = ease(limT), L0 = limFrom ? limFrom[0] + (shownLim[0] - limFrom[0]) * e : shownLim[0], L1 = limFrom ? limFrom[1] + (shownLim[1] - limFrom[1]) * e : shownLim[1];
-var a0 = Math.max(wx(L0), wd.x), a1 = Math.min(wx(L1), wd.x + wd.w);
-c.fillStyle = col(P.acc, 0.07); c.fillRect(a0, wd.y, a1 - a0, wd.h);
-[L0, L1].forEach(function (v, j) {
-var xx = wx(v);
-if (xx < wd.x || xx > wd.x + wd.w) return;
-add(c, true); c.strokeStyle = col(P.acc, 0.18); c.lineWidth = 7; c.beginPath(); c.moveTo(xx, wd.y + 6); c.lineTo(xx, wd.y + wd.h - 6); c.stroke(); add(c, false);
-c.strokeStyle = col(P.acc); c.lineWidth = 2; c.beginPath(); c.moveTo(xx, wd.y + 6); c.lineTo(xx, wd.y + wd.h - 6); c.stroke();
-label(c, (j ? 'θ₂ = ' : 'θ₁ = ') + v.toFixed(2), clamp(xx, wd.x + 34, wd.x + wd.w - 34), wd.y + wd.h - 10, { align: 'center', size: 11.5, w: 500, color: P.t1 });
-});
-}
-/* runs: last round (fading) and the current one, colored by the expert's label */
-var drawSet = function (set, n, alpha) {
-for (k = 0; k < Math.min(n, set.length); k++) {
-var q = set[k];
-tracePath(c, q); c.strokeStyle = col(q.safe ? P.acc : P.warn, (q.safe ? 0.42 : 0.8) * alpha); c.lineWidth = q.safe ? 1.1 : 1.4; c.stroke();
-if (!q.safe && alpha > 0.5) {
-var vx = q.lo < truth[0] ? q.lo : q.hi;
-circle(c, wx(vx), wy(0), 3); c.fillStyle = col(P.warn, alpha); c.fill();
-}
-}
-};
-var fade = phase === 'fit' ? Math.max(0, 1 - pt / 0.8) : 1;
-if (oldTr.length && phase === 'fit') drawSet(oldTr, oldTr.length, fade);
-drawSet(shownTr, phase === 'label' ? revealed : shownTr.length, phase === 'intro' || phase === 'label' || phase === 'done' ? 1 : fade);
-/* the robot following its current policy */
-var cur = trail[trail.length - 1] || [RC, 0], bad = cur[0] < truth[0] || cur[0] > truth[1];
-add(c, true); c.lineCap = 'round';
-for (k = 1; k < trail.length; k++) {
-var f = k / trail.length;
-c.strokeStyle = col(P.acc, 0.05 + 0.5 * f * f); c.lineWidth = 1.5 + 3 * f;
-c.beginPath(); c.moveTo(wx(trail[k - 1][0]), wy(trail[k - 1][1])); c.lineTo(wx(trail[k][0]), wy(trail[k][1])); c.stroke();
-}
-glow(c, bad ? P.sWarn : P.sAcc, wx(cur[0]), wy(cur[1]), 44, 1);
-add(c, false);
-circle(c, wx(cur[0]), wy(cur[1]), 6.5); c.fillStyle = col(bad ? P.warn : P.acc); c.fill();
-circle(c, wx(cur[0]) - 1.8, wy(cur[1]) - 2, 1.8); c.fillStyle = col(WHITE, 0.6); c.fill();
-label(c, 'Circle task, top view', wd.x + 10, wd.y + 17, { size: 11 });
-c.strokeStyle = col(P.hair); c.lineWidth = 1; rrect(c, wd.x + 0.5, wd.y + 0.5, wd.w - 1, wd.h - 1, 10); c.stroke();
-/* legend under the panel */
-var ly = wd.y + wd.h + 16, lx = wd.x + 2, wl;
-c.strokeStyle = col(P.acc, 0.85); c.lineWidth = 1.6; c.beginPath(); c.moveTo(lx, ly - 4); c.lineTo(lx + 14, ly - 4); c.stroke();
-wl = label(c, 'safe run', lx + 19, ly, { size: 11 }); lx += 19 + wl + 14;
-c.strokeStyle = col(P.warn, 0.85); c.beginPath(); c.moveTo(lx, ly - 4); c.lineTo(lx + 14, ly - 4); c.stroke();
-wl = label(c, 'unsafe run', lx + 19, ly, { size: 11 }); lx += 19 + wl + 14;
-c.setLineDash([3, 3]); c.strokeStyle = col(P.warn, 0.85); c.beginPath(); c.moveTo(lx + 4, ly - 10); c.lineTo(lx + 4, ly + 2); c.stroke(); c.setLineDash([]);
-wl = label(c, 'true limit (hidden, drag me)', lx + 12, ly, { size: 11 });
-}
-function drawPills(c) {
-var labels = geo.narrow ? STEPS_S : STEPS, fs = geo.narrow ? 11 : 11.5, ws = [], tot = 0, gap = geo.narrow ? 16 : 22, k, act = phase === 'fit' ? 0 : phase === 'train' ? 1 : phase === 'label' ? 2 : -1;
-c.font = '500 ' + fs + 'px ' + FONT;
-for (k = 0; k < 3; k++) { ws.push(c.measureText((k + 1) + '  ' + labels[k]).width + 20); tot += ws[k]; }
-tot += gap * 2;
-var x = Math.round((d.W - tot) / 2), y = geo.pills - 10;
-for (k = 0; k < 3; k++) {
-var on = k === act;
-rrect(c, x, y, ws[k], 20, 10);
-c.fillStyle = col(P.acc, on ? 0.24 : 0.05); c.fill();
-c.strokeStyle = col(on ? P.acc : P.hair, on ? 0.9 : 1); c.lineWidth = 1; c.stroke();
-if (on) { add(c, true); glow(c, P.sAcc, x + 11, y + 10, 26, 0.5); add(c, false); }
-label(c, (k + 1) + '  ' + labels[k], x + 10, y + 14, { size: fs, w: 500, color: on ? P.t1 : P.t2 });
-x += ws[k];
-if (k < 2) {
-c.strokeStyle = col(P.t2, 0.7); c.lineWidth = 1.2; c.beginPath();
-c.moveTo(x + 4, y + 10); c.lineTo(x + gap - 5, y + 10); c.moveTo(x + gap - 9, y + 6.5); c.lineTo(x + gap - 5, y + 10); c.lineTo(x + gap - 9, y + 13.5); c.stroke();
-x += gap;
-}
-}
-}
-function drawSpec(c) {
-var fx = geo.fx, fy = geo.fy, m = geo.map, k;
-label(c, 'G ¬( x < θ₁ ∨ x > θ₂ )', fx, fy, { size: 15, w: 500, color: P.t1 });
-label(c, 'always stay between θ₁ and θ₂', fx, fy + 17, { size: 11 });
-label(c, 'unknown safety rule (parametric STL)', fx, fy - 20, { size: 11 });
-var vt = est ? 'θ₁ = ' + (shownLim || est)[0].toFixed(2) + '     θ₂ = ' + (shownLim || est)[1].toFixed(2) : 'θ₁ = ?     θ₂ = ?';
-if (est && phase === 'fit') vt = 'θ₁, θ₂: searching…';
-label(c, vt, fx, fy + 39, { size: 13, w: 500, color: P.t1 });
-label(c, 'Bayesian optimization over (θ₁, θ₂)', fx, m.y - 9, { size: 11 });
-/* how well each candidate rule explains the labeled runs (brighter = better) */
-if (heat.acc !== P.acc.join()) { heat = makeHeat(); heatOld = null; }
-c.save(); c.imageSmoothingEnabled = true;
-if (heatOld && heatT < 1) { c.globalAlpha = 1 - heatT; c.drawImage(heatOld, m.x, m.y, m.s, m.s); }
-c.globalAlpha = heatOld && heatT < 1 ? heatT : 1; c.drawImage(heat, m.x, m.y, m.s, m.s); c.restore(); c.globalAlpha = 1;
-c.strokeStyle = col(P.hair); c.lineWidth = 1; c.strokeRect(m.x + 0.5, m.y + 0.5, m.s - 1, m.s - 1);
-var tu = toU(truth);
-c.setLineDash([3, 3]); c.strokeStyle = col(P.warn, 0.7); c.lineWidth = 1; c.beginPath();
-c.moveTo(mx(tu[0]), m.y); c.lineTo(mx(tu[0]), m.y + m.s); c.moveTo(m.x, my(tu[1])); c.lineTo(m.x + m.s, my(tu[1])); c.stroke(); c.setLineDash([]);
-label(c, 'true', mx(tu[0]) + 4, my(tu[1]) - 5, { size: 11, color: P.t2 });
-/* evaluations of this iteration, the running best, and the path of estimates */
-var shownN = 0, bestK = -1;
-if (bo) {
-shownN = phase === 'fit' ? Math.max(0, Math.min(bo.U.length, Math.floor((pt - 0.25) / 0.065) + 1)) : bo.U.length;
-for (k = 0; k < shownN; k++) {
-circle(c, mx(bo.U[k][0]), my(bo.U[k][1]), 2.1); c.fillStyle = col(P.t1, 0.85); c.fill();
-if (bestK < 0 || bo.F[k] < bo.F[bestK] - 1e-12 || (Math.abs(bo.F[k] - bo.F[bestK]) <= 1e-12 && toT(bo.U[k])[1] - toT(bo.U[k])[0] > toT(bo.U[bestK])[1] - toT(bo.U[bestK])[0])) bestK = k;
-}
-if (phase === 'fit' && shownN > 0 && shownN <= bo.U.length) {
-var nu = bo.U[shownN - 1], ag = clamp((pt - 0.25) / 0.065 - (shownN - 1), 0, 1);
-c.strokeStyle = col(P.t1, 1 - ag); c.lineWidth = 1.2; circle(c, mx(nu[0]), my(nu[1]), 3 + ag * 8); c.stroke();
-}
-}
-var pts = ppath.slice(0, phase === 'fit' ? ppath.length - 1 : ppath.length);
-if (pts.length > 1) {
-c.beginPath(); pts.forEach(function (u, j) { if (j) c.lineTo(mx(u[0]), my(u[1])); else c.moveTo(mx(u[0]), my(u[1])); });
-c.strokeStyle = col(P.acc, 0.75); c.lineWidth = 1.5; c.stroke();
-}
-var cu = phase === 'fit' && bestK >= 0 ? bo.U[bestK] : pts[pts.length - 1];
-if (cu) {
-add(c, true); glow(c, P.sAcc, mx(cu[0]), my(cu[1]), 26, 0.9); add(c, false);
-circle(c, mx(cu[0]), my(cu[1]), 4.5); c.strokeStyle = col(P.acc); c.lineWidth = 2; c.stroke();
-}
-label(c, 'θ₁', m.x + m.s / 2, m.y + m.s + 15, { align: 'center', size: 12, color: P.t1 });
-label(c, B1[0].toFixed(1), m.x, m.y + m.s + 15, { size: 11 });
-label(c, B1[1].toFixed(1), m.x + m.s, m.y + m.s + 15, { align: 'right', size: 11 });
-label(c, 'θ₂', m.x - 8, m.y + m.s / 2 + 4, { align: 'right', size: 12, color: P.t1 });
-label(c, B2[1].toFixed(1), m.x - 5, m.y + 10, { align: 'right', size: 11 });
-label(c, B2[0].toFixed(1), m.x - 5, m.y + m.s - 2, { align: 'right', size: 11 });
-/* labeled runs and this round's verdict */
-var sx = geo.stats, sy = m.y + 10, cn = counts(), rs = phase === 'label' ? shownTr.slice(0, revealed).filter(function (q) { return q.safe; }).length : roundSafe;
-var rn = phase === 'label' ? revealed : NROLL;
-label(c, 'labeled runs', sx, sy, { size: 11 });
-label(c, cn[0] + ' safe · ' + cn[1] + ' unsafe', sx, sy + 17, { size: 12.5, w: 500, color: P.t1 });
-label(c, 'this round', sx, sy + 44, { size: 11 });
-label(c, rs < 0 ? '—' : rs + ' of ' + rn + ' runs safe', sx, sy + 61, { size: 12.5, w: 500, color: P.t1 });
-var bw = Math.min(118, d.W - 12 - sx), fr = rs < 0 ? 0 : rs / NROLL;
-rrect(c, sx, sy + 71, bw, 6, 3); c.fillStyle = col(P.hair); c.fill();
-if (fr > 0) { rrect(c, sx, sy + 71, Math.max(6, bw * fr), 6, 3); c.fillStyle = col(P.acc); c.fill(); }
-c.fillStyle = col(P.t1); c.fillRect(sx + bw * 0.9 - 0.5, sy + 67, 1.5, 14);
-label(c, 'stop at 90% safe', sx, sy + 96, { size: 11 });
-if (phase === 'done' && conv) {
-c.strokeStyle = col(P.acc); c.lineWidth = 2.2; c.beginPath(); c.moveTo(sx + 1, sy + 117); c.lineTo(sx + 5, sy + 121); c.lineTo(sx + 12, sy + 112); c.stroke();
-label(c, 'converged', sx + 18, sy + 121, { size: 12.5, w: 600, color: P.t1 });
-}
-/* summary */
-var st;
-if (phase === 'done' && est) st = 'learned (' + est[0].toFixed(2) + ', ' + est[1].toFixed(2) + ')  ·  true (' + truth[0].toFixed(2) + ', ' + truth[1].toFixed(2) + ')';
-else if (phase === 'intro') st = 'start: 20 runs labeled by an expert';
-else st = phase === 'fit' ? 'fitting the limits to the labeled runs' : phase === 'train' ? 'retraining the policy under the new limits' : 'the expert labels each new run';
-label(c, st, geo.narrow ? geo.fx : geo.fx, geo.sum, { size: geo.narrow ? 11 : 11.5, w: phase === 'done' ? 600 : 400, color: phase === 'done' ? P.t1 : P.t2 });
-}
-d.draw = function () {
-d.clear();
-if (!geo) return;
-var c = d.ctx;
-drawWorld(c); drawPills(c); drawSpec(c);
-};
-d.still = function () {
-newRun(false, truth[0] === PAPER[0] && truth[1] === PAPER[1] ? SEED : null);
-while (it < MAXIT) { doFit(); shownLim = est.slice(); limFrom = null; limT = 1; shownTr = doLabel(); data = data.concat(shownTr); if (roundSafe >= 9) break; }
-conv = roundSafe >= 9; phase = 'done'; pt = 0; revealed = NROLL; oldTr = []; heatT = 1; heat = makeHeat();
-pol = nominal(est); polFrom = pol; polTo = pol; polT = 1;
-trail = []; for (var k = 0; k < 28; k++) { var a = 0.6 + k * 0.03; trail.push([clamp(RC * Math.cos(a), pol[0], pol[1]), RC * Math.sin(a)]); }
-hud(); d.draw();
-};
-d.act = function () { newRun(false, truth[0] === PAPER[0] && truth[1] === PAPER[1] ? SEED : null); };
-function nearLine(p) {
-if (!geo) return -1;
-var wd = geo.world;
-if (p[1] < wd.y || p[1] > wd.y + wd.h) return -1;
-for (var i = 0; i < 2; i++) if (Math.abs(p[0] - wx(truth[i])) < 11) return i;
-return -1;
-}
-d.cv.addEventListener('pointerdown', function (e) {
-var i = nearLine(d.pt(e));
-if (i < 0) return;
-dragging = i; d.cv.setPointerCapture(e.pointerId); e.preventDefault(); d.cv.style.cursor = 'ew-resize';
-if (!d.run) d.paint();
-});
-d.cv.addEventListener('pointermove', function (e) {
-var p = d.pt(e);
-if (dragging >= 0) {
-var v = (p[0] - geo.cx) / geo.sc;
-truth[dragging] = dragging ? clamp(v, 0.6, 1.4) : clamp(v, -1.4, -0.6);
-if (!d.run) d.paint();
-} else {
-var h = nearLine(p);
-if (h !== hoverLine) { hoverLine = h; d.cv.style.cursor = h >= 0 ? 'ew-resize' : ''; if (!d.run) d.paint(); }
-}
-});
-function up() { if (dragging >= 0) { dragging = -1; userRule = true; d.cv.style.cursor = ''; newRun(false); if (!d.run) d.paint(true); } }
-d.cv.addEventListener('pointerup', up);
-d.cv.addEventListener('pointercancel', up);
-d.cv.addEventListener('pointerleave', function () { if (hoverLine >= 0 && dragging < 0) { hoverLine = -1; if (!d.run) d.paint(); } });
-truth = PAPER.slice();
-newRun(false, SEED);
 });
 /* ================================================================
    4. Uncertainty: a live prediction interval through a shift
