@@ -282,9 +282,9 @@ satisfy a temporal-logic specification is therefore not a second agenda but the 
 one: shaping transport paths so a learned simulator is stable in the very metric its
 guarantees are written in.</p>
 <div class="demo demo-drag" id="demo-geo">
-<div class="demo-head"><span class="demo-title"><span class="demo-live"><i></i>Live</span>Two beliefs, one consensus</span><span class="demo-hud" data-hud></span></div>
-<canvas role="img" aria-label="Animation of two clouds of points, the beliefs of two agents. Optimal transport moves each point along a straight line until the clouds merge into one shared belief halfway between them, the Wasserstein barycenter. The pointwise average instead keeps two separate clouds with nothing in between."></canvas>
-<div class="demo-foot"><span>Drag either belief. Transport merges them into one; averaging keeps two.</span><button type="button" class="demo-btn" data-act="toggle">Show the average</button></div>
+<div class="demo-head"><span class="demo-title"><span class="demo-live"><i></i>Live</span>Blending optimism and pessimism with a Wasserstein barycenter</span><span class="demo-hud" data-hud></span></div>
+<canvas role="img" aria-label="Animation of how WBSAC explores. A pessimistic actor, a narrow bell, plays it safe on a known good action. An optimistic actor, a wide bell, bets on actions the critics are unsure about. The exploration policy is their Wasserstein barycenter: a single bell whose center and width move smoothly from the pessimistic actor to the optimistic one as the optimism weight rises during training. A plain mixture would instead split into two separate humps."></canvas>
+<div class="demo-foot"><span>Drag the knob to change the blend. The barycenter stays one policy; a mixture splits in two.</span><button type="button" class="demo-btn" data-act="toggle">Show the mixture</button></div>
 </div>
 <ul class="papers">
 <li><span class="pv">L-CSS</span><span class="pt"><a href="https://ieeexplore.ieee.org/document/11563844" target="_blank">Blending Optimism and Pessimism via Wasserstein Barycenters for Continuous Control</a></span><span class="py">2026</span></li>
@@ -665,119 +665,121 @@ d.cv.addEventListener('pointercancel', up);
 setState(TH0); hud();
 });
 /* ================================================================
-   2. Geometric foundations: two beliefs, one consensus
+   2. Geometric foundations: blending optimism and pessimism with a
+   Wasserstein barycenter (WBSAC, abstract view). A pessimistic actor plays
+   it safe; an optimistic actor bets on actions the critics are unsure about.
+   The exploration policy is their W2 barycenter: one Gaussian whose mean and
+   width blend linearly with the optimism weight, which rises during training.
    ================================================================ */
 demo('demo-geo', function (d) {
-var N = 170, r = rng(11), Z = [], ph = [], i;
-for (i = 0; i < N; i++) { Z.push([clamp(gauss(r), -2.5, 2.5), clamp(gauss(r), -2.5, 2.5)]); ph.push(r() * 6.283); }
-var A = { fx: 0.2, fy: 0.47, sx: 0.05, sy: 0.115 }, B = { fx: 0.8, fy: 0.53, sx: 0.125, sy: 0.065 };
-var t = 0, T = 10, mode = 'bary', drag = null, time = 0, wave = -1, sc = 200;
-d.layout = function () { sc = Math.min(d.H, d.W * 0.6); };
-function blend(tt) {
-if (tt < 1.2) return 0;
-if (tt < 3.8) return ease((tt - 1.2) / 2.6);
-if (tt < 7.0) return 1;
-if (tt < 8.6) return 1 - ease((tt - 7.0) / 1.6);
-return 0;
-}
-function pt(o, k) { return [o.fx * d.W + o.sx * sc * Z[k][0], o.fy * d.H + o.sy * sc * Z[k][1]]; }
-function hud() {
-d.setHud('combining by <b>' + (mode === 'bary' ? 'Wasserstein barycenter' : 'pointwise average') + '</b>');
-}
-d.step = function (dt) {
-time += dt;
-var t0 = t;
-t = (t + dt) % T;
-if (mode === 'bary' && t0 < 3.8 && t >= 3.8) wave = 0;
-if (wave >= 0) { wave += dt; if (wave > 1.3) wave = -1; }
+var MP = -0.45, SP = 0.075, MO = 0.42, SO = 0.2, SREF = 0.075;
+var xi = 0, dir = 1, hold = 0, drag = false, idle = 9, mix = false, time = 0, drops = [], acc = 0, geo = null, r = rng(9);
+function hud() { d.setHud('optimism weight ξ <b>' + xi.toFixed(2) + '</b>'); }
+d.heightFor = function (w) { return w < 540 ? 300 : 280; };
+d.layout = function () {
+var W = d.W, n = W < 540;
+geo = { n: n, x0: n ? 18 : 40, x1: W - (n ? 18 : 40), top: 34, base: n ? 196 : 186 };
+geo.ty = geo.base + (n ? 62 : 58); geo.tx0 = n ? 88 : Math.round(W * 0.27); geo.tx1 = W - geo.tx0;
 };
-d.draw = function (forceE) {
-var c = d.ctx, e = forceE != null ? forceE : (REDUCE ? 1 : blend(t)), k, wob, pa, pb, qa, qb;
-var ca = [A.fx * d.W, A.fy * d.H], cb = [B.fx * d.W, B.fy * d.H], m = [(ca[0] + cb[0]) / 2, (ca[1] + cb[1]) / 2];
-var sbar = (A.sy + B.sy) / 2 * sc;
-d.clear();
-add(c, true);
-if (mode === 'bary') {
-if (e > 0.01) {
-for (k = 0; k < N; k++) { pa = pt(A, k); pb = pt(B, k); glow(c, P.sMut, pa[0], pa[1], 7, 0.22 * e); glow(c, P.sMut, pb[0], pb[1], 7, 0.22 * e); }
-var th = 0.2 * Math.sin(Math.PI * e);
-if (th > 0.01) {
-c.strokeStyle = col(P.acc, th); c.lineWidth = 1;
+function xa(a) { return geo.x0 + (a + 1) / 2 * (geo.x1 - geo.x0); }
+function bell(a, mu, sg) { return Math.exp(-(a - mu) * (a - mu) / (2 * sg * sg)) * Math.min(1, Math.sqrt(SREF / sg)); }
+function yb(h) { return geo.base - h * (geo.base - geo.top); }
+function path(c, fn) {
 c.beginPath();
-for (k = 0; k < N; k += 2) {
-pa = pt(A, k); pb = pt(B, k);
-var mid = [(pa[0] + pb[0]) / 2, (pa[1] + pb[1]) / 2];
-c.moveTo(pa[0], pa[1]); c.lineTo(pa[0] + (mid[0] - pa[0]) * e, pa[1] + (mid[1] - pa[1]) * e);
-c.moveTo(pb[0], pb[1]); c.lineTo(pb[0] + (mid[0] - pb[0]) * e, pb[1] + (mid[1] - pb[1]) * e);
+for (var k = 0; k <= 160; k++) { var a = -1 + k / 80, x = xa(a), y = yb(fn(a)); if (k) c.lineTo(x, y); else c.moveTo(x, y); }
 }
-c.stroke();
+function blend() { return [(1 - xi) * MP + xi * MO, (1 - xi) * SP + xi * SO]; }
+d.step = function (dt) {
+time += dt; idle += dt;
+if (!drag && idle > 2.5) {
+if (hold > 0) { hold -= dt; if (hold <= 0) dir = xi >= 1 ? -1 : 1; }
+else if (dir < 0) { xi = Math.max(0, xi - dt / 1.2); if (xi <= 0) { dir = 1; hold = 0.8; } }
+else { xi = Math.min(1, xi + dt / 7); if (xi >= 1) hold = 2.4; }
 }
-}
-for (k = 0; k < N; k++) {
-wob = 0.9 * Math.sin(time * 1.6 + ph[k]);
-pa = pt(A, k); pb = pt(B, k);
-var pm = [(pa[0] + pb[0]) / 2, (pa[1] + pb[1]) / 2];
-qa = [pa[0] + (pm[0] - pa[0]) * e + wob, pa[1] + (pm[1] - pa[1]) * e - wob];
-qb = [pb[0] + (pm[0] - pb[0]) * e - wob, pb[1] + (pm[1] - pb[1]) * e + wob];
-if (e < 0.99) { glow(c, P.sMut, qa[0], qa[1], 13, 0.55 * (1 - e)); glow(c, P.sMut, qb[0], qb[1], 13, 0.55 * (1 - e)); }
-if (e > 0.01) { glow(c, P.sAcc, qa[0], qa[1], 14, 0.6 * e); glow(c, P.sAcc, qb[0], qb[1], 14, 0.6 * e); }
-}
-if (wave >= 0) {
-c.strokeStyle = col(P.acc, 0.7 * (1 - wave / 1.3)); c.lineWidth = 2;
-circle(c, m[0], m[1], sbar * 1.2 + wave * 90); c.stroke();
-}
-add(c, false);
-if (e > 0.6) label(c, 'barycenter: one shared belief', m[0], Math.min(m[1] + sbar * 2.4 + 20, d.H - 10), { align: 'center', size: 12.5, w: 500, color: P.t1, a: Math.min(1, (e - 0.6) * 4) });
-} else {
-var dim = 1 - 0.5 * e;
-for (k = 0; k < N; k++) {
-wob = 0.9 * Math.sin(time * 1.6 + ph[k]);
-pa = pt(A, k); pb = pt(B, k);
-glow(c, P.sMut, pa[0] + wob, pa[1] - wob, 13, 0.55 * dim);
-glow(c, P.sMut, pb[0] - wob, pb[1] + wob, 13, 0.55 * dim);
-}
-add(c, false);
-if (e > 0.5) {
-var ra = sbar * 1.5, al = Math.min(1, (e - 0.5) * 4);
-c.globalAlpha = al; c.setLineDash([5, 5]); c.strokeStyle = col(P.warn); c.lineWidth = 2;
-circle(c, m[0], m[1], ra); c.stroke(); c.setLineDash([]); c.globalAlpha = 1;
-c.font = '500 12.5px ' + FONT;
-var s = 'the average puts nothing here', w = c.measureText(s).width, ly = Math.min(m[1] + ra + 24, d.H - 10);
-warnMark(c, m[0] - w / 2 - 4, ly, al);
-label(c, s, m[0] - w / 2 + 6, ly, { size: 12.5, w: 500, color: P.t1, a: al });
-}
-}
-add(c, false);
-if (e < 0.4 || mode !== 'bary') {
-var la = mode === 'bary' ? 1 - e / 0.4 : 1;
-label(c, "agent 1's belief", ca[0], Math.min(ca[1] + A.sy * sc * 2.5 + 18, d.H - 10), { align: 'center', a: la });
-label(c, "agent 2's belief", cb[0], Math.min(cb[1] + B.sy * sc * 2.5 + 18, d.H - 10), { align: 'center', a: la });
-}
+/* the agent tries actions drawn from the exploration policy */
+acc += dt * 9;
+var b = blend();
+while (acc >= 1) { acc -= 1; drops.push({ a: clamp(b[0] + gauss(r) * b[1], -1, 1), t: 0 }); }
+drops = drops.filter(function (q) { q.t += dt; return q.t < 1.1; });
+hud();
 };
-d.still = function () { d.draw(1); };
-d.act = function (a, btn) {
-mode = mode === 'bary' ? 'avg' : 'bary';
-btn.textContent = mode === 'bary' ? 'Show the average' : 'Show the barycenter';
-t = 0.9; wave = -1; hud();
-};
-function which(p) {
-var a = [A.fx * d.W, A.fy * d.H], b = [B.fx * d.W, B.fy * d.H];
-if (Math.hypot(p[0] - a[0], p[1] - a[1]) < Math.max(44, 2.4 * A.sy * sc)) return A;
-if (Math.hypot(p[0] - b[0], p[1] - b[1]) < Math.max(44, 2.4 * B.sx * sc)) return B;
-return null;
+d.draw = function () {
+d.clear();
+if (!geo) return;
+var c = d.ctx, b = blend(), me = b[0], se = b[1];
+/* actions the critics are unsure about: a soft haze that thins as they get explored */
+var fx = xa(MO), fy = geo.base - (geo.base - geo.top) * 0.42, rx = (geo.x1 - geo.x0) * 0.3, ry = (geo.base - geo.top) * 0.72, haze = 0.2 * (1 - 0.6 * xi);
+c.save(); c.translate(fx, fy); c.scale(rx / ry, 1);
+var g = c.createRadialGradient(0, 0, 0, 0, 0, ry);
+g.addColorStop(0, col(P.t1, haze)); g.addColorStop(0.55, col(P.t1, haze * 0.7)); g.addColorStop(1, col(P.t1, 0));
+c.fillStyle = g; circle(c, 0, 0, ry); c.fill(); c.restore();
+label(c, 'critics disagree here', fx + rx * 0.55, geo.top + 4, { align: 'center', size: 11 });
+c.fillStyle = col(P.hair); c.fillRect(geo.x0, geo.base, geo.x1 - geo.x0, 1);
+/* the two actors */
+path(c, function (a) { return bell(a, MP, SP); }); c.lineTo(xa(1), geo.base); c.lineTo(xa(-1), geo.base); c.closePath();
+c.fillStyle = col(P.mut, 0.2); c.fill();
+path(c, function (a) { return bell(a, MP, SP); }); c.strokeStyle = col(P.mut); c.lineWidth = 1.8; c.stroke();
+c.setLineDash([6, 4]); path(c, function (a) { return bell(a, MO, SO); }); c.strokeStyle = col(P.t1, 0.85); c.lineWidth = 1.6; c.stroke(); c.setLineDash([]);
+if (mix) {
+c.setLineDash([2, 3]); path(c, function (a) { return (1 - xi) * bell(a, MP, SP) + xi * bell(a, MO, SO); });
+c.strokeStyle = col(P.t1, 0.75); c.lineWidth = 2.2; c.stroke(); c.setLineDash([]);
 }
-d.cv.addEventListener('pointerdown', function (e) {
-var o = which(d.pt(e));
-if (!o) return;
-drag = o; d.cv.setPointerCapture(e.pointerId); e.preventDefault(); d.cv.style.cursor = 'grabbing';
+/* the exploration policy: their Wasserstein barycenter, always one bell */
+path(c, function (a) { return bell(a, me, se); }); c.lineTo(xa(1), geo.base); c.lineTo(xa(-1), geo.base); c.closePath();
+c.fillStyle = col(P.acc, P.dark ? 0.28 : 0.26); c.fill();
+add(c, true); path(c, function (a) { return bell(a, me, se); }); c.strokeStyle = col(P.acc, 0.35); c.lineWidth = 8; c.stroke(); add(c, false);
+path(c, function (a) { return bell(a, me, se); }); c.strokeStyle = col(P.acc); c.lineWidth = 2.4; c.stroke();
+/* actions being tried */
+add(c, true);
+drops.forEach(function (q) {
+var x = xa(q.a), top = yb(bell(q.a, me, se));
+if (q.t < 0.4) glow(c, P.sAcc, x, top + (geo.base - top) * ease(q.t / 0.4), 10, 0.9);
+else { c.fillStyle = col(P.acc, 0.8 * (1 - (q.t - 0.4) / 0.7)); c.fillRect(x - 0.75, geo.base - 7, 1.5, 7); }
 });
-d.cv.addEventListener('pointermove', function (e) {
-if (!drag) return;
+add(c, false);
+/* means slide along a straight line */
+c.strokeStyle = col(P.t2, 0.7); c.lineWidth = 1.2; c.beginPath(); c.moveTo(xa(MP), geo.base + 0.5); c.lineTo(xa(MO), geo.base + 0.5); c.stroke();
+circle(c, xa(MP), geo.base, 4); c.fillStyle = col(P.mut); c.fill();
+circle(c, xa(MO), geo.base, 4); c.fillStyle = col(P.bg); c.fill(); c.strokeStyle = col(P.t1); c.lineWidth = 1.5; c.stroke();
+var xm = xa(me);
+c.beginPath(); c.moveTo(xm, geo.base - 6); c.lineTo(xm + 6, geo.base); c.lineTo(xm, geo.base + 6); c.lineTo(xm - 6, geo.base); c.closePath(); c.fillStyle = col(P.acc); c.fill();
+/* labels */
+label(c, geo.n ? 'pessimistic' : 'pessimistic actor', xa(MP), geo.base + 20, { align: 'center', size: 12, w: 500, color: P.t1 });
+label(c, geo.n ? 'optimistic' : 'optimistic actor', xa(MO), geo.base + 20, { align: 'center', size: 12, w: 500, color: P.t1 });
+var pk = yb(bell(me, me, se)), lx = clamp(xm, geo.x0 + 80, geo.x1 - 80);
+label(c, 'W₂ barycenter', lx, pk - 22, { align: 'center', size: 12.5, w: 600, color: P.t1 });
+label(c, 'the exploration policy', lx, pk - 8, { align: 'center', size: 11 });
+if (mix) {
+c.setLineDash([2, 3]); c.strokeStyle = col(P.t1, 0.75); c.lineWidth = 2.2;
+c.beginPath(); c.moveTo(geo.x0, geo.top + 2); c.lineTo(geo.x0 + 18, geo.top + 2); c.stroke(); c.setLineDash([]);
+label(c, 'plain mixture', geo.x0 + 24, geo.top + 6, { size: 11 });
+}
+/* the optimism weight */
+var tx0 = geo.tx0, tx1 = geo.tx1, ty = geo.ty, kx = tx0 + xi * (tx1 - tx0);
+label(c, 'pessimistic', tx0 - 12, ty + 4, { align: 'right', size: 11 });
+label(c, 'optimistic', tx1 + 12, ty + 4, { size: 11 });
+rrect(c, tx0, ty - 3, tx1 - tx0, 6, 3); c.fillStyle = col(P.hair); c.fill();
+rrect(c, tx0, ty - 3, Math.max(6, kx - tx0), 6, 3); c.fillStyle = col(P.acc); c.fill();
+add(c, true); glow(c, P.sAcc, kx, ty, 30, 0.7); add(c, false);
+circle(c, kx, ty, 7.5); c.fillStyle = col(P.bg); c.fill(); c.strokeStyle = col(P.acc); c.lineWidth = 2.5; c.stroke();
+label(c, 'optimism weight ξ rises as training goes on', (tx0 + tx1) / 2, ty + 22, { align: 'center', size: 11 });
+};
+d.still = function () { xi = 0.5; drops = []; hud(); d.draw(); };
+d.act = function (a, btn) { mix = !mix; btn.textContent = mix ? 'Hide the mixture' : 'Show the mixture'; };
+function onTrack(p) { return geo && Math.abs(p[1] - geo.ty) < 18 && p[0] > geo.tx0 - 16 && p[0] < geo.tx1 + 16; }
+function seek(p) { xi = clamp((p[0] - geo.tx0) / (geo.tx1 - geo.tx0), 0, 1); hold = 0; idle = 0; hud(); }
+d.cv.addEventListener('pointerdown', function (e) {
 var p = d.pt(e);
-drag.fx = clamp(p[0] / d.W, 0.1, 0.9); drag.fy = clamp(p[1] / d.H, 0.25, 0.72);
+if (!onTrack(p)) return;
+drag = true; d.cv.setPointerCapture(e.pointerId); e.preventDefault(); seek(p);
 if (!d.run) d.paint();
 });
-function up() { if (drag) { drag = null; d.cv.style.cursor = ''; } }
+d.cv.addEventListener('pointermove', function (e) {
+var p = d.pt(e);
+if (drag) { seek(p); if (!d.run) d.paint(); }
+else d.cv.style.cursor = onTrack(p) ? 'ew-resize' : '';
+});
+function up() { if (drag) { drag = false; idle = 0; } }
 d.cv.addEventListener('pointerup', up);
 d.cv.addEventListener('pointercancel', up);
 hud();
