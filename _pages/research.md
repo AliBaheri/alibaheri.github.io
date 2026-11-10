@@ -101,6 +101,8 @@ a.tcard .cc { font-size: .72rem; color: var(--global-text-color-light); margin-t
 }
 .rfund .agency { font-weight: 600; color: var(--global-theme-color); }
 .rfund .role { font-size: .78rem; color: var(--global-text-color-light); }
+.rfund .fvid-cap { display: block; margin-top: .6rem; font-size: .78rem; font-weight: 600; color: var(--global-text-color-light); }
+.rfund .fvid { display: block; width: 100%; max-width: 520px; aspect-ratio: 16 / 9; margin: .35rem 0 .3rem; border-radius: 10px; background: #000; }
 
 @media (max-width: 576px) {
   .theme .watermark { font-size: 3.4rem; top: -.7rem; }
@@ -403,7 +405,7 @@ autonomous systems to clinical decision support.</p>
 ## Funding
 
 <ul>
-<li><span class="agency">Amazon</span> — Amazon Research Award (AWS Agentic AI): Trust-Aware Coordination for Multi-Agent LLM Systems on AWS, 2026<br><span class="role">PI</span></li>
+<li><span class="agency">Amazon</span> — Amazon Research Award (AWS Agentic AI): Trust-Aware Coordination for Multi-Agent LLM Systems on AWS, 2026<br><span class="role">PI</span><span class="fvid-cap">Watch the one-minute explainer</span><video class="fvid" controls preload="none" playsinline poster="/assets/img/amazon-award-explainer.jpg" src="/assets/img/amazon-award-explainer.mp4" aria-label="One-minute explainer video: engineering trust into AI agent teams"></video></li>
 <li><span class="agency">National Security Agency</span> — NCAE-C: Red-Teaming and Assurance for Geometric AI in Defense Autonomy, 2026&ndash;2028<br><span class="role">PI</span></li>
 <li><span class="agency">National Science Foundation</span> — RII: Safety Validation of Autonomous Systems from Multiple Sources of Information, 2022&ndash;2024<br><span class="role">Single PI</span></li>
 <li><span class="agency">Federal Aviation Administration</span> — Safety Verification Framework for Learning-based Aviation Systems (SVF-LAS), 2021&ndash;2023<br><span class="role">Lead PI</span></li>
