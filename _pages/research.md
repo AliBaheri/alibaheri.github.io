@@ -101,8 +101,6 @@ a.tcard .cc { font-size: .72rem; color: var(--global-text-color-light); margin-t
 }
 .rfund .agency { font-weight: 600; color: var(--global-theme-color); }
 .rfund .role { font-size: .78rem; color: var(--global-text-color-light); }
-.rfund .fvid-cap { display: block; margin-top: .6rem; font-size: .78rem; font-weight: 600; color: var(--global-text-color-light); }
-.rfund .fvid { display: block; width: 100%; max-width: 520px; aspect-ratio: 16 / 9; margin: .35rem 0 .3rem; border-radius: 10px; background: #000; }
 
 @media (max-width: 576px) {
   .theme .watermark { font-size: 3.4rem; top: -.7rem; }
@@ -209,7 +207,93 @@ html[data-theme='dark'] .demo {
 .demo-fig .ga { fill: none; stroke: color-mix(in srgb, var(--dm-t1) 72%, transparent); stroke-width: 1.6; stroke-linejoin: round; }
 .demo-fig .gah { fill: color-mix(in srgb, var(--dm-t1) 72%, transparent); }
 .demo .demo-foot a.demo-btn, .demo .demo-foot a.demo-btn:hover, .demo .demo-foot a.demo-btn:focus-visible { color: var(--dm-t1); text-decoration: none; display: inline-block; }
+/* ---------- spotlight: Amazon Research Award explainer ---------- */
+.spot {
+  position: relative; margin: .6rem 0 2.6rem; padding: 1.55rem 1.55rem 1.35rem; border-radius: 18px;
+  color: #e6f1f3; scroll-margin-top: 5rem; overflow: hidden;
+  background: radial-gradient(ellipse 85% 55% at 50% 0%, #0d1d21, #05090c 72%);
+  box-shadow: 0 0 0 1px rgba(141, 210, 215, .26), 0 24px 50px -24px rgba(4, 30, 38, .95);
+}
+.spot-top { display: flex; flex-wrap: wrap; align-items: center; gap: .45rem .8rem; }
+.spot-tag {
+  display: inline-flex; align-items: center; gap: .4rem; padding: .2rem .65rem; border-radius: 999px;
+  font-size: .62rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: #eda751;
+  background: rgba(237, 167, 81, .12); border: 1px solid rgba(237, 167, 81, .45);
+}
+.spot-meta { font-size: .76rem; letter-spacing: .02em; color: #8fa9ae; }
+.spot .spot-title {
+  margin: .75rem 0 .5rem; padding: 0; border: 0; font-size: 1.6rem; font-weight: 700; line-height: 1.22;
+  letter-spacing: -.005em; color: #f2f7f8;
+}
+.spot-lede { margin: 0 0 1.15rem; max-width: 46rem; font-size: .95rem; line-height: 1.58; color: #b4c6c9; }
+.spot-media {
+  position: relative; aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden; background: #05090c;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, .07);
+}
+.spot-media video { display: block; width: 100%; height: 100%; background: #05090c; }
+.spot-play {
+  position: absolute; inset: 0; width: 100%; padding: 0; border: 0; cursor: pointer;
+  background: linear-gradient(180deg, transparent 58%, rgba(2, 7, 9, .55));
+}
+.spot-cta {
+  position: absolute; left: 7%; bottom: 9%; display: inline-flex; align-items: center; gap: .7rem;
+  padding: .45rem 1.05rem .45rem .45rem; border-radius: 999px; font-size: .9rem; font-weight: 600; color: #fff;
+  background: rgba(8, 20, 23, .72); box-shadow: 0 0 0 1px rgba(141, 210, 215, .55);
+  transition: box-shadow .18s ease, background .18s ease;
+}
+.spot-cta i {
+  display: inline-flex; align-items: center; justify-content: center; width: 2.3rem; height: 2.3rem; border-radius: 50%;
+  font-size: .85rem; padding-left: .15rem; color: #05090c; background: #8dd2d7;
+}
+.spot-play:hover .spot-cta, .spot-play:focus-visible .spot-cta {
+  background: rgba(12, 32, 36, .9); box-shadow: 0 0 0 1px #8dd2d7, 0 0 22px rgba(141, 210, 215, .55);
+}
+.spot-play:focus-visible { outline: none; }
+.spot-short { display: none; }
+.spot-media.playing .spot-play { display: none; }
+.spot-ideas { display: grid; grid-template-columns: repeat(3, 1fr); gap: .8rem; margin-top: 1.15rem; }
+.spot-idea {
+  padding: .8rem .9rem .85rem; border-radius: 11px; background: rgba(255, 255, 255, .035);
+  border: 1px solid rgba(141, 210, 215, .16);
+}
+.spot-idea i { font-size: .95rem; color: #8dd2d7; }
+.spot-idea b { display: block; margin: .45rem 0 .28rem; font-size: .86rem; color: #eef6f7; }
+.spot-idea span { display: block; font-size: .78rem; line-height: 1.48; color: #9fb4b8; }
+.spot-foot { margin: 1.05rem 0 0; font-size: .84rem; color: #9fb4b8; }
+.spot-foot b { color: #eef6f7; }
+.rfund .fvid-link { font-size: .78rem; font-weight: 600; white-space: nowrap; }
+@media (max-width: 640px) {
+  .spot { padding: 1.1rem .85rem 1rem; border-radius: 14px; }
+  .spot .spot-title { font-size: 1.28rem; }
+  .spot-lede { font-size: .9rem; }
+  .spot-ideas { grid-template-columns: 1fr; gap: .55rem; }
+  .spot-idea { display: grid; grid-template-columns: 1.4rem 1fr; column-gap: .45rem; padding: .65rem .8rem .7rem; }
+  .spot-idea i { grid-row: 1; align-self: center; }
+  .spot-idea b { grid-row: 1; grid-column: 2; margin: 0; }
+  .spot-idea span { grid-column: 1 / -1; margin-top: .3rem; }
+  .spot-cta { left: 5%; bottom: 7%; font-size: .8rem; padding: .35rem .85rem .35rem .35rem; gap: .5rem; }
+  .spot-cta i { width: 1.9rem; height: 1.9rem; font-size: .72rem; }
+  .spot-long { display: none; }
+  .spot-short { display: inline; }
+}
+@media (prefers-reduced-motion: reduce) { .spot-cta { transition: none; } }
 </style>
+
+<div class="spot" id="amazon-award" role="region" aria-labelledby="spot-title">
+<div class="spot-top"><span class="spot-tag"><i class="fas fa-award" aria-hidden="true"></i>Amazon Research Award</span><span class="spot-meta">AWS Agentic AI program &middot; 2026</span></div>
+<h2 class="spot-title" id="spot-title">Can a team of AI agents prove that an attacker did not choose its answer?</h2>
+<p class="spot-lede">When AI agents decide together, one poisoned document or two hijacked agents can flip the team&rsquo;s answer on a close call, and a standard fault detector can miss them. This project engineers trust into agent teams, so that every answer ships with a certificate or the system fails safe.</p>
+<div class="spot-media">
+<video preload="none" playsinline poster="/assets/img/amazon-award-explainer.jpg" src="/assets/img/amazon-award-explainer.mp4" aria-label="One-minute explainer video: engineering trust into AI agent teams" onended="this.parentNode.classList.remove('playing')"></video>
+<button type="button" class="spot-play" aria-label="Play the one-minute explainer video" onclick="var m=this.parentNode,v=m.querySelector('video');m.classList.add('playing');v.controls=true;v.play();v.focus()"><span class="spot-cta"><i class="fas fa-play" aria-hidden="true"></i><span class="spot-long">Watch the 1-minute explainer</span><span class="spot-short">Watch &middot; 1 min</span></span></button>
+</div>
+<div class="spot-ideas">
+<div class="spot-idea"><i class="fas fa-check-double" aria-hidden="true"></i><b>Certify with a margin</b><span>Every answer comes with the number of hijacked agents it would take to change it. If that margin is too thin, the team abstains.</span></div>
+<div class="spot-idea"><i class="fas fa-balance-scale" aria-hidden="true"></i><b>No single point of failure</b><span>Stronger agents earn more trust, but no two hold half of it, and no retrieved passage reaches half the team.</span></div>
+<div class="spot-idea"><i class="fas fa-wave-square" aria-hidden="true"></i><b>Keep the team stable</b><span>A coupling-to-anchoring ratio, measured before deployment, predicts when the agents&rsquo; debate oscillates; damping restores stability.</span></div>
+</div>
+<p class="spot-foot">What we build: <b>SimplexCoord</b>, an open-source trust layer for agent teams on Amazon Bedrock.</p>
+</div>
 
 <div class="rintro" markdown="1">
 AI is moving off the screen and into the world. Learned models are now being asked to
@@ -405,7 +489,7 @@ autonomous systems to clinical decision support.</p>
 ## Funding
 
 <ul>
-<li><span class="agency">Amazon</span> — Amazon Research Award (AWS Agentic AI): Trust-Aware Coordination for Multi-Agent LLM Systems on AWS, 2026<br><span class="role">PI</span><span class="fvid-cap">Watch the one-minute explainer</span><video class="fvid" controls preload="none" playsinline poster="/assets/img/amazon-award-explainer.jpg" src="/assets/img/amazon-award-explainer.mp4" aria-label="One-minute explainer video: engineering trust into AI agent teams"></video></li>
+<li><span class="agency">Amazon</span> — Amazon Research Award (AWS Agentic AI): Trust-Aware Coordination for Multi-Agent LLM Systems on AWS, 2026<br><span class="role">PI</span> &middot; <a class="fvid-link" href="#amazon-award">Watch the 1-minute explainer</a></li>
 <li><span class="agency">National Security Agency</span> — NCAE-C: Red-Teaming and Assurance for Geometric AI in Defense Autonomy, 2026&ndash;2028<br><span class="role">PI</span></li>
 <li><span class="agency">National Science Foundation</span> — RII: Safety Validation of Autonomous Systems from Multiple Sources of Information, 2022&ndash;2024<br><span class="role">Single PI</span></li>
 <li><span class="agency">Federal Aviation Administration</span> — Safety Verification Framework for Learning-based Aviation Systems (SVF-LAS), 2021&ndash;2023<br><span class="role">Lead PI</span></li>
