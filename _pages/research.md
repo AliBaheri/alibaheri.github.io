@@ -112,6 +112,8 @@ a.tcard .cc { font-size: .72rem; color: var(--global-text-color-light); margin-t
 }
 
 /* ---------- live demos ---------- */
+/* the site colours every div and span; inside a panel they follow the panel instead */
+.demo :where(div, span, p, em, strong) { color: inherit; }
 .demo {
   --dm-bg: #180d1b;
   --dm-acc: color-mix(in srgb, var(--global-theme-color) 70%, #fff);
@@ -208,6 +210,7 @@ html[data-theme='dark'] .demo {
 .demo-fig .gah { fill: color-mix(in srgb, var(--dm-t1) 72%, transparent); }
 .demo .demo-foot a.demo-btn, .demo .demo-foot a.demo-btn:hover, .demo .demo-foot a.demo-btn:focus-visible { color: var(--dm-t1); text-decoration: none; display: inline-block; }
 /* ---------- spotlight: Amazon Research Award explainer ---------- */
+.spot :where(div, span, p, em, strong) { color: inherit; }
 .spot {
   position: relative; margin: .6rem 0 2.6rem; padding: 1.55rem 1.55rem 1.35rem; border-radius: 18px;
   color: #e6f1f3; scroll-margin-top: 5rem; overflow: hidden;
