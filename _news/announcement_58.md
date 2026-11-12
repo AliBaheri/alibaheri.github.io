@@ -34,6 +34,7 @@ inline: true
 }
 .ntext a.nvid:hover .nvid-play { transform: scale(1.08); }
 .nvid-dur { padding-left: .55rem; border-left: 1px solid rgba(255, 255, 255, .2); font-size: .74rem; font-weight: 500; color: #a9bec2; }
+.nvid-long, .nvid-short { color: inherit; }
 .nvid-short { display: none; }
 @media (max-width: 400px) { .nvid-long { display: none; } .nvid-short { display: inline; } }
 @media (prefers-reduced-motion: reduce) {
