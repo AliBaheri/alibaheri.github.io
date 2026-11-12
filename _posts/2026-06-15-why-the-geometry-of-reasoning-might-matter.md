@@ -187,8 +187,8 @@ _styles: >
   .gx-key .k-c, .gx-key .k-w { width: 8px; height: 8px; border-radius: 50%; background: var(--dm-acc); }
   .gx-key .k-w { background: #d97706; }
   .gx-key .k-f {
-    width: 16px; height: 10px; border-radius: 0 2px 2px 0; background: color-mix(in srgb, #d97706 26%, transparent);
-    border-left: 1.5px solid var(--dm-t1);
+    width: 13px; height: 13px; border-radius: 50%; background: color-mix(in srgb, #d97706 30%, transparent);
+    border: 1.5px solid var(--dm-t1);
   }
   .gx-dot {
     position: absolute; top: 50%; left: calc((var(--v) - var(--lo)) / var(--span) * 100%); width: 8px; height: 8px; margin: -4px 0 0 -4px;
@@ -250,7 +250,7 @@ _styles: >
   .gxr-ticks span:last-child, .gxs-ticks span:last-child { transform: translateX(-100%); text-align: right; }
   .gxr-ticks small, .gxs-ticks small { display: block; font-size: .62rem; white-space: nowrap; }
   /* figure 3: change the model */
-  .gxs-seg { display: inline-flex; padding: 2px; border-radius: 999px; background: rgba(255, 255, 255, .06); box-shadow: inset 0 0 0 1px var(--dm-line); }
+  .gxs-seg { display: inline-grid; grid-template-columns: 1fr 1fr; padding: 2px; border-radius: 999px; background: rgba(255, 255, 255, .06); box-shadow: inset 0 0 0 1px var(--dm-line); }
   .gxs-seg button {
     font: inherit; font-size: .74rem; font-weight: 600; line-height: 1.3; padding: .26rem .85rem; border: 0; border-radius: 999px; cursor: pointer;
     color: var(--dm-t2); background: transparent; transition: background .2s ease, color .2s ease;
@@ -262,25 +262,26 @@ _styles: >
   }
   .gxs-seg button:focus-visible { outline: 2px solid var(--dm-t1); outline-offset: 1px; }
   .gxs-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-  .gxs-col { min-width: 0; }
-  .gxs-col + .gxs-col { box-shadow: -1px 0 0 var(--dm-line); }
-  .gxs-cap { display: flex; flex-wrap: wrap; align-items: baseline; gap: .05rem .6rem; padding: .7rem 1rem .6rem; border-bottom: 1px solid var(--dm-line); }
+  /* captions, canvases and meters sit in shared rows, so the teacher half and the student half are always the same size */
+  .gxs-body > * { min-width: 0; }
+  .gxs-body > :nth-child(even) { box-shadow: -1px 0 0 var(--dm-line); }
+  .gxs-cap { display: flex; flex-wrap: wrap; align-items: baseline; align-content: flex-start; gap: .05rem .6rem; padding: .7rem 1rem .6rem; border-bottom: 1px solid var(--dm-line); }
   .gxs-cap b { font-size: .68rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--dm-t1); }
   .gxs-cap span { font-size: .76rem; line-height: 1.35; color: var(--dm-t2); }
   .demo.gxs canvas { height: 200px; }
-  .gxs-m { --lo: 30; --span: 70; padding: .7rem 1rem .45rem; border-top: 1px solid var(--dm-line); }
+  .gxs-m { --lo: 40; --span: 60; padding: .7rem 1rem .45rem; border-top: 1px solid var(--dm-line); }
   .gxs-mh { display: flex; justify-content: space-between; align-items: baseline; font-size: .7rem; color: var(--dm-t2); }
   .gxs-mh b { font-size: 1.55rem; font-weight: 700; line-height: 1; color: var(--dm-t1); }
   .gxs-track { position: relative; height: 1.15rem; margin-top: .4rem; }
   .gxs-track::before, .gxs-track::after { content: ""; position: absolute; top: -.2rem; bottom: -.2rem; }
-  .gxs-track::before { left: calc(20 / 70 * 100%); border-left: 1px solid color-mix(in srgb, var(--dm-t1) 42%, transparent); }
+  .gxs-track::before { left: calc(10 / 60 * 100%); border-left: 1px solid color-mix(in srgb, var(--dm-t1) 42%, transparent); }
   .gxs-track::after {
-    left: calc(45 / 70 * 100%); right: 0;
+    left: calc(35 / 60 * 100%); right: 0;
     border-left: 1px solid rgba(255, 255, 255, .09); border-right: 1px solid rgba(255, 255, 255, .09);
   }
   .gxs-pos, .gxs-neg { position: absolute; top: 50%; height: 12px; margin-top: -6px; z-index: 1; }
-  .gxs-pos { left: calc(20 / 70 * 100%); border-radius: 0 4px 4px 0; background: var(--dm-acc); }
-  .gxs-neg { right: calc(50 / 70 * 100%); border-radius: 4px 0 0 4px; background: #d97706; }
+  .gxs-pos { left: calc(10 / 60 * 100%); border-radius: 0 4px 4px 0; background: var(--dm-acc); }
+  .gxs-neg { right: calc(50 / 60 * 100%); border-radius: 4px 0 0 4px; background: #d97706; }
   .gxs-track .gx-dot { z-index: 2; left: 0; }
   .gxs-track .gx-dot::after { bottom: auto; top: calc(100% + 9px); }
   .gxs-track .gx-dot:hover, .gxs-track .gx-dot:focus { z-index: 3; }
@@ -398,13 +399,14 @@ In-domain, both beat entropy-based, probing-based, and attention-based baselines
 <div class="gxr-row g"><div class="gxr-name">Teacher<small>uses step labels</small></div><div class="gxr-track"><i style="--v:94.88"></i><span class="gx-dot r" tabindex="-1" style="--v:91" data-tip="ProcessBench 91.0"></span><span class="gx-dot r" tabindex="-1" style="--v:98.5" data-tip="PRM800K 98.5"></span><span class="gx-dot r" tabindex="-1" style="--v:94" data-tip="HaluEval 94.0"></span><span class="gx-dot r" tabindex="-1" style="--v:96" data-tip="TruthfulQA 96.0"></span></div><div class="gxr-val">95</div></div>
 <div class="gxr-row g"><div class="gxr-name">Student<small>no labels</small></div><div class="gxr-track"><i style="--v:89.92"></i><span class="gx-dot" tabindex="-1" style="--v:75" data-tip="ProcessBench 75.0"></span><span class="gx-dot r" tabindex="-1" style="--v:99.8" data-tip="PRM800K 99.8"></span><span class="gx-dot r" tabindex="-1" style="--v:88.4" data-tip="HaluEval 88.4"></span><span class="gx-dot r" tabindex="-1" style="--v:96.5" data-tip="TruthfulQA 96.5"></span></div><div class="gxr-val">90</div></div>
 <div class="gxr-row"><div class="gxr-name">Linear Probe<small>probing-based</small></div><div class="gxr-track"><i style="--v:81.92"></i><span class="gx-dot" tabindex="-1" style="--v:67.8" data-tip="ProcessBench 67.8"></span><span class="gx-dot r" tabindex="-1" style="--v:91.3" data-tip="PRM800K 91.3"></span><span class="gx-dot" tabindex="-1" style="--v:78.6" data-tip="HaluEval 78.6"></span><span class="gx-dot r" tabindex="-1" style="--v:90" data-tip="TruthfulQA 90.0"></span></div><div class="gxr-val">82</div></div>
+<div class="gxr-row"><div class="gxr-name">Math-Shepherd<small>process reward model</small></div><div class="gxr-track"><i style="--v:65.42"></i><span class="gx-dot" tabindex="-1" style="--v:79.1" data-tip="ProcessBench 79.1"></span><span class="gx-dot" tabindex="-1" style="--v:44.1" data-tip="PRM800K 44.1"></span><span class="gx-dot" tabindex="-1" style="--v:69.4" data-tip="HaluEval 69.4"></span><span class="gx-dot" tabindex="-1" style="--v:69.1" data-tip="TruthfulQA 69.1"></span></div><div class="gxr-val">65</div></div>
 <div class="gxr-row"><div class="gxr-name">LLM-Check<small>attention-based</small></div><div class="gxr-track"><i style="--v:58.85"></i><span class="gx-dot" tabindex="-1" style="--v:61.9" data-tip="ProcessBench 61.9"></span><span class="gx-dot" tabindex="-1" style="--v:48" data-tip="PRM800K 48.0"></span><span class="gx-dot" tabindex="-1" style="--v:55.7" data-tip="HaluEval 55.7"></span><span class="gx-dot" tabindex="-1" style="--v:69.8" data-tip="TruthfulQA 69.8"></span></div><div class="gxr-val">59</div></div>
 <div class="gxr-row"><div class="gxr-name">TL-Entropy<small>entropy-based</small></div><div class="gxr-track"><i style="--v:56.70"></i><span class="gx-dot" tabindex="-1" style="--v:57.1" data-tip="ProcessBench 57.1"></span><span class="gx-dot" tabindex="-1" style="--v:54.5" data-tip="PRM800K 54.5"></span><span class="gx-dot" tabindex="-1" style="--v:50.8" data-tip="HaluEval 50.8"></span><span class="gx-dot" tabindex="-1" style="--v:64.4" data-tip="TruthfulQA 64.4"></span></div><div class="gxr-val">57</div></div>
 <div class="gxr-row"><div class="gxr-name">TL-Perplexity<small>entropy-based</small></div><div class="gxr-track"><i style="--v:53.12"></i><span class="gx-dot" tabindex="-1" style="--v:51.2" data-tip="ProcessBench 51.2"></span><span class="gx-dot" tabindex="-1" style="--v:45.8" data-tip="PRM800K 45.8"></span><span class="gx-dot" tabindex="-1" style="--v:48.4" data-tip="HaluEval 48.4"></span><span class="gx-dot" tabindex="-1" style="--v:67.1" data-tip="TruthfulQA 67.1"></span></div><div class="gxr-val">53</div></div>
 <div class="gxr-axis"><div></div><div class="gxr-ticks"><span style="--v:50">50<small>coin flip</small></span><span style="--v:75">75</span><span style="--v:100">100<small>perfect</small></span></div><div></div></div>
 </div>
-<div class="gx-sr">Step-level AUROC on the same model and data, for ProcessBench, PRM800K, HaluEval and TruthfulQA in that order; 50 is a coin flip. Teacher: 91.0, 98.5, 94.0, 96.0. Student: 75.0, 99.8, 88.4, 96.5. Linear Probe: 67.8, 91.3, 78.6, 90.0. LLM-Check: 61.9, 48.0, 55.7, 69.8. TL-Entropy: 57.1, 54.5, 50.8, 64.4. TL-Perplexity: 51.2, 45.8, 48.4, 67.1.</div>
-<div class="demo-foot"><span>Bars are the mean of four benchmarks: ProcessBench, PRM800K, HaluEval and TruthfulQA. Hover or tap a dot for its benchmark. Numbers from the paper, Table 1.</span></div>
+<div class="gx-sr">Step-level AUROC on the same model and data, for ProcessBench, PRM800K, HaluEval and TruthfulQA in that order; 50 is a coin flip. Teacher: 91.0, 98.5, 94.0, 96.0. Student: 75.0, 99.8, 88.4, 96.5. Linear Probe: 67.8, 91.3, 78.6, 90.0. Math-Shepherd: 79.1, 44.1, 69.4, 69.1. LLM-Check: 61.9, 48.0, 55.7, 69.8. TL-Entropy: 57.1, 54.5, 50.8, 64.4. TL-Perplexity: 51.2, 45.8, 48.4, 67.1.</div>
+<div class="demo-foot"><span>Bars are the mean of four benchmarks: ProcessBench, PRM800K, HaluEval and TruthfulQA. Hover or tap a dot for its benchmark. Numbers from the main results table of the paper, which also lists three variants of our detectors that are not drawn here.</span></div>
 </div>
 
 Then we changed the model and changed the dataset. The teacher held up. The student collapsed.
@@ -412,20 +414,16 @@ Then we changed the model and changed the dataset. The teacher held up. The stud
 <div class="demo gxs" id="gx-shift">
 <div class="demo-head"><span class="demo-title"><span class="demo-live"><i></i>Live</span>Now change the model</span><span class="gxs-seg" role="group" aria-label="Model the detectors are tested on"><button type="button" data-act="same" aria-pressed="false">Same model</button><button type="button" class="on" data-act="diff" aria-pressed="true">Different model</button></span></div>
 <div class="gxs-body">
-<div class="gxs-col">
 <div class="gxs-cap"><b>Teacher</b><span>rebuilds its lens from the step labels</span></div>
-<canvas role="img" aria-label="Schematic. Dots for correct steps and dots for wrong steps form two separate groups, and the teacher draws its boundary between them. When the model changes, both groups move to new coordinates and the boundary moves with them, so it still separates them."></canvas>
-<div class="gxs-m" aria-hidden="true"><div class="gxs-mh"><span>step-level AUROC</span><b data-v>91</b></div><div class="gxs-track"><i class="gxs-pos" style="width:58.38%"></i><i class="gxs-neg" style="width:0.00%"></i></div><div class="gxs-ticks"><span style="--v:50">50<small>coin flip</small></span><span style="--v:75">75</span><span style="--v:100">100</span></div></div>
-</div>
-<div class="gxs-col">
 <div class="gxs-cap"><b>Student</b><span>one boundary, learned once, no labels</span></div>
-<canvas role="img" aria-label="Schematic. The same two groups of dots. On the model it learned from, the student draws its boundary between them. When the model changes, both groups move to new coordinates but the boundary stays where it was, so it cuts through both groups and no longer separates them."></canvas>
-<div class="gxs-m" aria-hidden="true"><div class="gxs-mh"><span>step-level AUROC</span><b data-v>44</b></div><div class="gxs-track"><i class="gxs-pos" style="width:0.00%"></i><i class="gxs-neg" style="width:7.93%"></i></div><div class="gxs-ticks"><span style="--v:50">50<small>coin flip</small></span><span style="--v:75">75</span><span style="--v:100">100</span></div></div>
-</div>
+<canvas role="img" aria-label="Schematic. Dots for correct steps and dots for wrong steps form two separate groups. A round lens marks what the teacher flags as wrong, and it sits over the wrong steps. When the model changes, both groups move to new coordinates and the lens moves with the wrong steps, so it still covers them."></canvas>
+<canvas role="img" aria-label="Schematic. The same two groups of dots and a lens of the same size. On the model it learned from, the lens of the student sits over the wrong steps. When the model changes, both groups move to new coordinates but the lens stays where it was, so it now misses most of the wrong steps."></canvas>
+<div class="gxs-m" aria-hidden="true"><div class="gxs-mh"><span>step-level AUROC</span><b data-v>91</b></div><div class="gxs-track"><i class="gxs-pos" style="width:68.11%"></i><i class="gxs-neg" style="width:0.00%"></i></div><div class="gxs-ticks"><span style="--v:50">50<small>coin flip</small></span><span style="--v:75">75</span><span style="--v:100">100</span></div></div>
+<div class="gxs-m" aria-hidden="true"><div class="gxs-mh"><span>step-level AUROC</span><b data-v>58</b></div><div class="gxs-track"><i class="gxs-pos" style="width:12.56%"></i><i class="gxs-neg" style="width:0.00%"></i></div><div class="gxs-ticks"><span style="--v:50">50<small>coin flip</small></span><span style="--v:75">75</span><span style="--v:100">100</span></div></div>
 </div>
 <div class="gx-key gxs-key" aria-hidden="true"><span><i class="k-c"></i>correct steps</span><span><i class="k-w"></i>wrong steps</span><span><i class="k-f"></i>flagged as wrong</span></div>
-<div class="gx-sr">Step-level AUROC from the paper, where 50 is a coin flip. Teacher: 91.5 to 91.7 when tested on the model it was trained on, and 90.1 to 91.7 on a different model. Student: 93.5 to 93.9 on the same model, and 33.4 to 58.5 on a different model.</div>
-<div class="demo-foot"><span>Top: a schematic of the explanation. The structure is shared, but each model keeps it in its own coordinates. Bottom: measured, from the paper (Tables 3 and 4). Bars are means over train-on, test-on pairs of Qwen, Llama and Mistral; dots are single pairs. The benchmark swap is in Table 5.</span></div>
+<div class="gx-sr">Step-level AUROC from the paper, where 50 is a coin flip. Teacher: 91.5 to 91.7 when tested on the model it was trained on, and 90.1 to 91.7 on a different model. Student: 91.5 to 91.7 on the same model, and 55.2 to 63.0 on a different model.</div>
+<div class="demo-foot"><span>Top: a schematic of the explanation. The structure is shared, but each model keeps it in its own coordinates. Bottom: measured, from the cross-model table of the paper. Bars are means over train-on, test-on pairs of Qwen, Llama and Mistral; dots are single pairs. The benchmark swap is in its cross-dataset table.</span></div>
 </div>
 
 That gap is the finding worth carrying out of the paper. The teacher's transfer says the
@@ -756,26 +754,31 @@ d.cv.addEventListener('click', function (e) { if (!geo) return; var h = near(e);
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { d.size(); d.paint(true); });
 sync(true);
 });
+/* step-level AUROC from the cross-model table of the paper, generated from its LaTeX source.
+   First block: teacher. Second block: student. Rows: trained on. Columns: tested on. */
+var GX_LLM = ['Qwen', 'Llama', 'Mistral'];
+var GX_AUROC = [
+[[91.6, 91.7, 90.9], [90.7, 91.7, 91.2], [90.1, 90.6, 91.5]],
+[[91.5, 55.2, 56.6], [63.0, 91.5, 57.1], [56.7, 56.6, 91.7]]
+];
 /* ================================================================
    3. Now change the model. Two detectors look at the same steps.
-   Top: a schematic of the explanation in the post. A different model keeps the
-   same structure in different coordinates. The teacher rebuilds its lens from
-   the step labels, so its boundary follows. The student learned one boundary
-   and keeps it. Positions are illustrative.
-   Bottom: step-level AUROC from the paper, Tables 3 (teacher) and 4 (student).
+   Top: a schematic of the explanation in the post. Each panel has one lens, the
+   region that detector flags as wrong; the two lenses are the same size. A
+   different model keeps the same structure in different coordinates. The
+   teacher rebuilds its lens from the step labels, so the lens follows the wrong
+   steps. The student learned one place for it and keeps it, so on a different
+   model it catches only a few of them. Positions are illustrative.
+   Bottom: step-level AUROC from the cross-model table of the paper.
    Bars are means over train and test pairs, dots are the pairs.
    ================================================================ */
 demo('gx-shift', function (d) {
 var el = d.el, cv2 = el.querySelectorAll('canvas')[1], c2 = cv2.getContext('2d');
 var btns = el.querySelectorAll('.gxs-seg button'), vals = el.querySelectorAll('[data-v]'), tracks = el.querySelectorAll('.gxs-track');
 var pos = el.querySelectorAll('.gxs-pos'), neg = el.querySelectorAll('.gxs-neg');
-var LLM = ['Qwen', 'Llama', 'Mistral'];
-/* rows: trained on. columns: tested on. order: Qwen, Llama, Mistral */
-var AUROC = [
-[[91.6, 91.7, 90.9], [90.7, 91.7, 91.2], [90.1, 90.6, 91.5]],
-[[93.6, 39.1, 35.4], [51.5, 93.5, 33.4], [48.8, 58.5, 93.9]]
-];
-var PAIRS = [[0, 1], [0, 2], [1, 0], [1, 2], [2, 0], [2, 1]], LO = 30, SPAN = 70;
+/* rows: trained on. columns: tested on. the numbers sit in the generated block just above this figure's code */
+var LLM = GX_LLM, AUROC = GX_AUROC;
+var PAIRS = [[0, 1], [0, 2], [1, 0], [1, 2], [2, 0], [2, 1]], LO = 40, SPAN = 60;
 var mean = [], dots = [], k, j, i;
 for (k = 0; k < 2; k++) {
 var a = AUROC[k], diff = 0;
@@ -784,13 +787,13 @@ mean.push([(a[0][0] + a[1][1] + a[2][2]) / 3, diff]);
 dots.push([]);
 for (j = 0; j < 6; j++) { var s = document.createElement('span'); s.className = 'gx-dot'; s.tabIndex = -1; tracks[k].appendChild(s); dots[k].push(s); }
 }
-/* the steps: a broad group of correct ones and a tighter group of wrong ones, with a gap between */
-var PHI = -22 * Math.PI / 180, TURN = 97 * Math.PI / 180, pts = [], r = rng(23);
+/* the steps: a broad group of correct ones and a tight, round group of wrong ones, D away from the centre on either side */
+var PHI = -12 * Math.PI / 180, TURN = 55 * Math.PI / 180, D = 0.42, LENS = 0.31, pts = [], r = rng(23);
 function tg(lim) { var g; do { g = gauss(r); } while (Math.abs(g) > lim); return g; }
-for (i = 0; i < 62; i++) pts.push({ u: tg(2) * 0.27, n: -0.41 + tg(1.9) * 0.14, w: 0, ph: r() * 6.283 });
-for (i = 0; i < 22; i++) pts.push({ u: tg(2) * 0.17, n: 0.44 + tg(1.9) * 0.11, w: 1, ph: r() * 6.283 });
-/* no boundary is perfect: a few steps sit on the wrong side even on the model it was built for */
-pts.push({ u: 0.21, n: 0.07, w: 0, ph: 1.1 }, { u: -0.3, n: 0.045, w: 0, ph: 4.2 }, { u: -0.08, n: -0.06, w: 1, ph: 2.6 });
+for (i = 0; i < 62; i++) pts.push({ u: tg(2) * 0.27, n: -D + tg(1.9) * 0.14, w: 0, ph: r() * 6.283 });
+for (i = 0; i < 22; i++) pts.push({ u: tg(1.9) * 0.105, n: D + tg(1.9) * 0.105, w: 1, ph: r() * 6.283 });
+/* no detector is perfect: two correct steps sit inside the lens and one wrong step outside it, even on the model it was built for */
+pts.push({ u: 0.1, n: 0.18, w: 0, ph: 1.1 }, { u: -0.22, n: 0.3, w: 0, ph: 4.2 }, { u: -0.12, n: 0.02, w: 1, ph: 2.6 });
 var target = REDUCE ? 1 : 0, raw = target, m = target, auto = !REDUCE, timer = 0, time = 0, mk = '';
 function seg() {
 for (var b = 0; b < btns.length; b++) {
@@ -822,23 +825,19 @@ cv2.style.height = d.H + 'px'; W2 = cv2.clientWidth || d.W;
 cv2.width = Math.round(W2 * d.dpr); cv2.height = d.cv.height;
 c2.setTransform(d.dpr, 0, 0, d.dpr, 0, 0);
 };
-/* one detector's view. k = 0: the boundary turns with the steps. k = 1: it stays where it was learned. */
+/* one detector's view. The lens is the same size in both. k = 0: it travels with the wrong steps. k = 1: it stays where it was learned. */
 function plot(c, k) {
-var W = k ? W2 : d.W, H = d.H, cx = W / 2, cy = H / 2, s = Math.min(W, H) * 0.5 * 1.02, th = PHI + TURN * m, bn = k ? PHI : th;
-var nx = Math.cos(bn), ny = Math.sin(bn), L = W + H, p, x, y, rad = W < 260 ? 2.1 : 2.6, wob = REDUCE ? 0 : 0.014;
+var W = k ? W2 : d.W, H = d.H, cx = W / 2, cy = H / 2, s = Math.min(W, H) * 0.5 * 1.14, a = PHI + TURN * m, la = k ? PHI : a;
+var lx = cx + Math.cos(la) * D * s, ly = cy + Math.sin(la) * D * s, lr = LENS * s, p, x, y, rad = W < 260 ? 2.1 : 2.6, wob = REDUCE ? 0 : 0.014;
 c.globalCompositeOperation = 'source-over'; c.globalAlpha = 1; c.setLineDash([]);
 c.drawImage(d.bgc, 0, 0, W, H);
-/* what the detector flags: everything on one side of its boundary */
-var gr = c.createLinearGradient(cx, cy, cx + nx * s * 1.5, cy + ny * s * 1.5);
-gr.addColorStop(0, col(P.warn, 0.24)); gr.addColorStop(1, col(P.warn, 0.05));
-c.beginPath();
-c.moveTo(cx - ny * L, cy + nx * L); c.lineTo(cx + ny * L, cy - nx * L);
-c.lineTo(cx + ny * L + nx * L, cy - nx * L + ny * L); c.lineTo(cx - ny * L + nx * L, cy + nx * L + ny * L);
-c.closePath(); c.fillStyle = gr; c.fill();
-c.beginPath(); c.moveTo(cx - ny * L, cy + nx * L); c.lineTo(cx + ny * L, cy - nx * L);
-c.strokeStyle = col(P.t1, 0.9); c.lineWidth = 1.5; c.stroke();
+/* the lens: everything inside it is flagged as wrong */
+var gr = c.createRadialGradient(lx, ly, 0, lx, ly, lr);
+gr.addColorStop(0, col(P.warn, 0.36)); gr.addColorStop(1, col(P.warn, 0.17));
+circle(c, lx, ly, lr); c.fillStyle = gr; c.fill();
+c.strokeStyle = col(P.t1, 0.92); c.lineWidth = 1.6; c.stroke();
 /* the steps, in this model's coordinates */
-var ct = Math.cos(th), st = Math.sin(th);
+var ct = Math.cos(a), st = Math.sin(a);
 for (var i = 0; i < pts.length; i++) {
 p = pts[i];
 var n = p.n + Math.sin(time * 0.9 + p.ph) * wob, u = p.u + Math.cos(time * 0.7 + p.ph * 1.7) * wob;
@@ -859,7 +858,7 @@ d.act = function (name) { auto = false; target = name === 'diff' ? 1 : 0; seg();
 seg(); meters(true);
 });
 /* ================================================================
-   2. Same model, same data. A plain chart of the paper's Table 1. The bars are
+   2. Same model, same data. A plain chart of the paper's main results table. The bars are
    drawn by the stylesheet; this only makes them grow when the chart scrolls in.
    ================================================================ */
 (function () {
