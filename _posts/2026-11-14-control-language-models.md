@@ -1,7 +1,8 @@
 ---
 layout: post
 title: "Control Language Models: what a robot foundation model is missing"
-date: 2026-11-14 09:00:00-0500
+date: 2026-10-15 09:00:00-0400
+permalink: /research-notes/2026/11/14/control-language-models.html
 description: A small feedback loop, learned on top of frozen vision and language models, that gives a robot a memory, a sense of what cannot be undone, and a supervisor that knows when to stop and ask.
 tags: robotics vla runtime-assurance control-theory
 categories: research-notes
